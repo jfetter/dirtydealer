@@ -38,6 +38,7 @@ userSchema.statics.register = function(user, cb){
         newUser.save(function(err, savedUser){
           console.log('saved user: ', savedUser)
 					console.log(err);
+
           savedUser.password = null;
           cb(err, savedUser)
         })
@@ -58,11 +59,13 @@ userSchema.statics.login = function(user, cb){
 	User.find({$or: [{username: username}, {email: username}]}, function(err, userReturned){
 		console.log('userReturned', userReturned);
 		if(userReturned.length){
-			bcrypt.compare(password, userReturned.password, function(err, res){
-				console.log('login', res)
+			bcrypt.compare(password, userReturned[0].password, function(err, res){
+
+				userReturned[0].password = null
+				cb(null, userReturned[0])
 			})
 
-		}else{console.log('bad')}
+		}else{cb('no user found', null)}
 		if(err){return console.log(err)}
 		})
 	}
