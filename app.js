@@ -25,7 +25,6 @@ app.use('/', function(req, res){
 	res.render('index')
 });
 
-
 // 404 HANDLER
 app.use(function(req, res){
   res.status(404).render('404')

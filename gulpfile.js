@@ -1,4 +1,4 @@
-'use strit';
+'use strict';
 
 var gulp = require('gulp');
 var rimraf = require('rimraf')
@@ -10,17 +10,17 @@ var addsrc = require('gulp-add-src');
 
 gulp.task('default', ['watch'])
 
-
-
 gulp.task('watch', function() {
 	gulp.watch('source/**/*', ['build']);
 });
 
-gulp.task('build', ['clean', 'bower'], function(){
+gulp.task('build', ['clean'], function(){
 	gulp.src('source/**/*.js')
 		.pipe(concat("bundle.js"))
 		.pipe(addsrc("source/**/*.html"))
 		.pipe(gulp.dest('public'))
+	gulp.src('assets/**/*')
+		.pipe(gulp.dest('public/assets'))
 		.on('error', gutil.log)
 })
 
@@ -28,5 +28,6 @@ gulp.task('clean', function(cb) {
 	rimraf('public', cb);
 })
 gulp.task('bower', function(cb) {
-	run('bower i').exec(cb)
+	gulp.src('assets')
+	.pipe(gulp.dest('public'))
 })
