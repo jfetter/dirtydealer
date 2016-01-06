@@ -33,6 +33,30 @@ userSchema.statics.register = function(user, cb){
 
 }
 
+
+userSchema.statics.login = function(user, cb){
+	var username = user.username;
+	var password = user.password;
+
+
+	User.find({$or: [{username: username}, {email: username}]}, function(err, userReturned){
+		console.log('userReturned', userReturned);
+		if(userReturned.length){
+			cb('no userfound')
+		}
+		if(err){return console.log(err)}
+		bcrypt.compare(password, userReturned.password, function(err, res){
+				console.log('login', res)
+			})
+		})
+	}
+
+
+
+
+
+
+
 User = mongoose.model('User', userSchema);
 
 

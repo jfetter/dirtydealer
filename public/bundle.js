@@ -48,10 +48,10 @@ angular.module('socialMockup')
 	$scope.submit = function(user){
 		UserService.login(user)
 		.then(function(res){
-			$state.go('home.index');
+			console.log('res: , ', res)
+			
 		}, function(err) {
 			console.error(err);
-
 		});
 	}
 });
