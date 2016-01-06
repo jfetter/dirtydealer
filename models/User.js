@@ -8,11 +8,12 @@ var Schema = mongoose.Schema;
 var User;
 
 var userSchema = Schema({
-  username: { type: String},
+	email:{type: String, required: true, unique: true},
+  username: { type: String, required: true, unique: true},
   password: { type: String, required: true },
-	email:{type: String, required: true},
 	phone: {type: Number},
 	name: {type: String},
+	address: {type: String},
 	avatar: {type: String, data:Buffer},
 	favorites: [{type: Schema.Types.ObjectId, ref: "User"}],
 	isAdmin: {type: Boolean, default: false}
