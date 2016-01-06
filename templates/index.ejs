@@ -8,7 +8,21 @@
     <link rel="stylesheet" href="assets/bootstrap/dist/css/bootstrap.min.css">
   </head>
   <body ng-app="socialMockup">
-    <h1>Social Mockup</h1>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Social Mockup</a>
+    </div>
+      <ul class="nav navbar-nav" ng-if="!loggedIn">
+        <li><a ui-sref='login'>Login</a></li>
+        <li><a ui-sref='register'>Register</a></li>
+      </ul>
+      <ul class="nav navbar-nav" ng-if="loggedIn">
+        <li><a ui-sref='usersList'>List</a></li>
+        <li><a ui-sref='userPage'>Home</a></li>
+      </ul>
+  </div>
+</nav>
     <div ui-view></div>
     <script src="assets/angular/angular.min.js"></script>
     <script src="assets/angular-ui-router/release/angular-ui-router.min.js"></script>
