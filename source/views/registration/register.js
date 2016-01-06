@@ -1,2 +1,2 @@
-app.module('socialMockup')
-   .service()
+// app.module('socialMockup')
+//    .service()

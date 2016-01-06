@@ -5,7 +5,7 @@ var router = express.Router();
 var User = require('../models/User.js');
 
 router.get('/', function(req, res){
-  console.log("Get Gotten")
+  res.render('index');
 })
 
 router.post('/', function(req, res){

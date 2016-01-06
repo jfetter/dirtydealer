@@ -4,7 +4,7 @@ var app = angular.module('socialMockup', ['ui.router'])
 
 
 app.constant('ENV', {
-  API_URL: 'https://localhost:3000'
+  API_URL: 'http://localhost:3000'
 });
 
 
@@ -15,4 +15,6 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('home', {url: '/', templateUrl: 'views/home/home.html', controller: 'homeCtrl'})
 		.state('login', {url: '/login', templateUrl: 'views/login/login.html', controller: 'loginCtrl'})
 		.state('register', {url: '/register', templateUrl: 'views/register/register.html', controller: 'registerCtrl'})
+		.state('usersList', {url: '/userslist', templateUrl: 'views/user/usersList/usersList.html', controller: 'usersListCtrl'})
+		.state('userPage', {url: '/userpage', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
 })

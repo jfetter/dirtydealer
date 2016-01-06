@@ -4,7 +4,7 @@ var app = angular.module('socialMockup', ['ui.router'])
 
 
 app.constant('ENV', {
-  API_URL: 'https://localhost:3000'
+  API_URL: 'http://localhost:3000'
 });
 
 
@@ -15,6 +15,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('home', {url: '/', templateUrl: 'views/home/home.html', controller: 'homeCtrl'})
 		.state('login', {url: '/login', templateUrl: 'views/login/login.html', controller: 'loginCtrl'})
 		.state('register', {url: '/register', templateUrl: 'views/register/register.html', controller: 'registerCtrl'})
+		.state('usersList', {url: '/userslist', templateUrl: 'views/user/usersList/usersList.html', controller: 'usersListCtrl'})
+		.state('userPage', {url: '/userpage', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
 'use strict';
@@ -23,10 +25,11 @@ var app = angular.module('socialMockup');
 
 app.service('UserService', function($http, ENV){
 	this.register = function(user){
-		return $http.post(`${ENV.API_URL}`/routes/registration)
+		console.log(user)
+		return $http.post(`${ENV.API_URL}/register`, user)
 	};
 	this.login = function(user){
-		return $http.post(`${ENV.API_URL}`/routes/login)
+		return $http.post(`${ENV.API_URL}/login`, user)
 	};
 })
 
@@ -59,6 +62,7 @@ angular.module('socialMockup')
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){
+		console.log(user)
 		if(user.password !== user.password2){
 			alert('Passwords do not match');
 			return;
@@ -73,5 +77,29 @@ angular.module('socialMockup')
 	}
 });
 
-app.module('socialMockup')
-   .service()
+// app.module('socialMockup')
+//    .service()
+
+'use strict';
+
+angular.module('socialMockup')
+
+.controller('usersList', function($scope, $state){
+	console.log("userCtrl")
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+.controller('userPageCtrl', function($scope, $state){
+	console.log("userPage")
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+.controller('usersListCtrl', function($scope, $state){
+	console.log("userList")
+});
