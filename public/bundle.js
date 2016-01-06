@@ -72,3 +72,6 @@ angular.module('socialMockup')
 		});
 	}
 });
+
+app.module('socialMockup')
+   .service()
