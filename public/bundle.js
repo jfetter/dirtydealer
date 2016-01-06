@@ -51,7 +51,6 @@ angular.module('socialMockup')
 			$state.go('home.index');
 		}, function(err) {
 			console.error(err);
-
 		});
 	}
 });
