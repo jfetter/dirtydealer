@@ -20,10 +20,17 @@ app.use(bodyParser.urlencoded( {extended: true} ));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+
 // ROUTES
 app.use('/', function(req, res){
 	res.render('index')
 });
+app.use('/registration', function(req, res){
+    User.register(req.body, function(err, user{
+			res.send(user)
+		}))
+	})
+})
 
 // 404 HANDLER
 app.use(function(req, res){
