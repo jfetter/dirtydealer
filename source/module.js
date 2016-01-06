@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('scaffoldApp', ['ui.router'])
+var app = angular.module('socialMockup', ['ui.router'])
 
 
 .config(function($stateProvider, $urlRouterProvider, $locationProvider){
@@ -9,4 +9,5 @@ var app = angular.module('scaffoldApp', ['ui.router'])
 	$stateProvider
 		.state('home', {url: '/', templateUrl: 'views/home/home.html', controller: 'homeCtrl'})
 		.state('login', {url: '/login', templateUrl: 'views/login/login.html', controller: 'loginCtrl'})
+		.state('register', {url: '/register', templateUrl: 'views/register/register.html', controller: 'registerCtrl'})
 })
