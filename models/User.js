@@ -24,11 +24,26 @@ userSchema.statics.register = function(user, cb){
   var username = user.username;
   var email = user.email;
   var name = user.name;
-  var password = jwt.encode(user.password, process.env.JWT_SECRET);
-  User.find({$or: [{username: username}, {email: email}] }, function(err, user){
-    if (err){return console.log(err)}
-    console.log(user);
-  })
+	bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash(user.password, salt, function(err, password) {
+      User.find({$or: [{username: username}, {email: email}] }, function(err, user){
+        if (err){return console.log(err)}
+        console.log(user);
+        var newUser = new User;
+        newUser.username = username;
+        newUser.email = email;
+        newUser.name = name;
+        newUser.password = password;
+        console.log(newUser)
+        newUser.save(function(err, savedUser){
+          console.log('saved user: ', savedUser)
+          savedUser.password = null;
+          cb(err, savedUser)
+        })
+      })
+    
+    });
+});
 
 
 }
