@@ -13,7 +13,7 @@ var userSchema = Schema({
 	email:{type: String, required: true},
 	phone: {type: Number},
 	name: {type: String},
-	avatar: {type: String data:Buffer},
+	avatar: {type: String, data:Buffer},
 	favorites: [{type: Schema.Types.ObjectId, ref: "User"}]
 
 });
