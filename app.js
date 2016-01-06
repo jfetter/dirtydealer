@@ -25,12 +25,8 @@ app.use(express.static('public'));
 app.use('/', function(req, res){
 	res.render('index')
 });
-app.use('/registration', function(req, res){
-    User.register(req.body, function(err, user{
-			res.send(user)
-		}))
-	})
-})
+
+app.use('/register', require('./register'));
 
 // 404 HANDLER
 app.use(function(req, res){
