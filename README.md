@@ -1,2 +1,4 @@
-# MEAN Template with Gulp
-Template for MEAN appliction with gulp to load angular
+# Social mockup
+- Run Npm i
+- Run Bower i
+- Run gulp

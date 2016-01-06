@@ -8,7 +8,7 @@ var run = require('gulp-run')
 var concat = require('gulp-concat')
 var addsrc = require('gulp-add-src');
 
-gulp.task('default', ['watch'])
+gulp.task('default', ['build', 'watch'])
 
 gulp.task('watch', function() {
 	gulp.watch('source/**/*', ['build']);
