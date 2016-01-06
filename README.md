@@ -1,4 +1,4 @@
 # Social mockup
-- Run Npm i
-- Run Bower i
+- Run npm i
+- Run bower i
 - Run gulp
