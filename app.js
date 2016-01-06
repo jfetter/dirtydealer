@@ -9,7 +9,7 @@ var path = require('path');
 var app = express();
 
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/scaffold');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/socialMockup');
 
 app.set('views', 'templates');
 app.set('view engine', 'ejs');
