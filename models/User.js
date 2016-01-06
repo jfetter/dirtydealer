@@ -14,8 +14,8 @@ var userSchema = Schema({
 	phone: {type: Number},
 	name: {type: String},
 	avatar: {type: String, data:Buffer},
-	favorites: [{type: Schema.Types.ObjectId, ref: "User"}]
-
+	favorites: [{type: Schema.Types.ObjectId, ref: "User"}],
+	isAdmin: {type: Boolean, default: false}
 });
 
 User = mongoose.model('User', userSchema);
