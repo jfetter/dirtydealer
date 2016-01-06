@@ -22,11 +22,13 @@ app.use(express.static('public'));
 
 
 // ROUTES
+app.use('/register', require('./routes/register'));
+
+
 app.use('/', function(req, res){
 	res.render('index')
 });
 
-app.use('/register', require('./register'));
 
 // 404 HANDLER
 app.use(function(req, res){

@@ -27,7 +27,7 @@ userSchema.statics.register = function(user, cb){
   var password = jwt.encode(user.password, process.env.JWT_SECRET);
   User.find({$or: [{username: username}, {email: email}] }, function(err, user){
     if (err){return console.log(err)}
-    console.log(user)
+    console.log(user);
   })
 
 
