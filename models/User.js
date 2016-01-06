@@ -56,7 +56,6 @@ userSchema.statics.login = function(user, cb){
 
 
 	User.find({$or: [{username: username}, {email: username}]}, function(err, userReturned){
-		console.log('userReturned', userReturned);
 		if(userReturned.length){
 			cb('no userfound')
 		}
