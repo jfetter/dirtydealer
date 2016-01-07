@@ -3,8 +3,9 @@
 angular.module('socialMockup')
 
 
-.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService){
+.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
 	console.log("cookies.get", $cookies.get('token'))
+	$scope.userInfo = (jwtHelper.decodeToken( $cookies.get('token')))
 	UserService.isAuthed($cookies.get('token'))
 	.then(function(res , err){
 		console.log(res.data)
@@ -34,13 +35,16 @@ angular.module('socialMockup')
 	})
 
 	$scope.addFavorite = function (userId){
-		UserService.favoriteUser(userId);
-		console.log("USER!", userId)
+		UserService.favoriteUser(userId)
+		.then(function(res){
+			$scope.userInfo = (jwtHelper.decodeToken(res.data))
+		})
 	}
 
 	$scope.favorited = function(user){
-		if (user._id !== localStorage._id){
-			return JSON.parse(localStorage.favorites).some(function(favorite){
+		console.log("USER", user);
+		if (user._id !== $scope.userInfo._id){
+			return ($scope.userInfo.favorites).some(function(favorite){
 				return (user._id === favorite)
 			})
 		} else {return true}

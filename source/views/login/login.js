@@ -21,7 +21,6 @@ angular.module('socialMockup')
         localStorage[`${keys}`] = JSON.stringify(decoded[keys])
 			} else{
         localStorage[`${keys}`] = decoded[keys]
-
         }
       }
 
