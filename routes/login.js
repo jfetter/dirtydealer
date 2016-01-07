@@ -6,11 +6,14 @@ var jwt = require('jwt-simple')
 
 router.post('/', function(req, res){
   User.login(req.body, function(err, user){
-    if(err){res.send(err)}
-    else{
+
+    console.log('user: ',user)
+    if(user){
       token = jwt.encode(user, process.env.JWT_SECRET);
-      res.cookie("token", token )
-      res.send('login succesful')
+      res.cookie('token', token);
+      res.send('login succesfull')
+    } else{
+      res.send('incorrect username or password')
     }
   })
 })

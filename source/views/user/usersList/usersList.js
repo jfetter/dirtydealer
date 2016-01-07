@@ -2,15 +2,18 @@
 
 angular.module('socialMockup')
 
-.controller('usersListCtrl', function($scope, $location, $rootScope, $state, UserService){
-	console.log('hello')
-	console.log(UserService)
-	$scope.$watch(function(){return UserService.loggedIn}, function(n,o){UserService.loggedIn = n})
-	if(UserService.loggedIn ===false){$location.path('/login')}
+
+.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService){
+	console.log("cookies.get", $cookies.get('token'))
+	UserService.isAuthed($cookies.get('token'))
+	.then(function(res , err){
+		console.log(res.data)
+		 if (res.data === "authRequired"){$location.path('/login')}
+		 else{$scope.isLoggedIn = true;}
+	})
 	UserService.list()
 	.then(function(res) {
 
-		console.log('res.data',res.data)
 		$scope.users = res.data;
 		users = res.data;
 	}, function(err) {
