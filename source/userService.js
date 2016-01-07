@@ -2,7 +2,7 @@
 
 var app = angular.module('socialMockup');
 
-app.service('UserService', function($http, ENV){
+app.service('UserService', function($http, ENV, $location, $rootScope){
 	this.register = function(user){
 		console.log(user)
 		return $http.post(`${ENV.API_URL}/register`, user);
@@ -25,4 +25,9 @@ app.service('UserService', function($http, ENV){
 		data.favoriteId = userId
 		return $http.put(`${ENV.API_URL}/user/favorite`, data)
 	}
+	this.loggedIn = function(isLoggedIn){
+			if(isLoggedIn){ return true }
+	};
+
+
 })
