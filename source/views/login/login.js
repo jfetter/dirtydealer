@@ -10,7 +10,7 @@ angular.module('socialMockup')
 						UserService.loggedIn = 'true';
 						console.log(UserService.loggedIn)
 			}
-			$state.go('home');
+			$state.go('usersList');
 			var token = $cookies.get('token');
       var decoded = jwtHelper.decodeToken(token);
 			console.log(decoded)
