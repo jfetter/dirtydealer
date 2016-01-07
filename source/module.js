@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('socialMockup', ['ui.router'])
+var app = angular.module('socialMockup', ['ui.router', 'ngCookies'])
 
 
 app.constant('ENV', {

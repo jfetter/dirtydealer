@@ -10,4 +10,7 @@ app.service('UserService', function($http, ENV){
 	this.login = function(user){
 		return $http.post(`${ENV.API_URL}/login`, user)
 	};
+	this.auth = function(){
+		return $http.get(`${ENV.API_URL}/auth`)
+	}
 })

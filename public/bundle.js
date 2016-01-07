@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('socialMockup', ['ui.router'])
+var app = angular.module('socialMockup', ['ui.router', 'ngCookies'])
 
 
 app.constant('ENV', {
@@ -31,6 +31,9 @@ app.service('UserService', function($http, ENV){
 	this.login = function(user){
 		return $http.post(`${ENV.API_URL}/login`, user)
 	};
+	this.auth = function(){
+		return $http.get(`${ENV.API_URL}/auth`)
+	}
 })
 
 'use strict';
@@ -92,14 +95,13 @@ angular.module('socialMockup')
 
 angular.module('socialMockup')
 
-.controller('userPageCtrl', function($scope, $state){
-	console.log("userPage")
+.controller('usersListCtrl', function($scope, $state){
+	console.log("userList")
 });
 
 'use strict';
 
 angular.module('socialMockup')
-
-.controller('usersListCtrl', function($scope, $state){
-	console.log("userList")
+.controller('userPageCtrl', function($scope, $state,$cookies,  $cookieStore){
+	console.log($cookies.get('token'));
 });
