@@ -3,8 +3,10 @@
 angular.module('socialMockup')
 
 .controller('usersListCtrl', function($scope, $location, $rootScope, $state, UserService){
-
-	if(!UserService.loggedIn()){$location.path('/login')}
+	console.log('hello')
+	console.log(UserService)
+	$scope.$watch(function(){return UserService.loggedIn}, function(n,o){UserService.loggedIn = n})
+	if(UserService.loggedIn ===false){$location.path('/login')}
 	UserService.list()
 	.then(function(res) {
 		console.log(res.data)
@@ -13,6 +15,7 @@ angular.module('socialMockup')
 		// 		return (user._id === favorite);
 		// 	})
 		// });
+
 		users = res.data;
 		$scope.users = users;
 	}, function(err) {

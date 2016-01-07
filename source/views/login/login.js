@@ -5,10 +5,12 @@ angular.module('socialMockup')
 	$scope.submit = function(user){
 		UserService.login(user)
 		.then(function(res){
-
-			console.log('res: , ', res)
+			console.log('res', res.data)
+			if(res.data=="login succesful"){
+						UserService.loggedIn = 'true';
+						console.log(UserService.loggedIn)
+			}
 			$state.go('home');
-
 			var token = $cookies.get('token');
       var decoded = jwtHelper.decodeToken(token);
 			console.log(decoded)
@@ -19,6 +21,7 @@ angular.module('socialMockup')
         localStorage[`${keys}`] = JSON.stringify(decoded[keys])
 			} else{
         localStorage[`${keys}`] = decoded[keys]
+
         }
       }
 
