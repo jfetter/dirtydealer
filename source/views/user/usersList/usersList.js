@@ -4,6 +4,7 @@ angular.module('socialMockup')
 
 
 .controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
+	;
 	console.log("cookies.get", $cookies.get('token'))
 	var cookies = $cookies.get('token');
 	if(cookies){
@@ -18,20 +19,12 @@ angular.module('socialMockup')
 	UserService.list()
 	.then(function(res) {
 		console.log(res.data)
-		// $scope.users = res.data.filter(function(user){
-		// 	return JSON.parse(localStorage.favorites).some(function(favorite){
-		// 		return (user._id === favorite);
-		// 	})
-		// });
-
 		users = res.data;
 		$scope.users = users;
 	}, function(err) {
 		console.error(err)
 	});
 	var users;
-
-	// $scope.searchTerm = '';
 
 	$scope.$watch(function(){return $scope.searchTerm}, function(n,o){
 		$scope.updateSearch();
@@ -52,12 +45,7 @@ angular.module('socialMockup')
 			})
 		} else {return true}
 	}
-	// $scope.isAdmin = function(user){
 		$scope.isAdmin = $scope.userInfo.isAdmin;
-	// }
-	// $scope.adminCheck = function(){
-	// 	if()
-	// }
 
 	$scope.updateSearch = function(searchTerm){
 		// $scope.searchTerm = searchTerm
