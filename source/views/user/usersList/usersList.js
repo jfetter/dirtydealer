@@ -2,7 +2,9 @@
 
 angular.module('socialMockup')
 
-.controller('usersListCtrl', function($scope, $state, UserService){
+.controller('usersListCtrl', function($scope, $location, $rootScope, $state, UserService){
+
+	if(!UserService.loggedIn()){$location.path('/login')}
 	UserService.list()
 	.then(function(res) {
 		console.log(res.data)
