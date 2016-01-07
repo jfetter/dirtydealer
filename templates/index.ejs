@@ -11,7 +11,7 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Social Mockup</a>
+      <a class="navbar-brand" ui-sref="home">Social Mockup</a>
     </div>
       <ul class="nav navbar-nav" ng-if="!loggedIn">
         <li><a ui-sref='login'>Login</a></li>
@@ -20,13 +20,16 @@
       <ul class="nav navbar-nav" ng-if="loggedIn">
         <li><a ui-sref='usersList'>List</a></li>
         <li><a ui-sref='userPage'>Home</a></li>
+        <li><a ui-sref='home'>Logout</a></li>
       </ul>
   </div>
 </nav>
     <div ui-view></div>
     <script src="assets/angular/angular.min.js"></script>
     <script src="assets/angular-ui-router/release/angular-ui-router.min.js"></script>
+
     <script src="assets/angular-cookies/angular-cookies.min.js"></script>
+    <script src="assets/angular-jwt/dist/angular-jwt.min.js"></script>
     <!-- <script src="views/home/home.js"></script> -->
     <script src="bundle.js"></script>
   </body>

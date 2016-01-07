@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('socialMockup', ['ui.router', 'ngCookies'])
+var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies'])
 
 
 app.constant('ENV', {
@@ -16,5 +16,5 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('login', {url: '/login', templateUrl: 'views/login/login.html', controller: 'loginCtrl'})
 		.state('register', {url: '/register', templateUrl: 'views/register/register.html', controller: 'registerCtrl'})
 		.state('usersList', {url: '/userslist', templateUrl: 'views/user/usersList/usersList.html', controller: 'usersListCtrl'})
-		.state('userPage', {url: '/userpage', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
+		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
 })
