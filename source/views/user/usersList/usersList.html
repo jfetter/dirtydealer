@@ -1,6 +1,6 @@
 <div ng-if="isLoggedIn">
 <h1>User List</h1>
-<input type="text" ng-model="searchTerm" ng-keypress="updateSearch()">
+<input type="text" ng-model="searchTerm" ng-keyup="updateSearch(searchTerm)">
 <div ng-repeat='user in users track by $index'>
 	<a ui-sref='userPage({username: user.username})'>{{user.avatar}} {{user.username}}</a>
 

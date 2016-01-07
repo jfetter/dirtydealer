@@ -31,7 +31,7 @@ angular.module('socialMockup')
 	});
 	var users;
 
-	$scope.searchTerm ='';
+	// $scope.searchTerm = '';
 
 	$scope.$watch(function(){return $scope.searchTerm}, function(n,o){
 		$scope.updateSearch();
@@ -45,7 +45,7 @@ angular.module('socialMockup')
 	}
 
 	$scope.favorited = function(user){
-		console.log("USER", user);
+		// console.log("USER", user);
 		if (user._id !== $scope.userInfo._id){
 			return ($scope.userInfo.favorites).some(function(favorite){
 				return (user._id === favorite)
@@ -53,16 +53,18 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
-	$scope.updateSearch = function(){
-		if($scope.searchTerm){
+	$scope.updateSearch = function(searchTerm){
+		// $scope.searchTerm = searchTerm
+		console.log(searchTerm)
+		if(searchTerm){
+			console.log(searchTerm)
 		$scope.users = $scope.users.filter(function(user){
-			if (user.username.match($scope.searchTerm)){
+			if (user.username.match(searchTerm)){
 				return true
 			} else{
 				return false
 			}
 		})
-		if(!$scope.users){}
 	} else{
 		$scope.users = users
 	}
