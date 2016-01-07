@@ -57,6 +57,7 @@ userSchema.statics.login = function(user, cb){
 
 
 	User.find({$or: [{username: username}, {email: username}]}, function(err, userReturned){
+		console.log(userReturned.length)
 		if(userReturned.length){
 			bcrypt.compare(password, userReturned[0].password, function(err, res){
 				userReturned[0].password = null

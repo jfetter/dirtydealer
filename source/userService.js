@@ -25,9 +25,13 @@ app.service('UserService', function($http, ENV, $location, $rootScope){
 		data.favoriteId = userId
 		return $http.put(`${ENV.API_URL}/user/favorite`, data)
 	}
+
 	this.loggedIn = function(isLoggedIn){
 			if(isLoggedIn){ return true }
 	};
+	this.isAuthed = function(token){
+		return $http.post(`${ENV.API_URL}/auth`, {token:token})
+	}
 
 
 })
