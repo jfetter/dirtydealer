@@ -53,6 +53,27 @@ angular.module('socialMockup')
 'use strict';
 
 angular.module('socialMockup')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			alert('Passwords do not match');
+			return;
+		}
+		UserService.register(user)
+		.then(function(data){
+			alert('You have sucessfully registered');
+				$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
+});
+
+'use strict';
+
+angular.module('socialMockup')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -83,29 +104,51 @@ angular.module('socialMockup')
 	}
 });
 
+// app.module('socialMockup')
+//    .service()
+
 'use strict';
 
 angular.module('socialMockup')
 
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			alert('Passwords do not match');
-			return;
-		}
-		UserService.register(user)
-		.then(function(data){
-			alert('You have sucessfully registered');
-				$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
+.controller('usersListCtrl', function($scope, $state, UserService){
+	UserService.list()
+	.then(function(res) {
+		console.log(res.data)
+		$scope.users = res.data;
+		users = res.data;
+	}, function(err) {
+		console.error(err)
+	});
+	var users;
 
-// app.module('socialMockup')
-//    .service()
+	$scope.searchTerm ='';
+
+	$scope.$watch(function(){return $scope.searchTerm}, function(n,o){
+		$scope.updateSearch();
+	})
+
+
+
+
+	$scope.updateSearch = function(){
+		if($scope.searchTerm){
+		$scope.users = $scope.users.filter(function(user){
+			if (user.username.match($scope.searchTerm)){
+				return true
+			} else{
+				return false
+			}
+		})
+		if(!$scope.users){}
+	} else{
+		$scope.users = users
+	}
+
+
+
+	}
+})
 
 'use strict';
 
@@ -117,20 +160,6 @@ angular.module('socialMockup')
 	.then(function(res) {
 		console.log("PARAMS", $state.params.name)
 		$scope.user = res.data;
-	}, function(err) {
-		console.error(err)
-	});
-});
-
-'use strict';
-
-angular.module('socialMockup')
-
-.controller('usersListCtrl', function($scope, $state, UserService){
-	UserService.list()
-	.then(function(res) {
-		console.log(res.data)
-		$scope.users = res.data;
 	}, function(err) {
 		console.error(err)
 	});
