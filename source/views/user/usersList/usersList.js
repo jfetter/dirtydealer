@@ -6,12 +6,13 @@ angular.module('socialMockup')
 	UserService.list()
 	.then(function(res) {
 		console.log(res.data)
-		$scope.users = res.data.filter(function(user){
-			return JSON.parse(localStorage.favorites).some(function(favorite){
-				return (user._id !== favorite);
-			})
-		});
+		// $scope.users = res.data.filter(function(user){
+		// 	return JSON.parse(localStorage.favorites).some(function(favorite){
+		// 		return (user._id === favorite);
+		// 	})
+		// });
 		users = res.data;
+		$scope.users = users;
 	}, function(err) {
 		console.error(err)
 	});
@@ -28,6 +29,13 @@ angular.module('socialMockup')
 		console.log("USER!", userId)
 	}
 
+	$scope.favorited = function(user){
+		if (user._id !== localStorage._id){
+			return JSON.parse(localStorage.favorites).some(function(favorite){
+				return (user._id === favorite)
+			})
+		} else {return true}
+	}
 
 	$scope.updateSearch = function(){
 		if($scope.searchTerm){
