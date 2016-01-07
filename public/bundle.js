@@ -45,6 +45,14 @@ app.service('UserService', function($http, ENV){
 'use strict';
 
 angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('socialMockup')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -75,13 +83,8 @@ angular.module('socialMockup')
 	}
 });
 
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
+// app.module('socialMockup')
+//    .service()
 
 'use strict';
 
@@ -103,9 +106,6 @@ angular.module('socialMockup')
 		});
 	}
 });
-
-// app.module('socialMockup')
-//    .service()
 
 'use strict';
 
