@@ -22,6 +22,9 @@ app.service('UserService', function($http, ENV, $location, $rootScope){
 	this.loggedIn = function(isLoggedIn){
 			if(isLoggedIn){ return true }
 	};
+	this.isAuthed = function(token){
+		return $http.post(`${ENV.API_URL}/auth`, {token:token})
+	}
 
 
 })
