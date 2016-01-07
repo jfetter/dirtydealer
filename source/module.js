@@ -18,3 +18,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('usersList', {url: '/userslist', templateUrl: 'views/user/usersList/usersList.html', controller: 'usersListCtrl'})
 		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
 })
+
+app.controller('MasterController', function(){
+
+})

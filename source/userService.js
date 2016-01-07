@@ -19,9 +19,12 @@ app.service('UserService', function($http, ENV, $location, $rootScope){
 	this.auth = function(userInfo){
 		return $http.get(`${ENV.API_URL}/auth`)
 	};
-	this.loggedIn = function(isLoggedIn){
-			if(isLoggedIn){ return true }
-	};
-
+	// this.loggedInCheck = (isLoggedIn) => {
+	// 	console.log('islogged in ' , loggedIn)
+	// 		if(this.loggedIn){ return true }
+	// 		else{return false}
+	// };
+	this.loggedIn = false;
+	this.userInfo = {};
 
 })

@@ -3,11 +3,14 @@
 angular.module('socialMockup')
 
 .controller('usersListCtrl', function($scope, $location, $rootScope, $state, UserService){
-
-	if(!UserService.loggedIn()){$location.path('/login')}
+	console.log('hello')
+	console.log(UserService)
+	$scope.$watch(function(){return UserService.loggedIn}, function(n,o){UserService.loggedIn = n})
+	if(UserService.loggedIn ===false){$location.path('/login')}
 	UserService.list()
 	.then(function(res) {
-		console.log(res.data)
+
+		console.log('res.data',res.data)
 		$scope.users = res.data;
 		users = res.data;
 	}, function(err) {
