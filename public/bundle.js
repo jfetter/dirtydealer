@@ -16,7 +16,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('login', {url: '/login', templateUrl: 'views/login/login.html', controller: 'loginCtrl'})
 		.state('register', {url: '/register', templateUrl: 'views/register/register.html', controller: 'registerCtrl'})
 		.state('usersList', {url: '/userslist', templateUrl: 'views/user/usersList/usersList.html', controller: 'usersListCtrl'})
-		.state('userPage', {url: '/userpage/{userId}', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
+		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
 'use strict';
@@ -34,8 +34,8 @@ app.service('UserService', function($http, ENV){
 	this.list = function(){
 		return $http.get(`${ENV.API_URL}/user/list`);
 	};
-	this.page = function(userId){
-		return $http.get(`${ENV.API_URL}/user/page/${userId}`)
+	this.page = function(username){
+		return $http.get(`${ENV.API_URL}/user/page/${username}`)
 	this.auth = function(){
 		return $http.get(`${ENV.API_URL}/auth`)
 	}
@@ -113,9 +113,9 @@ angular.module('socialMockup')
 
 
 .controller('userPageCtrl', function($scope, $state, UserService){
-	UserService.page($state.params.userId)
+	UserService.page($state.params.username)
 	.then(function(res) {
-		console.log("PARAMS", $state.params.userId)
+		console.log("PARAMS", $state.params.name)
 		$scope.user = res.data;
 	}, function(err) {
 		console.error(err)

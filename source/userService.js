@@ -13,8 +13,8 @@ app.service('UserService', function($http, ENV){
 	this.list = function(){
 		return $http.get(`${ENV.API_URL}/user/list`);
 	};
-	this.page = function(userId){
-		return $http.get(`${ENV.API_URL}/user/page/${userId}`)
+	this.page = function(username){
+		return $http.get(`${ENV.API_URL}/user/page/${username}`)
 	this.auth = function(){
 		return $http.get(`${ENV.API_URL}/auth`)
 	}
