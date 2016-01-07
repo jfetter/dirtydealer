@@ -16,7 +16,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('login', {url: '/login', templateUrl: 'views/login/login.html', controller: 'loginCtrl'})
 		.state('register', {url: '/register', templateUrl: 'views/register/register.html', controller: 'registerCtrl'})
 		.state('usersList', {url: '/userslist', templateUrl: 'views/user/usersList/usersList.html', controller: 'usersListCtrl'})
-		.state('userPage', {url: '/userpage', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
+		.state('userPage', {url: '/userpage/{userId}', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
 'use strict';
@@ -26,11 +26,17 @@ var app = angular.module('socialMockup');
 app.service('UserService', function($http, ENV){
 	this.register = function(user){
 		console.log(user)
-		return $http.post(`${ENV.API_URL}/register`, user)
+		return $http.post(`${ENV.API_URL}/register`, user);
 	};
 	this.login = function(user){
-		return $http.post(`${ENV.API_URL}/login`, user)
+		return $http.post(`${ENV.API_URL}/login`, user);
 	};
+	this.list = function(){
+		return $http.get(`${ENV.API_URL}/user/list`);
+	};
+	this.page = function(userId){
+		return $http.get(`${ENV.API_URL}/user/page/${userId}`)
+	}
 })
 
 'use strict';
@@ -49,12 +55,15 @@ angular.module('socialMockup')
 		UserService.login(user)
 		.then(function(res){
 			console.log('res: , ', res)
-			
+			$state.go('home');
 		}, function(err) {
 			console.error(err);
 		});
 	}
 });
+
+// app.module('socialMockup')
+//    .service()
 
 'use strict';
 
@@ -77,29 +86,30 @@ angular.module('socialMockup')
 	}
 });
 
-// app.module('socialMockup')
-//    .service()
-
 'use strict';
 
 angular.module('socialMockup')
 
-.controller('usersList', function($scope, $state){
-	console.log("userCtrl")
+.controller('userPageCtrl', function($scope, $state, UserService){
+	UserService.page($state.params.userId)
+	.then(function(res) {
+		console.log("PARAMS", $state.params.userId)
+		$scope.user = res.data;
+	}, function(err) {
+		console.error(err)
+	});
 });
 
 'use strict';
 
 angular.module('socialMockup')
 
-.controller('userPageCtrl', function($scope, $state){
-	console.log("userPage")
-});
-
-'use strict';
-
-angular.module('socialMockup')
-
-.controller('usersListCtrl', function($scope, $state){
-	console.log("userList")
+.controller('usersListCtrl', function($scope, $state, UserService){
+	UserService.list()
+	.then(function(res) {
+		console.log(res.data)
+		$scope.users = res.data;
+	}, function(err) {
+		console.error(err)
+	});
 });

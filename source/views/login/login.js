@@ -6,7 +6,7 @@ angular.module('socialMockup')
 		UserService.login(user)
 		.then(function(res){
 			console.log('res: , ', res)
-			
+			$state.go('home');
 		}, function(err) {
 			console.error(err);
 		});

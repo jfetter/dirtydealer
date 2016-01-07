@@ -24,6 +24,7 @@ app.use(express.static('public'));
 // ROUTES
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'))
+app.use('/user', require('./routes/user'))
 
 app.use('/', function(req, res){
 	res.render('index')
