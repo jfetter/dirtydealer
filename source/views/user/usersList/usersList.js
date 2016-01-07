@@ -3,9 +3,13 @@
 angular.module('socialMockup')
 
 
-.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService){
+.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
 	console.log("cookies.get", $cookies.get('token'))
-	UserService.isAuthed($cookies.get('token'))
+	var cookies = $cookies.get('token');
+	if(cookies){
+		$scope.userInfo = (jwtHelper.decodeToken(cookies))
+	}
+	UserService.isAuthed(cookies)
 	.then(function(res , err){
 		console.log(res.data)
 		 if (res.data === "authRequired"){$location.path('/login')}
@@ -13,9 +17,15 @@ angular.module('socialMockup')
 	})
 	UserService.list()
 	.then(function(res) {
+		console.log(res.data)
+		// $scope.users = res.data.filter(function(user){
+		// 	return JSON.parse(localStorage.favorites).some(function(favorite){
+		// 		return (user._id === favorite);
+		// 	})
+		// });
 
-		$scope.users = res.data;
 		users = res.data;
+		$scope.users = users;
 	}, function(err) {
 		console.error(err)
 	});
@@ -27,8 +37,21 @@ angular.module('socialMockup')
 		$scope.updateSearch();
 	})
 
+	$scope.addFavorite = function (userId){
+		UserService.favoriteUser(userId)
+		.then(function(res){
+			$scope.userInfo = (jwtHelper.decodeToken(res.data))
+		})
+	}
 
-
+	$scope.favorited = function(user){
+		console.log("USER", user);
+		if (user._id !== $scope.userInfo._id){
+			return ($scope.userInfo.favorites).some(function(favorite){
+				return (user._id === favorite)
+			})
+		} else {return true}
+	}
 
 	$scope.updateSearch = function(){
 		if($scope.searchTerm){

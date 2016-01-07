@@ -10,17 +10,17 @@ angular.module('socialMockup')
 						UserService.loggedIn = 'true';
 						console.log(UserService.loggedIn)
 			}
-			$state.go('home');
+			$state.go('usersList');
 			var token = $cookies.get('token');
       var decoded = jwtHelper.decodeToken(token);
-
+			console.log(decoded)
       for (var keys in decoded){
         if(keys === 'isAdmin'){
-          decoded[keys] ? UserService.userInfo.isAdmin = true : UserService.userInfo.isAdmin = false;
-        } else{
-					UserService.userInfo[`${keys}`] = decoded[keys]
-
-        // localStorage[`${keys}`] = decoded[keys]
+          decoded[keys] ? $rootScope.isAdmin = true : $rootScope.isAdmin = 'bananas'
+      } else if(keys === "favorites"){
+        localStorage[`${keys}`] = JSON.stringify(decoded[keys])
+			} else{
+        localStorage[`${keys}`] = decoded[keys]
         }
       }
 

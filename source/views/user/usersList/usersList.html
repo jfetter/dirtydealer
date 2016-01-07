@@ -1,7 +1,10 @@
-<div ng-if="isLoggedIn()">
+<div ng-if="isLoggedIn">
 <h1>User List</h1>
 <input type="text" ng-model="searchTerm" ng-keypress="updateSearch()">
 <div ng-repeat='user in users track by $index'>
-	<a ui-sref='userPage({username: user.username})'>{{user.avatar}} {{user.username}} <button>Favorite</button></div>
+	<a ui-sref='userPage({username: user.username})'>{{user.avatar}} {{user.username}}</a>
+
+	 <button ng-click="addFavorite(user._id)" ng-if="!favorited(user)">Favorite</button>
+	</div>
 </div>
 </div>
