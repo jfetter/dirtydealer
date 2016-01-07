@@ -15,8 +15,14 @@ app.service('UserService', function($http, ENV){
 	};
 	this.page = function(username){
 		return $http.get(`${ENV.API_URL}/user/page/${username}`)
+	}
 	this.auth = function(){
 		return $http.get(`${ENV.API_URL}/auth`)
 	}
-}
+	this.favoriteUser = function(userId){
+		var data = {};
+		data.myId = localStorage._id;
+		data.favoriteId = userId
+		return $http.put(`${ENV.API_URL}/user/favorite`, data)
+	}
 })

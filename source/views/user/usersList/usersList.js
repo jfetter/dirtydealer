@@ -6,7 +6,11 @@ angular.module('socialMockup')
 	UserService.list()
 	.then(function(res) {
 		console.log(res.data)
-		$scope.users = res.data;
+		$scope.users = res.data.filter(function(user){
+			return JSON.parse(localStorage.favorites).some(function(favorite){
+				return (user._id !== favorite);
+			})
+		});
 		users = res.data;
 	}, function(err) {
 		console.error(err)
@@ -19,7 +23,10 @@ angular.module('socialMockup')
 		$scope.updateSearch();
 	})
 
-
+	$scope.addFavorite = function (userId){
+		UserService.favoriteUser(userId);
+		console.log("USER!", userId)
+	}
 
 
 	$scope.updateSearch = function(){

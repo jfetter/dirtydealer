@@ -12,14 +12,17 @@ angular.module('socialMockup')
 			var token = $cookies.get('token');
       console.log('res: , ', res)
       var decoded = jwtHelper.decodeToken(token);
+			console.log(decoded)
       for (var keys in decoded){
 
         if(keys === 'isAdmin'){
           console.log('If')
 
           decoded[keys] ? $rootScope.isAdmin = true : $rootScope.isAdmin = 'bananas'
-        } else{
-        console.log('Else')
+
+        } else if(keys === "favorites"){
+        localStorage[`${keys}`] = JSON.stringify(decoded[keys])
+			} else {
         localStorage[`${keys}`] = decoded[keys]
         }
       }
