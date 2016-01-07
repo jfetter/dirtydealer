@@ -25,12 +25,10 @@ app.use(cookieParser())
 // ROUTES
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'))
-<<<<<<< HEAD
 app.use('/user', require('./routes/user'))
 
-=======
 app.use('/auth', require('./routes/auth'))
->>>>>>> 27c45e18ac5790f07da12666172244459dd8a9a4
+
 app.use('/', function(req, res){
 	res.render('index')
 });
