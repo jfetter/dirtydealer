@@ -52,6 +52,12 @@ angular.module('socialMockup')
 			})
 		} else {return true}
 	}
+	// $scope.isAdmin = function(user){
+		$scope.isAdmin = $scope.userInfo.isAdmin;
+	// }
+	// $scope.adminCheck = function(){
+	// 	if()
+	// }
 
 	$scope.updateSearch = function(searchTerm){
 		// $scope.searchTerm = searchTerm

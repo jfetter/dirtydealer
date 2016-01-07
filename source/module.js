@@ -19,6 +19,14 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
-app.controller('MasterController', function(){
-
+app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope){
+  var cookies = $cookies.get('token');
+  if(cookies){
+    $scope.userInfo = (jwtHelper.decodeToken(cookies))
+  }
+  UserService.isAuthed(cookies)
+  .then(function(res , err){
+    console.log(res.data)
+     if (res.data !== "authRequired"){$scope.isLoggedIn = true;}
+  })
 })
