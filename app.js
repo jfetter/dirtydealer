@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var path = require('path');
 var app = express();
+var cookieParser = require("cookie-parser");
 
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/socialMockup');
@@ -19,13 +20,17 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded( {extended: true} ));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
+app.use(cookieParser())
 
 // ROUTES
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'))
+<<<<<<< HEAD
 app.use('/user', require('./routes/user'))
 
+=======
+app.use('/auth', require('./routes/auth'))
+>>>>>>> 27c45e18ac5790f07da12666172244459dd8a9a4
 app.use('/', function(req, res){
 	res.render('index')
 });
