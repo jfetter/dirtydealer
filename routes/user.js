@@ -11,7 +11,7 @@ router.get('/list', function(req, res){
   })
 })
 router.get('/page/:username', function(req, res){
-  User.find({'username' : req.params.username}, function(err, user) {
+  User.findOne({'username' : req.params.username}, function(err, user) {
     res.status(err ? 400 : 200).send(err || user)
   })
 })
