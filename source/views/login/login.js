@@ -7,7 +7,8 @@ angular.module('socialMockup')
 		.then(function(res){
 
 			console.log('res: , ', res)
-			$state.go('home');
+			$state.go('usersList');
+
 
 			var token = $cookies.get('token');
       console.log('res: , ', res)
