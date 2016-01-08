@@ -18,6 +18,17 @@ router.get('/page/:username', function(req, res){
     res.status(err ? 400 : 200).send(err || user)
   }).populate('favorites')
 })
+router.post('/erase', function(req, res){
+  console.log("REQBAOCTYS:", req.body)
+  User.remove({'_id' : req.body.userId}, function(err, user) {
+    if(err){
+      res.status(400).send(err);
+    }
+    User.find({}, function(err, user){
+      res.status(err ? 400 : 200).send(err || user)
+    })
+  })
+})
 router.put('/favorite', function(req, res){
   console.log(req.body);
   User.findByIdAndUpdate(req.body.myId, {$push: {favorites : req.body.favoriteId}}, function(err, user) {

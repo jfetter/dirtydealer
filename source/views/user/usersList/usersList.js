@@ -42,6 +42,13 @@ angular.module('socialMockup')
 			$scope.userInfo = (jwtHelper.decodeToken(res.data))
 		})
 	}
+	$scope.eraseUser = function (userId){
+		UserService.eraseUser(userId)
+		.then(function(res){
+			$scope.users = res.data
+			users = res.data
+		})
+	}
 
 	$scope.favorited = function(user){
 		// console.log("USER", user);
