@@ -18,6 +18,7 @@ gulp.task('build', ['clean'], function(){
 	gulp.src('source/**/*.js')
 		.pipe(concat("bundle.js"))
 		.pipe(addsrc("source/**/*.html"))
+    .pipe(addsrc("source/**/*.css"))
 		.pipe(gulp.dest('public'))
 	gulp.src('assets/**/*')
 		.pipe(gulp.dest('public/assets'))

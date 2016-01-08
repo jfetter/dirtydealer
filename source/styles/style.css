@@ -1,0 +1,9 @@
+#userImage {
+  max-height: 25vh;
+  max-width: 25vh;
+}
+.userThumbnail {
+  max-height: 8vh;
+  max-width: 8vh;
+  border-radius: 7px;
+}
