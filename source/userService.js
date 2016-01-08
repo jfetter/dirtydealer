@@ -26,14 +26,14 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 		data.favoriteId = userId
 		return $http.put(`${ENV.API_URL}/user/favorite`, data)
 	}
-	// this.unFavoriteUser = function(userId){
-	// 	var data = {};
-	// 	var decoded = (jwtHelper.decodeToken($cookies.get('token')))
-	// 	data.myId = decoded._id;
-	// 	data.favoriteId = userId
-	// 	return $http.put(`${ENV.API_URL}/user/favorite`, data)
-	// }
-	};
+	this.unFavoriteUser = function(userId){
+		console.log(userId)
+		var data = {};
+		var decoded = (jwtHelper.decodeToken($cookies.get('token')))
+		data.myId = decoded._id;
+		data.unFavoriteId = userId
+		return $http.delete(`${ENV.API_URL}/user/unfavorite`, data)
+	}
 	this.loggedIn = function(isLoggedIn){
 			if(isLoggedIn){ return true }
 	};

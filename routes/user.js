@@ -38,6 +38,23 @@ router.put('/favorite', function(req, res){
     })
   })
 })
+router.delete('/unfavorite', function(req, res){
+  User.findByIdAndUpdate(req.body.myId, {$pull: {favorites : req.body.unFavoriteId}}, function(err, user) {
+    if(err){
+      res.status(400).send(err);
+    }
+    User.findById(user._id, function(err, updatedUser){
+      if(err){
+        res.status(400).send(err);
+      }
+      updatedUser.password = null
+      var newToken = jwt.encode(updatedUser, process.env.JWT_SECRET)
+      console.log("NEWTOEKN", newToken)
+      res.cookie("token", newToken)
+      res.send(newToken)
+    })
+  })
+})
 
 
 module.exports = router;
