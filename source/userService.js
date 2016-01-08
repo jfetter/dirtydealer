@@ -25,6 +25,9 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 		data.myId = decoded._id;
 		data.favoriteId = userId
 		return $http.put(`${ENV.API_URL}/user/favorite`, data)
+	};
+	this.editAccount = function(data){
+		return $http.post(`${ENV.API_URL}/user/edit`, data)
 	}
 	this.unFavoriteUser = function(userId){
 		console.log(userId)
