@@ -18,6 +18,11 @@ router.get('/page/:username', function(req, res){
     res.status(err ? 400 : 200).send(err || user)
   }).populate('favorites')
 })
+router.put('/erase', function(req, res){
+  User.remove({'username' : req.params.username}, function(err, user) {
+    res.status(err ? 400 : 200).send(err || user)
+  })
+})
 router.put('/favorite', function(req, res){
   console.log(req.body);
   User.findByIdAndUpdate(req.body.myId, {$push: {favorites : req.body.favoriteId}}, function(err, user) {

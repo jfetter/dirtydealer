@@ -13,6 +13,7 @@ router.post('/', function(req, res){
       res.cookie('token', token);
       res.send('login succesfull')
     } else{
+      alert("incorrect username or password")
       res.send('incorrect username or password')
     }
   })

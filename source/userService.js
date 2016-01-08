@@ -36,6 +36,9 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 		console.log(data.unFavoriteId)
 		return $http.put(`${ENV.API_URL}/user/unfavorite`, data)
 	}
+	this.eraseUser = function(userId){
+		return $http.put(`${ENV.API_URL}/user/erase`, userId)
+	}
 	this.loggedIn = function(isLoggedIn){
 			if(isLoggedIn){ return true }
 	};
