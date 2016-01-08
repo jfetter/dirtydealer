@@ -14,7 +14,7 @@ angular.module('socialMockup')
 		console.log(res.data.favorites)
 		$scope.user = res.data;
 		$scope.favorites = res.data.favorites;
-		$scope.isOwnPage = $scope.user.username === token.username;
+		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
 		$scope.isEditing = false;
 		$scope.editPayload.username = $scope.user.username;
 		$scope.editPayload.email = $scope.user.email;
