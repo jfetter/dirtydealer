@@ -120,5 +120,5 @@ angular.module('socialMockup')
 		 else{$scope.isLoggedIn = true;}
 	})
 
-
+}
 });
