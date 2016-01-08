@@ -1,4 +1,4 @@
-
+<div ng-if="isLoggedIn">
 <h1>{{user.username}}</h1>
 <div id="imageHolder">
 	<div>
@@ -44,4 +44,6 @@
 
 	<div ng-if="isAdmin">
 	<button ng-click="eraseUser(user._id)">Delete</button>
+</div>
+</div>
 </div>

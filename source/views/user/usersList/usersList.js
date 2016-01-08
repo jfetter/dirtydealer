@@ -57,6 +57,12 @@ angular.module('socialMockup')
 			})
 		} else {return true}
 	}
+	$scope.isUser = function(user){
+		// console.log("USER", user);
+		if (user._id !== $scope.userInfo._id){
+				return (false)
+		} else {return true}
+	}
 		$scope.isAdmin = $scope.userInfo.isAdmin;
 
 	$scope.updateSearch = function(searchTerm){

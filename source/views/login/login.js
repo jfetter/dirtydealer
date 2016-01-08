@@ -7,9 +7,10 @@ angular.module('socialMockup')
 		.then(function(res){
 			console.log('res', res.data)
 			if(res.data=="login succesfull"){
+						// console.log("EUSER", user)
 						UserService.loggedIn = 'true';
 						$scope.$emit('loggedIn');
-						$state.go('usersList');
+						$state.go('userPage', {"username": user.username})
 			}
 			var token = $cookies.get('token');
       var decoded = jwtHelper.decodeToken(token);

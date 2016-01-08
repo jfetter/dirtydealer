@@ -3,16 +3,20 @@
 angular.module('socialMockup')
 
 
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64 ){
+.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
 	$scope.user = {};
 	$scope.editPayload = {};
 	var cookies = $cookies.get('token');
 	var token = jwtHelper.decodeToken(cookies)
+	if(cookies){
+		$scope.userInfo = (jwtHelper.decodeToken(cookies))
+	}
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
 		console.log(res.data)
 		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;}
+		 else{$scope.isLoggedIn = true;
+		 }
 	})
 	UserService.page($state.params.username)
 	.then(function(res) {

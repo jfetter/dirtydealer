@@ -42,4 +42,8 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     $state.go('login')
     $scope.isLoggedIn = false;
   }
+  $scope.goHome = function(){
+    var username = $scope.userInfo.username
+    $state.go('userPage', {"username": username})
+  }
 })
