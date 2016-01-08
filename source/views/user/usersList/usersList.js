@@ -18,7 +18,6 @@ angular.module('socialMockup')
 	})
 	UserService.list()
 	.then(function(res) {
-		console.log(res.data)
 		users = res.data;
 		$scope.users = users;
 	}, function(err) {
