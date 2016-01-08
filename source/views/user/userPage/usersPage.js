@@ -16,7 +16,7 @@ angular.module('socialMockup')
 		$scope.isOwnPage = $scope.user.username ===token.username
     if(res.data.avatar){
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
-    } else { 
+    } else {
       $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
     }
 
@@ -24,7 +24,25 @@ angular.module('socialMockup')
 		console.error(err)
 	});
 
-  
+	$scope.removeFavorite = function (userId){
+		UserService.unFavoriteUser(userId)
+		.then(function(res){
+			$scope.userInfo = (jwtHelper.decodeToken(res.data))
+			var cookie = $cookies.get('token');
+			var token = jwtHelper.decodeToken(cookie);
+			console.log(token)
+			$scope.favorites = token.favorites;
+		})
+	}
+
+	$scope.favorited = function(user){
+		// console.log("USER", user);
+		if (user._id !== $scope.userInfo._id){
+			return ($scope.userInfo.favorites).some(function(favorite){
+				return (user._id === favorite)
+			})
+		} else {return true}
+	}
 
   $scope.uploadImage = function(image){
     console.log(image)
@@ -33,9 +51,9 @@ angular.module('socialMockup')
       console.log(res.data)
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
       console.log($scope.profileImageSrc)
-      
+
     })
-    
+
   }
 
 	$scope.uploadFiles = function(file, errFiles) {

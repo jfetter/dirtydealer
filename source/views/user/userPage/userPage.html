@@ -24,7 +24,7 @@
 
 	<a ui-sref='userPage({username: favorite.username})'>{{favorite.username}}</a>
 
-		 <button ng-click="removeFavorite(user._id)" ng-if="favorited(user)">Unfavorite</button>
+		 <button ng-click="removeFavorite(favorite._id)" ng-if="favorited(user)">Unfavorite</button>
 
 	<div ng-if="isAdmin">
 	<button ng-click="eraseUser(user._id)">Delete</button>
