@@ -13,10 +13,12 @@ angular.module('socialMockup')
 		console.log(res.data.favorites)
 		$scope.user = res.data;
 		$scope.favorites = res.data.favorites;
-		$scope.isOwnPage = $scope.user.username ===token.username
+		$scope.isOwnPage = $scope.user.username === token.username;
+		console.log('token:',token);
+		console.log('scope user username: ', $scope.user.username);
     if(res.data.avatar){
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
-    } else { 
+    } else {
       $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
     }
 
@@ -24,7 +26,8 @@ angular.module('socialMockup')
 		console.error(err)
 	});
 
-  
+
+
 
   $scope.uploadImage = function(image){
     console.log(image)
@@ -33,9 +36,9 @@ angular.module('socialMockup')
       console.log(res.data)
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
       console.log($scope.profileImageSrc)
-      
+
     })
-    
+
   }
 
 	$scope.uploadFiles = function(file, errFiles) {
