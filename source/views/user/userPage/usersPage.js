@@ -22,6 +22,7 @@ angular.module('socialMockup')
 		$scope.editPayload.name = $scope.user.name
 		$scope.editPayload.address = $scope.user.address
 		$scope.editPayload._id = $scope.user._id
+    console.log($scope.isEditing)
 		console.log("edit Payload", $scope.editPayload)
 		console.log('token:',token);
 		console.log('scope user username: ', $scope.user.username);
@@ -34,7 +35,9 @@ angular.module('socialMockup')
 	}, function(err) {
 		console.error(err)
 	});
-
+  $scope.test = function(){
+    console.log("TESTING")
+  }
 	$scope.removeFavorite = function (userId){
 		UserService.unFavoriteUser(userId)
 		.then(function(res){
@@ -54,7 +57,10 @@ angular.module('socialMockup')
 			})
 		} else {return true}
 
+  }
+
 	$scope.toggleEdit = function(){
+    console.log($scope.isEditing)
 		$scope.isEditing = !$scope.isEditing
 	}
 
@@ -80,29 +86,30 @@ angular.module('socialMockup')
 
   }
 
-	$scope.uploadFiles = function(file, errFiles) {
-        $scope.f = file;
-        $scope.errFile = errFiles && errFiles[0];
-        if (file) {
-            file.upload = Upload.upload({
+	//$scope.uploadFiles = function(file, errFiles) {
+  //      $scope.f = file;
+  //      $scope.errFile = errFiles && errFiles[0];
+  //      if (file) {
+  //          file.upload = Upload.upload({
 
-                url: `/imageUpload`,
-                data: {file: file}
-            });
+  //              url: `/imageUpload`,
+  //              data: {file: file}
+  //          });
 
-            file.upload.then(function (response) {
-                $timeout(function () {
-                    file.result = response.data;
-                });
-            }, function (response) {
-                if (response.status > 0)
-                    $scope.errorMsg = response.status + ': ' + response.data;
-            }, function (evt) {
-                file.progress = Math.min(100, parseInt(100.0 *
-                                         evt.loaded / evt.total));
-            });
-        }
-    }
+  //          file.upload.then(function (response) {
+  //              $timeout(function () {
+  //                  file.result = response.data;
+  //              });
+  //          }, function (response) {
+  //              if (response.status > 0)
+  //                  $scope.errorMsg = response.status + ': ' + response.data;
+  //          }, function (evt) {
+  //              file.progress = Math.min(100, parseInt(100.0 *
+  //                                       evt.loaded / evt.total));
+  //          }
+  //        });
+  //      }
+  //  V}
 	// $scope.isOwnPage = false;
 	// $scope.imageAvailable = false;
 
@@ -120,5 +127,4 @@ angular.module('socialMockup')
 		 else{$scope.isLoggedIn = true;}
 	})
 
-}
 });
