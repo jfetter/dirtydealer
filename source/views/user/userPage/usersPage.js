@@ -22,6 +22,7 @@ angular.module('socialMockup')
 		$scope.editPayload.name = $scope.user.name
 		$scope.editPayload.address = $scope.user.address
 		$scope.editPayload._id = $scope.user._id
+    console.log($scope.isEditing)
 		console.log("edit Payload", $scope.editPayload)
 		console.log('token:',token);
 		console.log('scope user username: ', $scope.user.username);
@@ -55,6 +56,7 @@ angular.module('socialMockup')
 		} else {return true}
 
 	$scope.toggleEdit = function(){
+    console.log($scope.isEditing)
 		$scope.isEditing = !$scope.isEditing
 	}
 

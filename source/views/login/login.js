@@ -5,25 +5,17 @@ angular.module('socialMockup')
 	$scope.submit = function(user){
 		UserService.login(user)
 		.then(function(res){
+      if(res.data === "login successfull"){
+			  console.log('res: , ', res)
+			  $state.go('userslist');
+        UserService.loggedIn = "true";
+        $scope.$emit('loggedIn')
+			  var token = $cookies.get('token');
+      }
 
-			console.log('res: , ', res)
-			$state.go('home');
-
-			var token = $cookies.get('token');
       console.log(token)
       console.log('res: , ', res)
       var decoded = jwtHelper.decodeToken(token);
-      for (var keys in decoded){
-
-        if(keys === 'isAdmin'){
-          console.log('If')
-
-          decoded[keys] ? $rootScope.isAdmin = true : $rootScope.isAdmin = 'bananas'
-        } else{
-        console.log('Else')
-        localStorage[`${keys}`] = decoded[keys]
-        }
-      }
-		})
+    })
   }
 });

@@ -15,19 +15,20 @@
 </div>
 
 <div ng-if="isOwnPage">
-<button ng-hide="isEditing" ng-click="toggleEdit()">EDIT USER</button>
-<button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
-<button ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
-<h2  ng-hide="isEditing">{{user.email}}</h2>
-<input ng-model="editPayload.email" value="{{user.email}}" ng-show="isEditing"/>
-<h2  ng-hide="isEditing">{{user.name}}</h2>
-<input ng-show="isEditing" ng-model="editPayload.name" value="{{user.name}}" />
-<h2 ng-hide="isEditing">{{user.username}}</h2>
-<input ng-show="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
-<h2 ng-hide="isEditing">{{user.phone}}</h2>
-<input ng-show="isEditing" ng-model="editPayload.phone" placeholder="Enter Your Phone Number here" value="{{user.phone}}" />
-<h2  ng-hide="isEditing">{{user.address}}</h2>
-<input ng-show="isEditing" ng-model="editPayload.address" placeholder="Enter Your Address Here" value="{{user.address}}" />
+  <button ng-click="test()"></button>
+  <button ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
+  <button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
+  <button ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
+  <h2  ng-hide="isEditing">{{user.email}}</h2>
+  <input ng-model="editPayload.email" value="{{user.email}}" ng-show="isEditing"/>
+  <h2  ng-hide="isEditing">{{user.name}}</h2>
+  <input ng-show="isEditing" ng-model="editPayload.name" value="{{user.name}}" />
+  <h2 ng-hide="isEditing">{{user.username}}</h2>
+  <input ng-show="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
+  <h2 ng-hide="isEditing">{{user.phone}}</h2>
+  <input ng-show="isEditing" ng-model="editPayload.phone" placeholder="Enter Your Phone Number here" value="{{user.phone}}" />
+  <h2  ng-hide="isEditing">{{user.address}}</h2>
+  <input ng-show="isEditing" ng-model="editPayload.address" placeholder="Enter Your Address Here" value="{{user.address}}" />
 </div>
 <h1>Favorites</h1>
 <div ng-repeat="favorite in favorites track by $index">
