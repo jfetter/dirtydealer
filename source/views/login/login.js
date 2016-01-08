@@ -11,6 +11,7 @@ angular.module('socialMockup')
 
 
 			var token = $cookies.get('token');
+      console.log(token)
       console.log('res: , ', res)
       var decoded = jwtHelper.decodeToken(token);
       for (var keys in decoded){
