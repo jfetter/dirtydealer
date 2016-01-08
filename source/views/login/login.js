@@ -5,17 +5,18 @@ angular.module('socialMockup')
 	$scope.submit = function(user){
 		UserService.login(user)
 		.then(function(res){
-      if(res.data === "login successfull"){
+      console.log(res.data)
+      if(res.data === "login succesfull"){
 			  console.log('res: , ', res)
-			  $state.go('userslist');
         UserService.loggedIn = "true";
         $scope.$emit('loggedIn')
 			  var token = $cookies.get('token');
+        var decoded = jwtHelper.decodeToken(token);
+			  $state.go('usersList');
+        console.log(token)
+        console.log('res: , ', res)
       }
 
-      console.log(token)
-      console.log('res: , ', res)
-      var decoded = jwtHelper.decodeToken(token);
     })
   }
 });
