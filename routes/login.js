@@ -9,9 +9,10 @@ router.post('/', function(req, res){
 
     console.log('user: ',user)
     if(user){
-      token = jwt.encode(user, process.env.JWT_SECRET);
-      res.cookie('token', token);
-      res.send('login succesfull')
+      var token = jwt.encode(user, process.env.JWT_SECRET);
+      console.log('this is your token',token)
+      res.cookie('token', token)
+          .send('login succesfull')
     } else{
       alert("incorrect username or password")
       res.send('incorrect username or password')

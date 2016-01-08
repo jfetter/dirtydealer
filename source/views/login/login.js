@@ -11,7 +11,9 @@ angular.module('socialMockup')
 
 			var token = $cookies.get('token');
       console.log('res: , ', res)
+			if(token){
       var decoded = jwtHelper.decodeToken(token);
+
       for (var keys in decoded){
 
         if(keys === 'isAdmin'){
@@ -22,7 +24,7 @@ angular.module('socialMockup')
         console.log('Else')
         localStorage[`${keys}`] = decoded[keys]
         }
-      }
+      }}
 		})
   }
 });
