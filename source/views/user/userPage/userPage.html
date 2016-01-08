@@ -1,12 +1,14 @@
 
 <h1>{{user.username}}</h1>
 <div id="imageHolder">
-	<div ng-if="!imageAvailable">
-		<img src="https://img0.etsystatic.com/031/0/9452166/il_340x270.608171012_hxm6.jpg" id="noImage"></img>
-		<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
-    <button ng-click="uploadImage(user.uploadedImage)"></button>
+	<div>
+		<img class="img-rounded"
+    src={{profileImageSrc}} id="noImage"></img>
   </div>
-	<div></div>
+	<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+  <button ng-click="uploadImage(user.uploadedImage)"></button>
+  <div>
+  </div>
 </div>
 
 <div ng-if="isOwnPage">test</div>
@@ -18,4 +20,3 @@
 <div ng-repeat="favorite in favorites track by $index">
 	{{favorite.username}}
 </div>
-{{user.uploadedImage.base64}}

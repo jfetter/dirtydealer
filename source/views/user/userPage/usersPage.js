@@ -3,7 +3,7 @@
 angular.module('socialMockup')
 
 
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location  ){
+.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64 ){
 	$scope.user = {};
 	var cookies = $cookies.get('token');
 	var token = jwtHelper.decodeToken(cookies)
@@ -14,18 +14,26 @@ angular.module('socialMockup')
 		$scope.user = res.data;
 		$scope.favorites = res.data.favorites;
 		$scope.isOwnPage = $scope.user.username ===token.username
+    if(res.data.avatar){
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
+    } else { 
+      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
+    }
 
 	}, function(err) {
 		console.error(err)
 	});
 
-
+  
 
   $scope.uploadImage = function(image){
     console.log(image)
     UserService.uploadImage(image, $scope.user._id)
     .then(function(res){
       console.log(res.data)
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
+      console.log($scope.profileImageSrc)
+      
     })
     
   }
