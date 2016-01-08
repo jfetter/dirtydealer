@@ -26,7 +26,7 @@ app.use(cookieParser())
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'))
 app.use('/user', require('./routes/user'))
-
+app.use('/imageUpload', require('./routes/imageUpload'))
 app.use('/auth', require('./routes/auth'))
 
 app.use('/', function(req, res){

@@ -1,4 +1,17 @@
+
 <h1>{{user.username}}</h1>
+<div id="imageHolder">
+	<div>
+		<img class="img-rounded"
+    src={{profileImageSrc}} id="noImage"></img>
+  </div>
+	<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+  <button ng-click="uploadImage(user.uploadedImage)"></button>
+  <div>
+  </div>
+</div>
+
+<div ng-if="isOwnPage">test</div>
 <h2>{{user.email}}</h2>
 <h2>{{user.name}}</h2>
 <h2>{{user.phone}}</h2>
