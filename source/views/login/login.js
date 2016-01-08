@@ -10,6 +10,7 @@ angular.module('socialMockup')
 			$state.go('home');
 
 			var token = $cookies.get('token');
+      console.log(token)
       console.log('res: , ', res)
 			if(token){
       var decoded = jwtHelper.decodeToken(token);
