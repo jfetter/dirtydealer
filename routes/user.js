@@ -38,6 +38,22 @@ router.put('/favorite', function(req, res){
     })
   })
 })
+router.post("/edit", function(req, res){
+  User.findByIdAndUpdate(req.body._id, {$set: {
+    address: req.body.address,
+    phone: req.body.phone,
+    username: req.body.username,
+    email: req.body.email,
+    name: req.body.name
+  }
+}, function(err, savedUser){
+      User.findById(req.body._id, function(err, updatedUser){
+        console.log(updatedUser);
+        res.cookie("token", jwt.encode(updatedUser, process.env.JWT_SECRET));
+        res.send(updatedUser);
+      })
+  })
+})
 router.delete('/unfavorite', function(req, res){
   User.findByIdAndUpdate(req.body.myId, {$pull: {favorites : req.body.unFavoriteId}}, function(err, user) {
     if(err){

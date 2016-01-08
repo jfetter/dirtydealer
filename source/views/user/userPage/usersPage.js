@@ -5,6 +5,7 @@ angular.module('socialMockup')
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64 ){
 	$scope.user = {};
+	$scope.editPayload = {};
 	var cookies = $cookies.get('token');
 	var token = jwtHelper.decodeToken(cookies)
 	UserService.page($state.params.username)
@@ -14,6 +15,14 @@ angular.module('socialMockup')
 		$scope.user = res.data;
 		$scope.favorites = res.data.favorites;
 		$scope.isOwnPage = $scope.user.username === token.username;
+		$scope.isEditing = false;
+		$scope.editPayload.username = $scope.user.username;
+		$scope.editPayload.email = $scope.user.email;
+		$scope.editPayload.phone = $scope.user.phone;
+		$scope.editPayload.name = $scope.user.name
+		$scope.editPayload.address = $scope.user.address
+		$scope.editPayload._id = $scope.user._id
+		console.log("edit Payload", $scope.editPayload)
 		console.log('token:',token);
 		console.log('scope user username: ', $scope.user.username);
     if(res.data.avatar){
@@ -27,7 +36,18 @@ angular.module('socialMockup')
 	});
 
 
+	$scope.toggleEdit = function(){
+		$scope.isEditing = !$scope.isEditing
+	}
 
+	$scope.saveEdits = function(){
+		UserService.editAccount($scope.editPayload)
+		.then(function(res){
+			$scope.user = res.data;
+			$scope.isEditing = !$scope.isEditing;
+			console.log(res.data)
+		})
+	}
 
   $scope.uploadImage = function(image){
     console.log(image)
@@ -46,6 +66,7 @@ angular.module('socialMockup')
         $scope.errFile = errFiles && errFiles[0];
         if (file) {
             file.upload = Upload.upload({
+
                 url: `/imageUpload`,
                 data: {file: file}
             });
