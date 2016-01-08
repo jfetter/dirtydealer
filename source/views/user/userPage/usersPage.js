@@ -4,7 +4,7 @@ angular.module('socialMockup')
 
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location  ){
-	$scope.yourModel = {};
+	$scope.user = {};
 	var cookies = $cookies.get('token');
 	var token = jwtHelper.decodeToken(cookies)
 	UserService.page($state.params.username)
@@ -21,6 +21,14 @@ angular.module('socialMockup')
 
 
 
+  $scope.uploadImage = function(image){
+    console.log(image)
+    UserService.uploadImage(image, $scope.user._id)
+    .then(function(res){
+      console.log(res.data)
+    })
+    
+  }
 
 	$scope.uploadFiles = function(file, errFiles) {
         $scope.f = file;

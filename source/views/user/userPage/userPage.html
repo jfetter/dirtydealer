@@ -3,7 +3,8 @@
 <div id="imageHolder">
 	<div ng-if="!imageAvailable">
 		<img src="https://img0.etsystatic.com/031/0/9452166/il_340x270.608171012_hxm6.jpg" id="noImage"></img>
-		<input type="file" ng-model="yourModel" base-sixty-four-input>
+		<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+    <button ng-click="uploadImage(user.uploadedImage)"></button>
   </div>
 	<div></div>
 </div>
@@ -17,4 +18,4 @@
 <div ng-repeat="favorite in favorites track by $index">
 	{{favorite.username}}
 </div>
-{{yourModel}}
+{{user.uploadedImage.base64}}

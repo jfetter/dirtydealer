@@ -29,6 +29,12 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 	this.loggedIn = function(isLoggedIn){
 			if(isLoggedIn){ return true }
 	};
+  this.uploadImage = function(image, userId){
+    return $http.post(`${ENV.API_URL}/imageUpload`, {
+      userId: userId,
+      image: image
+    })
+  }
 	this.isAuthed = function(token){
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};

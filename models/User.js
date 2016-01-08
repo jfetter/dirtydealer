@@ -14,7 +14,7 @@ var userSchema = Schema({
   password: { type: String, required: true },
 	phone: {type: Number},
 	address: {type: String},
-	avatar: {type: String, data:Buffer},
+	avatar: {type: String, data:Buffer, default: ''},
 	favorites: [{type: Schema.Types.ObjectId, ref: "User"}],
 	isAdmin: {type: Boolean, default: false}
 });
