@@ -38,7 +38,7 @@ router.put('/favorite', function(req, res){
     })
   })
 })
-router.delete('/unfavorite', function(req, res){
+router.put('/unfavorite', function(req, res){
   User.findByIdAndUpdate(req.body.myId, {$pull: {favorites : req.body.unFavoriteId}}, function(err, user) {
     if(err){
       res.status(400).send(err);
