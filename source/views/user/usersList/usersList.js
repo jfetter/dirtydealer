@@ -45,7 +45,8 @@ angular.module('socialMockup')
 	$scope.eraseUser = function (userId){
 		UserService.eraseUser(userId)
 		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
+			$scope.users = res.data
+			users = res.data
 		})
 	}
 
