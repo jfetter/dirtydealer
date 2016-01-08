@@ -65,11 +65,8 @@ angular.module('socialMockup')
 				return false
 			}
 		})
-	} else{
-		$scope.users = users
-	}
-
-
-
+		} else{
+			$scope.users = users
+		}
 	}
 })
