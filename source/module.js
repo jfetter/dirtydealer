@@ -66,7 +66,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     $scope.isLoggedIn = false;
   }
   $scope.goHome = function(){
-    // var username = $scope.userInfo.username
+    var username = $scope.userInfo.username
     console.log("ISUSERNAME", username)
     $state.go('userPage', {"username": username})
   }

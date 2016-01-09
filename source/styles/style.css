@@ -1,18 +1,26 @@
 #userImage {
-  max-height: 25vh;
-  max-width: 25vh;
+  max-height: 50vh;
+  max-width: 50vh;
 }
+
 .userThumbnail {
   max-height: 8vh;
   max-width: 8vh;
   border-radius: 7px;
 }
 
-.col-sm-4 {
+#profile {
   text-align: center;
+  border: 5px, solid-blue;
 }
 
-#profiledetails {
-  font-size: 20px;
-  color: red;
+#favoriteImage {
+  max-height: 25vh;
+  max-width: 25vh;
+  padding: 5px;
+}
+
+#unfavoriteButton {
+  padding: 5px;
+
 }

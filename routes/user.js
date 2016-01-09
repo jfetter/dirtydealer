@@ -77,16 +77,26 @@ router.put('/unfavorite', function(req, res){
     if(err){
       res.status(400).send(err);
     }
-    User.findById(user._id, function(err, updatedUser){
+    User.findById(user._id).exec(function(err, updatedUser){
       if(err){
         res.status(400).send(err);
       }
       updatedUser.password = null;
       updatedUser.avatar = null;
-      var newToken = jwt.encode(updatedUser, process.env.JWT_SECRET)
+      var token = updatedUser
+      // token.favorites = null;
+      var newToken = jwt.encode(token, process.env.JWT_SECRET)
       console.log("NEWTOEKN", newToken)
       res.cookie("token", newToken)
-      res.send(newToken)
+      User.findById(user._id).populate('favorites', 'avatar username').exec(function(err, responseUser){
+        if(err){
+          res.status(400).send(err);
+        }
+        responseUser.password = null;
+        responseUser.avatar = null;
+        res.send(responseUser)
+      // res.send(updatedUser)
+    })
     })
   })
 })
