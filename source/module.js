@@ -21,9 +21,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 
 app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope){
   var cookies = $cookies.get('token');
+  var username;
   if(cookies){
     $scope.userInfo = (jwtHelper.decodeToken(cookies))
   }
+
   UserService.isAuthed(cookies)
   .then(function(res , err){
     console.log(res.data)
@@ -33,11 +35,18 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     console.log("LOGGED IN!")
   } else {
     $scope.isLoggedIn = false;
-    $state.go('login');  
+    $state.go('login');
   }
   })
   $scope.$on('loggedIn', function(){
     $scope.isLoggedIn = true;
+    var cookies = $cookies.get('token');
+    if(cookies){
+      console.log("in cookis if")
+      $scope.userInfo = (jwtHelper.decodeToken(cookies))
+    }
+    username = $scope.userInfo.username
+
   })
 
   $scope.logout = function(){
@@ -46,7 +55,8 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     $scope.isLoggedIn = false;
   }
   $scope.goHome = function(){
-    var username = $scope.userInfo.username
+    // var username = $scope.userInfo.username
+    console.log("ISUSERNAME", username)
     $state.go('userPage', {"username": username})
   }
 })
