@@ -2,7 +2,6 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12" id="profile">
-
 			<div class="row">
 				<div ng-if="isLoggedIn" class="col-sm-4 col-xs-12" id="profileA">
 					<h1>Username: {{user.username}}</h1>
@@ -46,13 +45,9 @@
 					</div>
 						<div>
 							<h2  ng-if="!isEditing">Email: {{user.email}}</h2>
-
 							<h2  ng-if="!isEditing">Name: {{user.name}}</h2>
-
 							<h2 ng-if="!isEditing">Username: {{user.username}}</h2>
-
 							<h2 ng-if="!isEditing" ng-if="!hasNoPhoneNumber">Phone Number: {{user.phone}}</h2>
-
 							<h2  ng-if="!isEditing">Address: {{user.address}}</h2>
 						</div>
 					<!-- </div> -->
@@ -64,11 +59,8 @@
 									<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail" id="favoriteImage"></img>
 									<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail" id="favoriteImage"></img>
 								</div>
-
 								<a ui-sref='userPage({username: favorite.username})'>{{favorite.username}}</a>
-
 								<button  class="btn btn-primary" ng-click="removeFavorite(favorite._id)">Unfavorite</button>
-								<button class="btn btn-primary" ng-click="removeFavorite(favorite._id)" ng-if="favorited(user)">Unfavorite</button>
 								<div ng-if="isAdmin">
 									<button ng-click="eraseUser(user._id)">Delete</button>
 								</div>
@@ -76,7 +68,6 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
