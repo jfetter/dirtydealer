@@ -61,23 +61,14 @@ angular.module('socialMockup')
 	$scope.removeFavorite = function (userId){
 		UserService.unFavoriteUser(userId)
 		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
+			$scope.userInfo = res.data
 			var cookie = $cookies.get('token');
 			var token = jwtHelper.decodeToken(cookie);
 			console.log(token)
-			$scope.favorites = token.favorites;
+			console.log($scope.userInfo)
+			$scope.favorites = $scope.userInfo.favorites;
 		})
 	}
-
-	$scope.favorited = function(user){
-		// console.log("USER", user);
-		if (user._id !== $scope.userInfo._id){
-			return ($scope.userInfo.favorites).some(function(favorite){
-				return (user._id === favorite)
-			})
-		} else {return true}
-
-  }
 
 	$scope.toggleEdit = function(){
     console.log($scope.isEditing)
