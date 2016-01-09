@@ -11,7 +11,33 @@
 
 #profile {
   text-align: center;
-  border: 5px, solid-blue;
+  font-size: 15px;
+  border: 5px, solid-red;
+}
+
+#userHeader {
+  text-align: center;
+  font-size: 35px;
+  color: lightblue;
+  font-weight: bold;
+}
+
+#profileHeader {
+  font-size: 15px;
+  color: lightblue;
+  text-align: left;
+}
+
+#profileDetails {
+  font-size: 20px;
+  text-align: left;
+}
+
+#favoritesHeader {
+  text-align: center;
+  font-size: 35px;
+  color: lightblue;
+  font-weight: bold;
 }
 
 #favoriteImage {
@@ -22,5 +48,8 @@
 
 #unfavoriteButton {
   padding: 5px;
+}
 
+.thumbnail {
+  margin: 2px 20px 0 0;
 }
