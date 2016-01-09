@@ -87,13 +87,16 @@ router.put('/unfavorite', function(req, res){
       // token.favorites = null;
       var newToken = jwt.encode(token, process.env.JWT_SECRET)
       console.log("NEWTOEKN", newToken)
-      res.cookie("token", newToken)
+
       User.findById(user._id).populate('favorites', 'avatar username').exec(function(err, responseUser){
         if(err){
+          console.log('OH SHIT AN ERROR!', err)
           res.status(400).send(err);
         }
         responseUser.password = null;
         responseUser.avatar = null;
+        console.log("USER RESPONSE BITCH!",responseUser)
+        // res.cookie("token", newToken)
         res.send(responseUser)
       // res.send(updatedUser)
     })

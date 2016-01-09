@@ -61,11 +61,12 @@ angular.module('socialMockup')
 	$scope.removeFavorite = function (userId){
 		UserService.unFavoriteUser(userId)
 		.then(function(res){
+			console.log(res.data)
 			$scope.userInfo = res.data
 			var cookie = $cookies.get('token');
 			var token = jwtHelper.decodeToken(cookie);
-			console.log(token)
-			console.log($scope.userInfo)
+			console.log("TOKEN: ",token)
+			console.log("INFO: ",$scope.userInfo)
 			$scope.favorites = $scope.userInfo.favorites;
 		})
 	}

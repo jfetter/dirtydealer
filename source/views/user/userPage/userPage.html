@@ -3,7 +3,6 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12" id="profile">
-
 			<div class="row">
 				<div ng-if="isLoggedIn" class="col-sm-4 col-xs-12 thumbnail" id="profileA">
 					<h1 id="userHeader">User: {{user.username}}</h1>
@@ -12,9 +11,16 @@
 							<img class="img-rounded"
 							src={{profileImageSrc}} id="userImage"></img>
 						</div>
-						<div ng-if="isOwnPage" >
-							<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
-							<button ng-click="uploadImage(user.uploadedImage)">Submit</button>
+						<div ng-show="isOwnPage" >
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary btn-file">
+							      Browse Files<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+                  </button>
+                </span>
+                <input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
+              </div>
+							<button class="btn btn-primary" ng-click="uploadImage(user.uploadedImage)">Submit</button>
 						</div>
 						<div>
 						</div>
@@ -23,9 +29,9 @@
 				<div>
 					<div ng-if="isOwnPage" class="col-sm-3 col-xs-12 thumbnail" id="profile">
 						<div class="row">
-							<button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
-							<button ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
-							<button ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
+							<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
+							<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
+							<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
 							<label ng-if="isEditing" for="email" id="profileHeader">New Email:</label>
 							<input ng-model="editPayload.email" value="{{user.email}}" ng-if="isEditing"/><br>
 							<label ng-if="isEditing" for="name" id="profileHeader">New Name:</label>
@@ -50,7 +56,6 @@
 							<h2  ng-if="!isEditing" id="profileDetails">Address:    {{user.address}}</h2>
 						</div>
 					</div>
-
 					</div>
 					<div class="row">
 						<div class="col-sm-4 col-sx-12 thumbnail" id="profile">
@@ -60,12 +65,8 @@
 									<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail" id="favoriteImage"></img>
 									<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail" id="favoriteImage"></img>
 								</div>
-
 								<a ui-sref='userPage({username: favorite.username})'>{{favorite.username}}</a>
-
-								<button ng-click="removeFavorite(favorite._id)">Unfavorite</button>
-
-
+								<button  class="btn btn-primary" ng-click="removeFavorite(favorite._id)">Unfavorite</button>
 								<div ng-if="isAdmin">
 									<button ng-click="eraseUser(user._id)">Delete</button>
 								</div>
@@ -73,11 +74,7 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
-
-
-
 </div>
