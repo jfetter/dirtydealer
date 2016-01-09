@@ -51,7 +51,9 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   $scope.$on('edit', function(event, data){
     console.log('e:', event);
     console.log('d:', data);
-    if(!$scope.userInfo.isAdmin){
+    console.log("New:", data._id)
+    console.log("Old", $scope.userInfo._id)
+    if(!$scope.userInfo.isAdmin || data._id === $scope.userInfo._id){
       $scope.userInfo = data;
       username = $scope.userInfo.username
       console.log("NEWUSERNAME!!!!!", username)
