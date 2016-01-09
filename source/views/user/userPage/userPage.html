@@ -11,9 +11,16 @@
 							<img class="img-rounded"
 							src={{profileImageSrc}} id="userImage"></img>
 						</div>
-						<div ng-if="isOwnPage" >
-							<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
-							<button ng-click="uploadImage(user.uploadedImage)">Submit</button>
+						<div ng-show="isOwnPage" >
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary btn-file">
+							      Browse Files<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+                  </button>
+                </span>
+                <input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
+              </div>
+							<button class="btn btn-primary" ng-click="uploadImage(user.uploadedImage)">Submit</button>
 						</div>
 						<div>
 						</div>
@@ -22,9 +29,9 @@
 				<div>
 					<div ng-if="isOwnPage" class="col-sm-4 col-xs-12" id="profile">
 						<div class="row">
-							<button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
-							<button ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
-							<button ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
+							<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
+							<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
+							<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
 							<label ng-if="isEditing" for="email">New Email:</label>
 							<input ng-model="editPayload.email" value="{{user.email}}" ng-if="isEditing"/><br>
 							<label ng-if="isEditing" for="name">New Name:</label>
@@ -60,9 +67,8 @@
 
 								<a ui-sref='userPage({username: favorite.username})'>{{favorite.username}}</a>
 
-								<button ng-click="removeFavorite(favorite._id)">Unfavorite</button>
-
-
+								<button  class="btn btn-primary" ng-click="removeFavorite(favorite._id)">Unfavorite</button>
+								<button class="btn btn-primary" ng-click="removeFavorite(favorite._id)" ng-if="favorited(user)">Unfavorite</button>
 								<div ng-if="isAdmin">
 									<button ng-click="eraseUser(user._id)">Delete</button>
 								</div>
