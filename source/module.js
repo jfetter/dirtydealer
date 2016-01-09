@@ -52,6 +52,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     console.log('e:', event);
     console.log('d:', data);
     $scope.userInfo = data;
+    username = $scope.userInfo.username
   })
 
   $scope.logout = function(){
