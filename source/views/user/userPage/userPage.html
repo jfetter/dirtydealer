@@ -5,13 +5,13 @@
 
 			<div class="row">
 				<div ng-if="isLoggedIn" class="col-sm-4" id="profileA">
-					<h1>{{user.username}}</h1>
+					<h1>Username: {{user.username}}</h1>
 					<div id="imageHolder">
 						<div>
 							<img class="img-rounded"
 							src={{profileImageSrc}} id="userImage"></img>
 						</div>
-						<div ng-show="isOwnPage" >
+						<div ng-if="isOwnPage" >
 							<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
 							<button ng-click="uploadImage(user.uploadedImage)">Submit</button>
 						</div>
@@ -26,22 +26,27 @@
 							<button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
 							<button ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
 							<button ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
-							<input ng-model="editPayload.email" value="{{user.email}}" ng-show="isEditing"/>
-							<input ng-show="isEditing" ng-model="editPayload.name" value="{{user.name}}" />
-							<input ng-show="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
-							<input ng-show="isEditing"  ng-model="editPayload.phone" placeholder="Enter Your Phone Number here" value="{{user.phone}}" />
-							<input ng-show="isEditing" ng-model="editPayload.address" placeholder="Enter Your Address Here" value="{{user.address}}" />
+							<label ng-if="isEditing" for="email">New Email:</label>
+							<input ng-model="editPayload.email" value="{{user.email}}" ng-if="isEditing"/><br>
+							<label ng-if="isEditing" for="name">New Name:</label>
+							<input ng-if="isEditing" ng-model="editPayload.name" value="{{user.name}}"/>
+							<label ng-if="isEditing" for="username">New Username:</label>
+							<input ng-if="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
+							<label ng-if="isEditing" for="phone">New Phone Number:</label>
+							<input ng-if="isEditing"  ng-model="editPayload.phone" value="{{user.phone}}"/>
+							<label ng-if="isEditing" for="address">New Address:</label>
+							<input ng-if="isEditing" ng-model="editPayload.address" value="{{user.address}}" />
 						</div>
 						<div>
-							<h2  ng-hide="isEditing">{{user.email}}</h2>
+							<h2  ng-if="!isEditing">Email: {{user.email}}</h2>
 
-							<h2  ng-hide="isEditing">{{user.name}}</h2>
+							<h2  ng-if="!isEditing">Name: {{user.name}}</h2>
 
-							<h2 ng-hide="isEditing">{{user.username}}</h2>
+							<h2 ng-if="!isEditing">Username: {{user.username}}</h2>
 
-							<h2 ng-hide="isEditing" ng-if="!hasNoPhoneNumber">{{user.phone}}</h2>
+							<h2 ng-if="!isEditing" ng-if="!hasNoPhoneNumber">Phone Number: {{user.phone}}</h2>
 
-							<h2  ng-hide="isEditing">{{user.address}}</h2>
+							<h2  ng-if="!isEditing">Address: {{user.address}}</h2>
 						</div>
 					</div>
 					<div class="row">
