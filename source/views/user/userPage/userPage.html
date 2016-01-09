@@ -53,8 +53,6 @@
 						<div class="col-sm-4" id="profileC">
 							<h1>Favorites</h1>
 							<div ng-repeat="favorite in favorites track by $index" class="col-md-4">
-								<!-- {{favorite.username}} -->
-
 								<div id="FavoritesImageDiv">
 									<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail"></img>
 									<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail"></img>
