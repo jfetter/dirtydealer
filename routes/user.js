@@ -42,6 +42,7 @@ router.put('/favorite', function(req, res){
         res.status(400).send(err);
       }
       updatedUser.password = null
+      updatedUser.avatar = null;
       var newToken = jwt.encode(updatedUser, process.env.JWT_SECRET)
       console.log("NEWTOEKN", newToken)
       res.cookie("token", newToken)
@@ -60,12 +61,14 @@ router.post("/edit", function(req, res){
 }, function(err, savedUser){
       User.findById(req.body._id, function(err, updatedUser){
         console.log(updatedUser);
+        updatedUser.password = null;
+        updatedUser.avatar = null
         res.cookie("token", jwt.encode(updatedUser, process.env.JWT_SECRET));
         res.send(updatedUser);
       })
   })
 })
-router.delete('/unfavorite', function(req, res){
+router.put('/unfavorite', function(req, res){
   User.findByIdAndUpdate(req.body.myId, {$pull: {favorites : req.body.unFavoriteId}}, function(err, user) {
     if(err){
       res.status(400).send(err);
@@ -74,7 +77,8 @@ router.delete('/unfavorite', function(req, res){
       if(err){
         res.status(400).send(err);
       }
-      updatedUser.password = null
+      updatedUser.password = null;
+      updatedUser.avatar = null;
       var newToken = jwt.encode(updatedUser, process.env.JWT_SECRET)
       console.log("NEWTOEKN", newToken)
       res.cookie("token", newToken)

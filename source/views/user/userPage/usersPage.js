@@ -3,11 +3,22 @@
 angular.module('socialMockup')
 
 
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64 ){
+.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
 	$scope.user = {};
 	$scope.editPayload = {};
 	var cookies = $cookies.get('token');
 	var token = jwtHelper.decodeToken(cookies)
+	// if(cookies){
+	// 	$scope.userInfo = (jwtHelper.decodeToken(cookies))
+	// }
+	console.log("COOKIES", cookies)
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		console.log(res.data)
+		 if (res.data === "authRequired"){
+			 $location.path('/login')
+		 } else{$scope.isLoggedIn = true;}
+	})
 	UserService.page($state.params.username)
 	.then(function(res) {
 		console.log("PARAMS", $state.params.name)
@@ -22,6 +33,7 @@ angular.module('socialMockup')
 		$scope.editPayload.name = $scope.user.name
 		$scope.editPayload.address = $scope.user.address
 		$scope.editPayload._id = $scope.user._id
+    console.log($scope.isEditing)
 		console.log("edit Payload", $scope.editPayload)
 		console.log('token:',token);
 		console.log('scope user username: ', $scope.user.username);
@@ -34,7 +46,9 @@ angular.module('socialMockup')
 	}, function(err) {
 		console.error(err)
 	});
-
+  $scope.test = function(){
+    console.log("TESTING")
+  }
 	$scope.removeFavorite = function (userId){
 		UserService.unFavoriteUser(userId)
 		.then(function(res){
@@ -54,7 +68,10 @@ angular.module('socialMockup')
 			})
 		} else {return true}
 
+  }
+
 	$scope.toggleEdit = function(){
+    console.log($scope.isEditing)
 		$scope.isEditing = !$scope.isEditing
 	}
 
@@ -80,38 +97,6 @@ angular.module('socialMockup')
 
   }
 
-	$scope.uploadFiles = function(file, errFiles) {
-        $scope.f = file;
-        $scope.errFile = errFiles && errFiles[0];
-        if (file) {
-            file.upload = Upload.upload({
-
-                url: `/imageUpload`,
-                data: {file: file}
-            });
-
-            file.upload.then(function (response) {
-                $timeout(function () {
-                    file.result = response.data;
-                });
-            }, function (response) {
-                if (response.status > 0)
-                    $scope.errorMsg = response.status + ': ' + response.data;
-            }, function (evt) {
-                file.progress = Math.min(100, parseInt(100.0 *
-                                         evt.loaded / evt.total));
-            });
-        }
-    }
-	// $scope.isOwnPage = false;
-	// $scope.imageAvailable = false;
-
-// 	= function(){
-// 		console.log('scope.user.username', $scope.user);
-// 		console.log('token user', token);
-// 		if($scope.user.username){return $scope.user.username ===token.username}
-// 		else{return false}
-// }
 	$scope.exposeData = function(){console.log($scope.myFile)}
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
@@ -120,5 +105,4 @@ angular.module('socialMockup')
 		 else{$scope.isLoggedIn = true;}
 	})
 
-}
 });

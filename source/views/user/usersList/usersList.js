@@ -4,21 +4,18 @@ angular.module('socialMockup')
 
 
 .controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
-	;
-	console.log("cookies.get", $cookies.get('token'))
 	var cookies = $cookies.get('token');
 	if(cookies){
 		$scope.userInfo = (jwtHelper.decodeToken(cookies))
 	}
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
-		console.log(res.data)
+		// console.log(res.data)
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
 	UserService.list()
 	.then(function(res) {
-		console.log(res.data)
 		users = res.data;
 		$scope.users = users;
 	}, function(err) {
@@ -56,6 +53,12 @@ angular.module('socialMockup')
 			return ($scope.userInfo.favorites).some(function(favorite){
 				return (user._id === favorite)
 			})
+		} else {return true}
+	}
+	$scope.isUser = function(user){
+		// console.log("USER", user);
+		if (user._id !== $scope.userInfo._id){
+				return (false)
 		} else {return true}
 	}
 		$scope.isAdmin = $scope.userInfo.isAdmin;

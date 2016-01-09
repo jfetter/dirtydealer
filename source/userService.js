@@ -35,8 +35,8 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 		var decoded = (jwtHelper.decodeToken($cookies.get('token')))
 		data.myId = decoded._id;
 		data.unFavoriteId = userId
-		console.log(data.myId)
-		console.log(data.unFavoriteId)
+		console.log("MYID", data.myId)
+		console.log("THEIRID", data.unFavoriteId)
 		return $http.put(`${ENV.API_URL}/user/unfavorite`, data)
 	}
 	this.eraseUser = function(userId){
