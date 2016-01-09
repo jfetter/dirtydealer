@@ -17,7 +17,7 @@ angular.module('socialMockup')
 			return;
 		}
 
-		if(!user){
+		if(!user.email){
 			swal({
 				type: "error",
 				title: "Give us your email address!",
@@ -27,6 +27,17 @@ angular.module('socialMockup')
 			});
 			return;
 		}
+
+		// if("username or email already exists"){
+		// 	swal({
+		// 		type: "error",
+		// 		title: "Give us your email address!",
+		// 		text: "C'mon, we know that's a fake!",
+		// 		showConfirmButton: true,
+		// 		confirmButtonText: "I hear ya.",
+		// 	});
+		// 	return;
+		// }
 
 		UserService.register(user)
 		.then(function(data){

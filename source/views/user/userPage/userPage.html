@@ -1,10 +1,10 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel="stylesheet" integrity="sha256-P5gS9tfR0S0WBWIsn0OUp1YR2pcYMGwgfwjxX3AqncA= sha512-Jwcua5M3o+swptQ5w8vJxSuiFjfuTG0mwkJAQ/XMoT8dLVr7ZyhiLxEZPwuDSTtQEl22wYbdfQAlGxd7otaCJw==" crossorigin="anonymous">
 <div class="container">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-12" id="profile">
 
 			<div class="row">
-				<div ng-if="isLoggedIn" class="col-sm-4" id="profileA">
+				<div ng-if="isLoggedIn" class="col-sm-4 col-xs-12" id="profileA">
 					<h1>Username: {{user.username}}</h1>
 					<div id="imageHolder">
 						<div>
@@ -15,13 +15,12 @@
 							<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
 							<button ng-click="uploadImage(user.uploadedImage)">Submit</button>
 						</div>
-
 						<div>
 						</div>
 					</div>
 				</div>
 				<div>
-					<div ng-if="isOwnPage" class="col-sm-4" id="profileB">
+					<div ng-if="isOwnPage" class="col-sm-4 col-xs-12" id="profile">
 						<div class="row">
 							<button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
 							<button ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
@@ -51,17 +50,18 @@
 						</div>
 					<!-- </div> -->
 					<div class="row">
-						<div class="col-sm-4" id="profileC">
+						<div class="col-sm-4 col-sx-12" id="profile">
 							<h1>Favorites</h1>
 							<div ng-repeat="favorite in favorites track by $index" class="col-md-4">
 								<div id="FavoritesImageDiv">
-									<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail"></img>
-									<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail"></img>
+									<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail" id="favoriteImage"></img>
+									<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail" id="favoriteImage"></img>
 								</div>
 
 								<a ui-sref='userPage({username: favorite.username})'>{{favorite.username}}</a>
 
 								<button ng-click="removeFavorite(favorite._id)">Unfavorite</button>
+
 
 								<div ng-if="isAdmin">
 									<button ng-click="eraseUser(user._id)">Delete</button>
