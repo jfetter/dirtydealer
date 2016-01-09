@@ -4,15 +4,13 @@ angular.module('socialMockup')
 
 
 .controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
-	;
-	console.log("cookies.get", $cookies.get('token'))
 	var cookies = $cookies.get('token');
 	if(cookies){
 		$scope.userInfo = (jwtHelper.decodeToken(cookies))
 	}
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
-		console.log(res.data)
+		// console.log(res.data)
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})

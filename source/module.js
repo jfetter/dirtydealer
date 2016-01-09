@@ -31,6 +31,9 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     $state.go('usersList');
     $scope.isLoggedIn = true;
     console.log("LOGGED IN!")
+  } else {
+    $scope.isLoggedIn = false;
+    $state.go('login');  
   }
   })
   $scope.$on('loggedIn', function(){

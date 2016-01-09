@@ -8,15 +8,16 @@ angular.module('socialMockup')
 	$scope.editPayload = {};
 	var cookies = $cookies.get('token');
 	var token = jwtHelper.decodeToken(cookies)
-	if(cookies){
-		$scope.userInfo = (jwtHelper.decodeToken(cookies))
-	}
+	// if(cookies){
+	// 	$scope.userInfo = (jwtHelper.decodeToken(cookies))
+	// }
+	console.log("COOKIES", cookies)
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
 		console.log(res.data)
-		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;
-		 }
+		 if (res.data === "authRequired"){
+			 $location.path('/login')
+		 } else{$scope.isLoggedIn = true;}
 	})
 	UserService.page($state.params.username)
 	.then(function(res) {
