@@ -24,8 +24,8 @@
   <input ng-show="isEditing" ng-model="editPayload.name" value="{{user.name}}" />
   <h2 ng-hide="isEditing">{{user.username}}</h2>
   <input ng-show="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
-  <h2 ng-hide="isEditing">{{user.phone}}</h2>
-  <input ng-show="isEditing" ng-model="editPayload.phone" placeholder="Enter Your Phone Number here" value="{{user.phone}}" />
+  <h2 ng-hide="isEditing" ng-if="!hasNoPhoneNumber">{{user.phone}}</h2>
+  <input ng-show="isEditing"  ng-model="editPayload.phone" placeholder="Enter Your Phone Number here" value="{{user.phone}}" />
   <h2  ng-hide="isEditing">{{user.address}}</h2>
   <input ng-show="isEditing" ng-model="editPayload.address" placeholder="Enter Your Address Here" value="{{user.address}}" />
 </div>

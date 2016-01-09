@@ -29,10 +29,18 @@ angular.module('socialMockup')
 		$scope.isEditing = false;
 		$scope.editPayload.username = $scope.user.username;
 		$scope.editPayload.email = $scope.user.email;
+
 		$scope.editPayload.phone = $scope.user.phone;
 		$scope.editPayload.name = $scope.user.name
 		$scope.editPayload.address = $scope.user.address
 		$scope.editPayload._id = $scope.user._id
+
+		if ($scope.user.phone ==0){
+			console.log("number is zero")
+			$scope.hasNoPhoneNumber = true;
+			console.log($scope.hasNoPhoneNumber)
+		}
+
     console.log($scope.isEditing)
 		console.log("edit Payload", $scope.editPayload)
 		console.log('token:',token);
@@ -76,11 +84,15 @@ angular.module('socialMockup')
 	}
 
 	$scope.saveEdits = function(){
+		console.log("save edits!!!!!" , $scope.editPayload);
+		if(!$scope.editPayload.phone){$scope.editPayload.phone = 0};
+		if(!$scope.editPayload.address){$scope.editPayload.address = ""};
 		UserService.editAccount($scope.editPayload)
-		.then(function(res){
-			$scope.user = res.data;
+
+		.then(function(response){
+			$scope.user = response.data;
 			$scope.isEditing = !$scope.isEditing;
-			console.log(res.data)
+			console.log(response.data, "received")
 		})
 
 	}
@@ -94,8 +106,10 @@ angular.module('socialMockup')
       console.log($scope.profileImageSrc)
 
     })
-
   }
+
+
+
 
 	$scope.exposeData = function(){console.log($scope.myFile)}
 	UserService.isAuthed(cookies)
