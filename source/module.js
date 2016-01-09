@@ -28,9 +28,12 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   .then(function(res , err){
     console.log(res.data)
     if (res.data !== "authRequired"){
-    // $state.go('usersList');
+    $state.go('usersList');
     $scope.isLoggedIn = true;
     console.log("LOGGED IN!")
+  } else {
+    $scope.isLoggedIn = false;
+    $state.go('login');  
   }
   })
   $scope.$on('loggedIn', function(){
@@ -41,5 +44,9 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     $cookies.remove('token');
     $state.go('login')
     $scope.isLoggedIn = false;
+  }
+  $scope.goHome = function(){
+    var username = $scope.userInfo.username
+    $state.go('userPage', {"username": username})
   }
 })
