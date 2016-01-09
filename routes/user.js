@@ -51,6 +51,7 @@ router.put('/favorite', function(req, res){
   })
 })
 router.post("/edit", function(req, res){
+  console.log("edit api", req.body)
   User.findByIdAndUpdate(req.body._id, {$set: {
     address: req.body.address,
     phone: req.body.phone,
@@ -59,8 +60,9 @@ router.post("/edit", function(req, res){
     name: req.body.name
   }
 }, function(err, savedUser){
+      console.log('user that got changed during the edit api function...savedUser', savedUser)
       User.findById(req.body._id, function(err, updatedUser){
-        console.log(updatedUser);
+        console.log("comes back from findbyId of svedUser",updatedUser);
         updatedUser.password = null;
         updatedUser.avatar = null
         res.cookie("token", jwt.encode(updatedUser, process.env.JWT_SECRET));

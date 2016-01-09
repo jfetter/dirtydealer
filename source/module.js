@@ -48,6 +48,11 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     username = $scope.userInfo.username
 
   })
+  $scope.$on('edit', function(event, data){
+    console.log('e:', event);
+    console.log('d:', data);
+    $scope.userInfo = data;
+  })
 
   $scope.logout = function(){
     $cookies.remove('token');
