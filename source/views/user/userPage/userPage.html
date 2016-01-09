@@ -1,55 +1,73 @@
-<div ng-if="isLoggedIn">
-<h1>{{user.username}}</h1>
-<div id="imageHolder">
-	<div>
-		<img class="img-rounded"
-    src={{profileImageSrc}} id="userImage"></img>
-  </div>
-	<div ng-show="isOwnPage" >
-		<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
-		<button ng-click="uploadImage(user.uploadedImage)">Submit</button>
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel="stylesheet" integrity="sha256-P5gS9tfR0S0WBWIsn0OUp1YR2pcYMGwgfwjxX3AqncA= sha512-Jwcua5M3o+swptQ5w8vJxSuiFjfuTG0mwkJAQ/XMoT8dLVr7ZyhiLxEZPwuDSTtQEl22wYbdfQAlGxd7otaCJw==" crossorigin="anonymous">
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="row">
+				<div ng-if="isLoggedIn" class="col-sm-4" id="profileA">
+					<h1>{{user.username}}</h1>
+					<div id="imageHolder">
+						<div>
+							<img class="img-rounded"
+							src={{profileImageSrc}} id="userImage"></img>
+						</div>
+						<div ng-show="isOwnPage" >
+							<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+							<button ng-click="uploadImage(user.uploadedImage)">Submit</button>
+						</div>
+
+						<div>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div ng-if="isOwnPage" class="col-sm-4" id="profileB">
+						<div class="row">
+							<button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
+							<button ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
+							<button ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
+							<input ng-model="editPayload.email" value="{{user.email}}" ng-show="isEditing"/>
+							<input ng-show="isEditing" ng-model="editPayload.name" value="{{user.name}}" />
+							<input ng-show="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
+							<input ng-show="isEditing"  ng-model="editPayload.phone" placeholder="Enter Your Phone Number here" value="{{user.phone}}" />
+							<input ng-show="isEditing" ng-model="editPayload.address" placeholder="Enter Your Address Here" value="{{user.address}}" />
+						</div>
+						<div>
+							<h2  ng-hide="isEditing">{{user.email}}</h2>
+
+							<h2  ng-hide="isEditing">{{user.name}}</h2>
+
+							<h2 ng-hide="isEditing">{{user.username}}</h2>
+
+							<h2 ng-hide="isEditing" ng-if="!hasNoPhoneNumber">{{user.phone}}</h2>
+
+							<h2  ng-hide="isEditing">{{user.address}}</h2>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-4" id="profileC">
+							<h1>Favorites</h1>
+							<div ng-repeat="favorite in favorites track by $index" class="col-md-4">
+								<!-- {{favorite.username}} -->
+
+								<div id="FavoritesImageDiv">
+									<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail"></img>
+									<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail"></img>
+								</div>
+
+								<a ui-sref='userPage({username: favorite.username})'>{{favorite.username}}</a>
+
+								<button ng-click="removeFavorite(favorite._id)" ng-if="favorited(user)">Unfavorite</button>
+
+								<div ng-if="isAdmin">
+									<button ng-click="eraseUser(user._id)">Delete</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
 	</div>
-
-  <div>
-  </div>
-</div>
-
-<div ng-if="isOwnPage">
-  <button ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
-  <button ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
-  <button ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
-  <input ng-model="editPayload.email" value="{{user.email}}" ng-show="isEditing"/>
-  <input ng-show="isEditing" ng-model="editPayload.name" value="{{user.name}}" />
-  <input ng-show="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
-  <input ng-show="isEditing"  ng-model="editPayload.phone" placeholder="Enter Your Phone Number here" value="{{user.phone}}" />
-  <input ng-show="isEditing" ng-model="editPayload.address" placeholder="Enter Your Address Here" value="{{user.address}}" />
-</div>
-<div>
-	<h2  ng-hide="isEditing">{{user.email}}</h2>
-
-	<h2  ng-hide="isEditing">{{user.name}}</h2>
-
-	<h2 ng-hide="isEditing">{{user.username}}</h2>
-
-	<h2 ng-hide="isEditing" ng-if="!hasNoPhoneNumber">{{user.phone}}</h2>
-
-	<h2  ng-hide="isEditing">{{user.address}}</h2>
-</div>
-<h1>Favorites</h1>
-<div ng-repeat="favorite in favorites track by $index">
-	<!-- {{favorite.username}} -->
-
-	<div id="FavoritesImageDiv">
-		<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail"></img>
-		<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail"></img>
-	</div>
-
-	<a ui-sref='userPage({username: favorite.username})'>{{favorite.username}}</a>
-
-		 <button ng-click="removeFavorite(favorite._id)" ng-if="favorited(user)">Unfavorite</button>
-
-	<div ng-if="isAdmin">
-	<button ng-click="eraseUser(user._id)">Delete</button>
-</div>
-</div>
 </div>
