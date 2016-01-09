@@ -24,3 +24,62 @@
   padding: 5px;
 
 }
+
+#user-list-container{
+  border:1px solid #313131;
+
+}
+
+.userListProfilePicDiv{
+  border-right: 1px solid #d3d3d3;
+  margin-top: 3vh;
+  text-align: center;
+}
+
+.userList-titleHeader, .userList-titleSearch{
+  text-align: center;
+  margin: 0px auto;
+  display; block;
+}
+
+.userList-EmailAndName{
+  margin-top: 4vh;
+}
+
+.userListInfoContainer{
+  min-height: 20vh;
+}
+.userContainer{
+  border: 1px solid #d3d3d3;
+  min-height: 20vh;
+}
+
+.userContainer:hover{
+  background-color: #d3d3d3
+}
+
+
+.userContainer{
+  border:1px solid #d3d3d3;
+  border-bottom: none;
+}
+
+.userContainer{
+  border:1px solid #d3d3d3;
+  border-bottom: 1px solid  #d3d3d3;
+}
+#userList-favoriteButton{
+  margin-top: 6vh;
+  margin-right: 10px;
+}
+
+
+
+
+#userList-unFavoriteButton{
+  margin-top: 6vh;
+  margin-right: 10px;
+}
+.userList-username{
+  "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
+}

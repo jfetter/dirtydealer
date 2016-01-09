@@ -27,5 +27,8 @@
     "sweetalert": "~1.1.3",
     "ngSweetAlert": "angular-sweetalert#~1.1.0",
     "angular-sweetalert": "latest"
+  },
+  "resolutions": {
+    "angular": "1.4.8"
   }
 }
