@@ -1,3 +1,4 @@
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel="stylesheet" integrity="sha256-P5gS9tfR0S0WBWIsn0OUp1YR2pcYMGwgfwjxX3AqncA= sha512-Jwcua5M3o+swptQ5w8vJxSuiFjfuTG0mwkJAQ/XMoT8dLVr7ZyhiLxEZPwuDSTtQEl22wYbdfQAlGxd7otaCJw==" crossorigin="anonymous">
 <h1>Register</h1>
 <div>
   <div class="form-group">
@@ -13,10 +14,10 @@
     <label for="password">Password:</label>
     <input ng-model='user.password' type="password" id='password' class="form-control"></div>
   <div class="form-group">
-    <label for="password2">Password (again):</label>
+    <label for="password2">Confirm Password:</label>
     <input ng-model='user.password2' type="password" id='password2' class="form-control"></div>
   <div class="form-group">
-    <label for="admin">Admin:</label>
+    <label for="admin">Should You Be An Admin?</label>
     <input ng-model='user.isAdmin' type="checkbox" id='admin' class="form-control"  ng-true-value="true" ng-false-value="false"></div>
   <button ng-click='submit(user)' class="btn btn-default" id="register">Register</button>
 </div>

@@ -77,12 +77,6 @@ userSchema.statics.login = function(user, cb){
 	// 	})
 	}
 
-
-
-
-
-
-
 User = mongoose.model('User', userSchema);
 
 

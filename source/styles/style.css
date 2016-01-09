@@ -7,3 +7,12 @@
   max-width: 8vh;
   border-radius: 7px;
 }
+
+.col-sm-4 {
+  text-align: center;
+}
+
+#profiledetails {
+  font-size: 20px;
+  color: red;
+}
