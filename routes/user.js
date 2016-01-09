@@ -65,7 +65,9 @@ router.post("/edit", function(req, res){
         console.log("comes back from findbyId of svedUser",updatedUser);
         updatedUser.password = null;
         updatedUser.avatar = null
-        res.cookie("token", jwt.encode(updatedUser, process.env.JWT_SECRET));
+        if (!req.body.isAdmin){
+          res.cookie("token", jwt.encode(updatedUser, process.env.JWT_SECRET));
+        }
         res.send(updatedUser);
       })
   })

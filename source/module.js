@@ -51,8 +51,11 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   $scope.$on('edit', function(event, data){
     console.log('e:', event);
     console.log('d:', data);
-    $scope.userInfo = data;
-    username = $scope.userInfo.username
+    if(!$scope.userInfo.isAdmin){
+      $scope.userInfo = data;
+      username = $scope.userInfo.username
+      console.log("NEWUSERNAME!!!!!", username)
+    }
   })
 
   $scope.logout = function(){

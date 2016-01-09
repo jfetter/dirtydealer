@@ -34,6 +34,7 @@ angular.module('socialMockup')
 		$scope.editPayload.name = $scope.user.name
 		$scope.editPayload.address = $scope.user.address
 		$scope.editPayload._id = $scope.user._id
+		$scope.editPayload.isAdmin = token.isAdmin
 
 		if ($scope.user.phone ==0){
 			console.log("number is zero")

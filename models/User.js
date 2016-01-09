@@ -27,7 +27,7 @@ userSchema.statics.register = function(user, cb){
 	bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(user.password, salt, function(err, password) {
       User.find({$or: [{username: username}, {email: email}] }, function(err, user){
-        if (err || user[0]){return console.log(err || "username or email already exists")}
+        if (err || user[0]){return console.log(err) || alert("Username or email already exists")}
         console.log(user);
         var newUser = new User;
         newUser.username = username;
