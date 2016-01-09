@@ -33,11 +33,16 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     console.log("LOGGED IN!")
   } else {
     $scope.isLoggedIn = false;
-    $state.go('login');  
+    $state.go('login');
   }
   })
   $scope.$on('loggedIn', function(){
     $scope.isLoggedIn = true;
+  })
+  $scope.$on('edit', function(event, data){
+    console.log('e:', event);
+    console.log('d:', data);
+    $scope.userInfo = data;
   })
 
   $scope.logout = function(){

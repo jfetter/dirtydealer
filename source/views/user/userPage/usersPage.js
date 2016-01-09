@@ -90,6 +90,7 @@ angular.module('socialMockup')
 		UserService.editAccount($scope.editPayload)
 
 		.then(function(response){
+			$scope.$emit('edit', response.data)
 			$scope.user = response.data;
 			$scope.isEditing = !$scope.isEditing;
 			console.log(response.data, "received")
