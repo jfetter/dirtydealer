@@ -79,29 +79,29 @@ var app = angular.module('socialMockup');
 app.service('UserService', function($http, ENV, $location, $rootScope, $cookies, jwtHelper){
 	this.register = function(user){
 		console.log(user)
-		return $http.post(`https://fathomless-thicket-1878.herokuapp.com/register`, user);
+		return $http.post(`${ENV.API_URL}/register`, user);
 	};
 	this.login = function(user){
-		return $http.post(`https://fathomless-thicket-1878.herokuapp.com/login`, user);
+		return $http.post(`${ENV.API_URL}/login`, user);
 	};
 	this.list = function(){
-		return $http.get(`https://fathomless-thicket-1878.herokuapp.com/user/list`);
+		return $http.get(`${ENV.API_URL}/user/list`);
 	};
 	this.page = function(username){
-		return $http.get(`https://fathomless-thicket-1878.herokuapp.com/user/page/${username}`)
+		return $http.get(`${ENV.API_URL}/user/page/${username}`)
 	}
 	this.auth = function(){
-		return $http.get(`https://fathomless-thicket-1878.herokuapp.com/auth`)
+		return $http.get(`${ENV.API_URL}/auth`)
 	};
 	this.favoriteUser = function(userId){
 		var data = {};
 		var decoded = (jwtHelper.decodeToken($cookies.get('token')))
 		data.myId = decoded._id;
 		data.favoriteId = userId
-		return $http.put(`https://fathomless-thicket-1878.herokuapp.com/user/favorite`, data)
+		return $http.put(`${ENV.API_URL}/user/favorite`, data)
 	};
 	this.editAccount = function(data){
-		return $http.post(`https://fathomless-thicket-1878.herokuapp.com/user/edit`, data)
+		return $http.post(`${ENV.API_URL}/user/edit`, data)
 	}
 	this.unFavoriteUser = function(userId){
 		console.log(userId)
@@ -111,25 +111,25 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 		data.unFavoriteId = userId
 		console.log("MYID", data.myId)
 		console.log("THEIRID", data.unFavoriteId)
-		return $http.put(`https://fathomless-thicket-1878.herokuapp.com/user/unfavorite`, data)
+		return $http.put(`${ENV.API_URL}/user/unfavorite`, data)
 	}
 	this.eraseUser = function(userId){
 		console.log("USERID", userId)
 		var data = {};
 		data.userId = userId
-		return $http.post(`https://fathomless-thicket-1878.herokuapp.com/user/erase`, data)
+		return $http.post(`${ENV.API_URL}/user/erase`, data)
 	}
 	this.loggedIn = function(isLoggedIn){
 			if(isLoggedIn){ return true }
 	};
   this.uploadImage = function(image, userId){
-    return $http.post(`https://fathomless-thicket-1878.herokuapp.com/imageUpload`, {
+    return $http.post(`${ENV.API_URL}/imageUpload`, {
       userId: userId,
       image: image
     })
   }
 	this.isAuthed = function(token){
-		return $http.post(`https://fathomless-thicket-1878.herokuapp.com/auth`, {token:token})
+		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
 })
 
@@ -227,89 +227,6 @@ angular.module('socialMockup')
 		});
 	}
 });
-
-'use strict';
-
-angular.module('socialMockup')
-
-
-.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
-	var cookies = $cookies.get('token');
-	if(cookies){
-		$scope.userInfo = (jwtHelper.decodeToken(cookies))
-	}
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		// console.log(res.data)
-		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;}
-	})
-	UserService.list()
-	.then(function(res) {
-		users = res.data;
-		$scope.users = users;
-	}, function(err) {
-		console.error(err)
-	});
-	var users;
-
-	$scope.$watch(function(){return $scope.searchTerm}, function(n,o){
-		$scope.updateSearch();
-	})
-
-	$scope.addFavorite = function (userId){
-		UserService.favoriteUser(userId)
-		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
-		})
-	}
-	$scope.removeFavorite = function (userId){
-		UserService.unFavoriteUser(userId)
-		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
-		})
-	}
-	$scope.eraseUser = function (userId){
-		UserService.eraseUser(userId)
-		.then(function(res){
-			$scope.users = res.data
-			users = res.data
-		})
-	}
-
-	$scope.favorited = function(user){
-		// console.log("USER", user);
-		if (user._id !== $scope.userInfo._id){
-			return ($scope.userInfo.favorites).some(function(favorite){
-				return (user._id === favorite)
-			})
-		} else {return true}
-	}
-	$scope.isUser = function(user){
-		// console.log("USER", user);
-		if (user._id !== $scope.userInfo._id){
-				return (false)
-		} else {return true}
-	}
-		$scope.isAdmin = $scope.userInfo.isAdmin;
-
-	$scope.updateSearch = function(searchTerm){
-		// $scope.searchTerm = searchTerm
-		console.log(searchTerm)
-		if(searchTerm){
-			console.log(searchTerm)
-		$scope.users = $scope.users.filter(function(user){
-			if (user.username.match(searchTerm)){
-				return true
-			} else{
-				return false
-			}
-		})
-		} else{
-			$scope.users = users
-		}
-	}
-})
 
 'use strict';
 
@@ -427,3 +344,86 @@ angular.module('socialMockup')
 	})
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+
+
+.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
+	var cookies = $cookies.get('token');
+	if(cookies){
+		$scope.userInfo = (jwtHelper.decodeToken(cookies))
+	}
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		// console.log(res.data)
+		 if (res.data === "authRequired"){$location.path('/login')}
+		 else{$scope.isLoggedIn = true;}
+	})
+	UserService.list()
+	.then(function(res) {
+		users = res.data;
+		$scope.users = users;
+	}, function(err) {
+		console.error(err)
+	});
+	var users;
+
+	$scope.$watch(function(){return $scope.searchTerm}, function(n,o){
+		$scope.updateSearch();
+	})
+
+	$scope.addFavorite = function (userId){
+		UserService.favoriteUser(userId)
+		.then(function(res){
+			$scope.userInfo = (jwtHelper.decodeToken(res.data))
+		})
+	}
+	$scope.removeFavorite = function (userId){
+		UserService.unFavoriteUser(userId)
+		.then(function(res){
+			$scope.userInfo = (jwtHelper.decodeToken(res.data))
+		})
+	}
+	$scope.eraseUser = function (userId){
+		UserService.eraseUser(userId)
+		.then(function(res){
+			$scope.users = res.data
+			users = res.data
+		})
+	}
+
+	$scope.favorited = function(user){
+		// console.log("USER", user);
+		if (user._id !== $scope.userInfo._id){
+			return ($scope.userInfo.favorites).some(function(favorite){
+				return (user._id === favorite)
+			})
+		} else {return true}
+	}
+	$scope.isUser = function(user){
+		// console.log("USER", user);
+		if (user._id !== $scope.userInfo._id){
+				return (false)
+		} else {return true}
+	}
+		$scope.isAdmin = $scope.userInfo.isAdmin;
+
+	$scope.updateSearch = function(searchTerm){
+		// $scope.searchTerm = searchTerm
+		console.log(searchTerm)
+		if(searchTerm){
+			console.log(searchTerm)
+		$scope.users = $scope.users.filter(function(user){
+			if (user.username.match(searchTerm)){
+				return true
+			} else{
+				return false
+			}
+		})
+		} else{
+			$scope.users = users
+		}
+	}
+})
