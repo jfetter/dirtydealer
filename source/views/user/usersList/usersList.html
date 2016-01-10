@@ -10,7 +10,7 @@
   <div id="user-list-container" class="col-xs-8 col-centered">
   <table class="userListTable table table-hover">
 
-    <div ng-if="!isUser(user)" class="userContainer row" ng-repeat='user in users track by $index'>
+    <div ng-if="!isUser(user)" ui-sref='userPage({username: user.username})' class="userContainer row" ng-repeat='user in users track by $index'>
 
 
           <div class="userListProfilePicDiv col-xs-4">
@@ -18,7 +18,7 @@
             <img ng-if="user.avatar"src="data:image/jpeg;base64,{{user.avatar}}" class="userThumbnail"></img>
             <br>
 
-            <a class="userList-username"ui-sref='userPage({username: user.username})'><h5 class="userList-username">{{user.username}}</h5></a>
+            <a class="userList-username" ui-sref='userPage({username: user.username})'><h5 class="userList-username">{{user.username}}</h5></a>
           </div>
 
 

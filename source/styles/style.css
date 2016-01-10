@@ -77,7 +77,7 @@
 input[readonly] {
   background-color: white !important;
   cursor: text !important;
-} 
+}
 #user-list-container{
   border:1px solid #313131;
 
@@ -127,7 +127,9 @@ input[readonly] {
 }
 
 
-
+#home-link, #logout{
+  cursor: pointer;
+}
 
 #userList-unFavoriteButton{
   margin-top: 6vh;

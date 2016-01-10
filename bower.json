@@ -3,7 +3,10 @@
   "description": "",
   "main": "app.js",
   "authors": [
-    "Damon Kalaboukis <damonkala@yahoo.com>"
+    "Damon Kalaboukis <damonkala@yahoo.com>",
+    "Rich Gautereaux <RichGautereaux@gmail.com>",
+    "Andrew Sturick <Andrew.Sturick@gmail.com>",
+    "Rachel Slater"
   ],
   "license": "ISC",
   "moduleType": [],

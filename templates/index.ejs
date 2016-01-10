@@ -22,8 +22,8 @@
         </ul>
         <ul class="nav navbar-nav" ng-if="isLoggedIn">
           <li><a ui-sref='usersList'>List</a></li>
-          <li><a ng-click="goHome()">Home</a></li>
-          <li><a ng-click="logout()">Logout</a></li>
+          <li><a id="home-link"ng-click="goHome()">Home</a></li>
+          <li><a id="logout" ng-click="logout()">Logout</a></li>
         </ul>
       </div>
     </nav>

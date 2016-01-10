@@ -3,12 +3,12 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12" id="profile">
-			<div class="row">
-				<div ng-if="isLoggedIn" class="col-sm-4 col-xs-12 thumbnail" id="profileA">
+			<div>
+				<div ng-if="isLoggedIn" class="col-sm-4 col-xs-12" id="profileA">
 					<h1 id="userHeader">User: {{user.username}}</h1>
 					<div id="imageHolder">
 						<div>
-							<img class="img-rounded"
+							<img class="img-rounded col-xs-6 col-sm-12"
 							src={{profileImageSrc}} id="userImage"></img>
 						</div>
 						<div ng-show="isOwnPage" >
@@ -20,47 +20,53 @@
                 </span>
                 <input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
               </div>
-							<button class="btn btn-primary" ng-click="uploadImage(user.uploadedImage)">Submit</button>
-						</div>
-						<div>
+							<button class="btn btn-primary"ng-disabled="!user.uploadedImage" ng-click="uploadImage(user.uploadedImage)">Submit</button>
+
 						</div>
 					</div>
 				</div>
-				<div>
-					<div ng-if="isOwnPage" class="col-sm-3 col-xs-12 thumbnail" id="profile">
-						<div class="row">
+				<div class="col-sm-3 col-xs-12" >
+					<div ng-if="isOwnPage" id="profile">
 							<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
 							<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
 							<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
-							<label ng-if="isEditing" for="email" id="profileHeader">New Email:</label>
-							<input ng-model="editPayload.email" value="{{user.email}}" ng-if="isEditing"/><br>
-							<label ng-if="isEditing" for="name" id="profileHeader">New Name:</label>
-							<input ng-if="isEditing" ng-model="editPayload.name" value="{{user.name}}"/>
-							<label ng-if="isEditing" for="username" id="profileHeader">New Username:</label>
-							<input ng-if="isEditing" ng-model="editPayload.username" value="{{user.username}}" />
-							<label ng-if="isEditing" for="phone" id="profileHeader">New Phone Number:</label>
-							<input ng-if="isEditing"  ng-model="editPayload.phone" value="{{user.phone}}"/>
-							<label ng-if="isEditing" for="address" id="profileHeader">New Address:</label>
-							<input ng-if="isEditing" ng-model="editPayload.address" value="{{user.address}}" />
-						</div>
-						<div id="profileDetails">
-							<br>
-							<h2  ng-if="!isEditing" id="profileDetails">Email:    {{user.email}}</h2>
+							<div class="row">
+								<label ng-if="isEditing" for="email" id="profileHeader">New Email:</label>
+								<input ng-model="editPayload.email" value="{{user.email}}" ng-if="isEditing"/><br>
+							</div>
+							<div class="row">
+								<label ng-if="isEditing" class="col-xs-4" for="name" id="profileHeader">New Name:</label>
+								<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.name" value="{{user.name}}"/>
+							</div>
+							<div class="row">
+								<label ng-if="isEditing" class="col-xs-4" for="username" id="profileHeader">New Username:</label>
+								<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.username" value="{{user.username}}" />								
+							</div>
+							<div class="row">
+								<label ng-if="isEditing" class="col-xs-4" for="phone" id="profileHeader">New Phone Number:</label>
+								<input ng-if="isEditing" class="col-xs-8"  ng-model="editPayload.phone" value="{{user.phone}}"/>
+							</div>
+							<div class="row">
+								<label ng-if="isEditing" class="col-xs-4" for="address" id="profileHeader">New Location:</label>
+								<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.address" value="{{user.address}}" />
+							</div>
+					</div>
+					<div id="profileDetails" class="col-sm-3 col-xs-12">
 
-							<h2  ng-if="!isEditing" id="profileDetails">Name:    {{user.name}}</h2>
+						<h2   ng-if="!isEditing" id="profileDetails">Email:    {{user.email}}</h2>
 
-							<h2 ng-if="!isEditing" id="profileDetails">Username:    {{user.username}}</h2>
+						<h2  ng-if="!isEditing" id="profileDetails">Name:    {{user.name}}</h2>
 
-							<h2 ng-if="!isEditing" ng-if="!hasNoPhoneNumber" id="profileDetails">Phone Number:    {{user.phone}}</h2>
+						<h2 ng-if="!isEditing" id="profileDetails">Username:    {{user.username}}</h2>
 
-							<h2  ng-if="!isEditing" id="profileDetails">Address:    {{user.address}}</h2>
-						</div>
+						<h2 ng-if="!isEditing" ng-if="!hasNoPhoneNumber" id="profileDetails">Phone Number:    {{user.phone}}</h2>
+
+						<h2  ng-if="!isEditing" id="profileDetails">Location:    {{user.address}}</h2>
 					</div>
 					</div>
-					<div class="row">
-						<div class="col-sm-4 col-sx-12 thumbnail" id="profile">
-							<h1 id="favoritesHeader">Favorites</h1>
-							<div ng-repeat="favorite in favorites track by $index" class="col-md-4">
+					<div>
+						<div class="col-sm-4 col-sx-12" id="profile">
+							<div ng-repeat="favorite in favorites track by $index" class="col-xs-12">
 								<div id="FavoritesImageDiv">
 									<img ng-if="favorite.avatar"src="data:image/jpeg;base64,{{favorite.avatar}}" class="userThumbnail" id="favoriteImage"></img>
 									<img ng-if="!favorite.avatar"src="http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg" class="userThumbnail" id="favoriteImage"></img>
