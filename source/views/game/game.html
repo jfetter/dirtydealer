@@ -19,8 +19,9 @@
     <input ng-model="newMessageText" type="text" />
     <button type="submit">Add Message</button>
   </form>
+    <button ng-click="addPlayer()">join</button>
 
-  <p>{{newMessageText}}</p>
+  <p>{{numPlayers}} are playing</p>
 
   <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
 
