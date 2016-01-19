@@ -107,16 +107,24 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
 })
+'use strict';
 
-app.service('gameService', function($http, $rootScope, ENV, $location, $firebaseObject, $firebaseArray, $cookies){
+var app = angular.module('socialMockup');
+
+app.service('GameService', function($http, $rootScope, ENV, $location, $firebaseObject, $firebaseArray, $cookies){
 	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
 
- //waiting state
+	// this.cards = function(){
+	// 	return $http.get('/whiteCards.json')
+	// }
+
+ // waiting state
  // display `waiting for players message`
  //accumulate users, when there are enough users start game.
-	$scope.players = $firebaseArray(ref);
 
-	
+	// $scope.players = $firebaseArray(ref);
+
+
 
 
 
@@ -154,7 +162,7 @@ angular.module("socialMockup")
 angular.module('socialMockup')
 
 
-.controller('gameCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray){
+.controller('gameCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 	//*******USERAUTH
 	var cookies = $cookies.get('token');
@@ -176,12 +184,15 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
-	$.ajax({
-    url: "\countries.json",
-    success: function (data) {
-        var obj = JSON.parse(data);
-    }
-});
+	$scope.getCards = function(user){
+		$http.jsonp('whiteCards.json').success(function(data) {
+			console.log(data)
+    });
+		// GameService.cards()
+		// .then(function(res){
+		// 	console.log(res)
+		// })
+	}
 
 	//******FIREBASE
 	//create a new game instance on the scope
@@ -189,9 +200,9 @@ angular.module('socialMockup')
 	 // set up a reference for all of the players currently in this game instance
 	 var playersRef = $scope.gameInstance.child("players");
 	 var messageRef = $scope.gameInstance.child("messages")
-	 
-	 $scope.numPlayers = 0; 
-	 
+
+	 $scope.numPlayers = 0;
+
 	// create an array to store each player's info
   $scope.playerss = $firebaseArray(playersRef);
   $scope.addPlayer =function(){
