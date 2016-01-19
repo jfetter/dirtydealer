@@ -2,7 +2,7 @@
 
 var app = angular.module('socialMockup');
 
-app.service('UserService', function($http, ENV, $location, $rootScope, $cookies, jwtHelper){
+app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 	this.register = function(user){
 		console.log(user)
 		return $http.post(`${ENV.API_URL}/register`, user);
@@ -34,4 +34,29 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 	this.isAuthed = function(token){
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
+})
+
+app.service('gameService', function($http, $rootScope, ENV, $location, $firebaseObject, $firebaseArray, $cookies){
+	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
+
+ //waiting state
+ // display `waiting for players message`
+ //accumulate users, when there are enough users start game.
+	$scope.players = $firebaseArray(ref);
+
+	
+
+
+
+////pre vote state/////
+	 //initialize gameService
+
+	 // start turn timer
+
+	 //pull a black card from `deck`
+
+	 //deal hand of white cards
+
+
+
 })

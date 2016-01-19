@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64"])
+var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
   API_URL: 'http://localhost:3000'
@@ -13,8 +13,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('home', {url: '/', templateUrl: 'views/home/home.html', controller: 'homeCtrl'})
 		.state('login', {url: '/login', templateUrl: 'views/login/login.html', controller: 'loginCtrl'})
 		.state('register', {url: '/register', templateUrl: 'views/register/register.html', controller: 'registerCtrl'})
-		.state('usersList', {url: '/userslist', templateUrl: 'views/user/usersList/usersList.html', controller: 'usersListCtrl'})
-		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/user/userPage/userPage.html', controller: 'userPageCtrl'})
+		.state('game', {url: '/game', templateUrl: 'views/game/game.html', controller: 'gameCtrl'})
+		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
 app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope){
@@ -28,7 +28,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   .then(function(res , err){
     console.log(res.data)
     if (res.data !== "authRequired"){
-    $state.go('usersList');
+      $state.go('userPage', {"username": res.data.username})
     $scope.isLoggedIn = true;
     console.log("LOGGED IN!")
   } else {
@@ -74,7 +74,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
 
 var app = angular.module('socialMockup');
 
-app.service('UserService', function($http, ENV, $location, $rootScope, $cookies, jwtHelper){
+app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 	this.register = function(user){
 		console.log(user)
 		return $http.post(`${ENV.API_URL}/register`, user);
@@ -108,13 +108,95 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 	};
 })
 
+app.service('gameService', function($http, $rootScope, ENV, $location, $firebaseObject, $firebaseArray, $cookies){
+	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
+
+ //waiting state
+ // display `waiting for players message`
+ //accumulate users, when there are enough users start game.
+	$scope.players = $firebaseArray(ref);
+
+	
+
+
+
+////pre vote state/////
+	 //initialize gameService
+
+	 // start turn timer
+
+	 //pull a black card from `deck`
+
+	 //deal hand of white cards
+
+
+
+})
+
+"use strict";
+
+angular.module("socialMockup")
+
+.directive('gameTimer', function() {
+  return {
+    templateUrl: "game/timer.html"
+  };
+})
+
+.directive('dealCards', function() {
+  return {
+    templateUrl: "game/cards.html"
+  };
+})
+
 'use strict';
 
 angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
 
-})
+
+.controller('gameCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray){
+
+	//*******USERAUTH
+	var cookies = $cookies.get('token');
+	if(cookies){
+		$scope.userInfo = (jwtHelper.decodeToken(cookies))
+	}
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		if (res.data === "authRequired"){$location.path('/login')}
+		else{$scope.isLoggedIn = true;}
+	})
+	// $scope.$watch(function(){return $scope.searchTerm}, function(n,o){
+	// 	$scope.updateSearch();
+	// })
+
+	$scope.isUser = function(user){
+		if (user._id !== $scope.userInfo._id){
+			return (false)
+		} else {return true}
+	}
+
+	//******FIREBASE
+	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	// $scope.data = $firebaseObject(ref);
+
+	var syncObject = $firebaseObject(ref);
+  // synchronize the object with a three-way data binding
+  syncObject.$bindTo($scope, "data");
+
+	// create a synchronized array
+	  $scope.messages = $firebaseArray(ref);
+	  // add new items to the array
+	  // the message is automatically added to our Firebase database!
+	  $scope.addMessage = function(message) {
+			// console.log($scope.newMessageText);
+			console.log(message);
+	    $scope.messages.$add({
+	      text: message
+	    });
+	  };
+
+});
 
 'use strict';
 
@@ -259,52 +341,7 @@ angular.module('socialMockup')
 'use strict';
 
 angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
 
-
-.controller('usersListCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper){
-	var cookies = $cookies.get('token');
-	if(cookies){
-		$scope.userInfo = (jwtHelper.decodeToken(cookies))
-	}
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;}
-	})
-	UserService.list()
-	.then(function(res) {
-		users = res.data;
-		$scope.users = users;
-	}, function(err) {
-		console.error(err)
-	});
-	var users;
-
-	$scope.$watch(function(){return $scope.searchTerm}, function(n,o){
-		$scope.updateSearch();
-	})
-
-
-	$scope.isUser = function(user){
-		if (user._id !== $scope.userInfo._id){
-				return (false)
-		} else {return true}
-	}
-		$scope.isAdmin = $scope.userInfo.isAdmin;
-
-	$scope.updateSearch = function(searchTerm){
-		console.log(searchTerm)
-		if(searchTerm){
-			console.log(searchTerm)
-		$scope.users = $scope.users.filter(function(user){
-			if (user.username.match(searchTerm)){
-				return true
-			} else{
-				return false
-			}
-		})
-		} else{
-			$scope.users = users
-		}
-	}
 })
