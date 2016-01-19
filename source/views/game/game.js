@@ -26,13 +26,16 @@ angular.module('socialMockup')
 	}
 
 	$scope.getCards = function(user){
-		$http.jsonp('whiteCards.json').success(function(data) {
-			console.log(data)
-    });
-		// GameService.cards()
-		// .then(function(res){
-		// 	console.log(res)
-		// })
+		$scope.whiteCards = whiteCards;
+		for(var i = 0; i<10; i++){
+			var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
+			console.log($scope.whiteCards[rando])
+			$scope.whiteCards.splice(rando, 1)
+		}
+		console.log($scope.whiteCards.length);
+		$scope.blackCards = blackCards;
+		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
+		console.log($scope.blackCards[deal])
 	}
 
 	//******FIREBASE

@@ -43,7 +43,8 @@ app.service('GameService', function($http, $rootScope, ENV, $location, $firebase
 	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
 
 	// this.cards = function(){
-	// 	return $http.get('/whiteCards.json')
+	// 	// return $http.get('source/json/whiteCards.json');
+	// 	console.log(whiteCards)
 	// }
 
  // waiting state
