@@ -154,7 +154,7 @@ angular.module("socialMockup")
 angular.module('socialMockup')
 
 
-.controller('gameCtrl', function($scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray){
+.controller('gameCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray){
 
 	//*******USERAUTH
 	var cookies = $cookies.get('token');
@@ -184,15 +184,66 @@ angular.module('socialMockup')
 });
 
 	//******FIREBASE
-	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-	// $scope.data = $firebaseObject(ref);
+	//create a new game instance on the scope
+	$scope.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	 // set up a reference for all of the players currently in this game instance
+	 var playersRef = $scope.gameInstance.child("players");
+	 var messageRef = $scope.gameInstance.child("messages")
+	 
+	 $scope.numPlayers = 0; 
+	 
+	// create an array to store each player's info
+  $scope.playerss = $firebaseArray(playersRef);
+  $scope.addPlayer =function(){
+  	// figure out how to pull user id info ... maybe store it on rootscope?
+  	var thisPlayer = cookies;
+  	console.log("this player logged In", thisPlayer)
+  	$scope.playerss.$add({
+  		id: thisPlayer
+  	})
+  }
 
-	var syncObject = $firebaseObject(ref);
+	 playersRef.on("child_added", function() {
+        $timeout(function() {
+          $scope.numPlayers ++;
+          console.log("PLAYER JOINED", $scope.numPlayers)
+        });
+      });
+      playersRef.on("child_removed", function() {
+        $timeout(function() {
+          $scope.numPlayers -= 1;
+          console.log("PLAYER QUIT", playersRef)
+        });
+      });
+
+
+  // Keep track of when the logged-in user in connected or disconnected from Firebase
+  // $scope.rootRef.child(".info/connected").on("value", function(dataSnapshot) {
+  //   if (dataSnapshot.val() === true) {
+  //     // Remove the user from the logged-in users list when they get disconnected
+  //     var loggedInUsersRef = $scope.rootRef.child("loggedInUsers/" + $scope.authData.provider + "/" + $scope.authData.uid);
+  //     loggedInUsersRef.onDisconnect().remove();
+
+  //     // Add the user to the logged-in users list when they get connected
+  //     var username = ($scope.authData.provider === "github") ? $scope.authData.github.username : $scope.authData.twitter.username;
+  //     loggedInUsersRef.set({
+  //       imageUrl: ($scope.authData.provider === "github") ? $scope.authData.github.cachedUserProfile.avatar_url : $scope.authData.twitter.cachedUserProfile.profile_image_url_https,
+  //       userUrl: ($scope.authData.provider === "github") ?  "https://github.com/" + username : "https://twitter.com/" + username,
+  //       username: username
+  //     });
+  //   }
+
+
+
+
+	//var syncObject = $firebaseObject(ref);
   // synchronize the object with a three-way data binding
-  syncObject.$bindTo($scope, "data");
+  //syncObject.$bindTo($scope, "data");
+
+
 
 	// create a synchronized array
-	  $scope.messages = $firebaseArray(ref);
+	  $scope.messages = $firebaseArray(messageRef);
 	  // add new items to the array
 	  // the message is automatically added to our Firebase database!
 	  $scope.addMessage = function(message) {

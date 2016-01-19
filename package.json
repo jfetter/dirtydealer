@@ -4,8 +4,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "post-install" : "npm i && bower i && gulp build",
-    "start" : "node app.js"
+    "post-install": "npm i && bower i && gulp build",
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "cookie-parser": "^1.4.0",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
+    "firebase": "^2.3.2",
     "gulp": "^3.9.0",
     "gulp-add-src": "^0.2.0",
     "gulp-bower": "0.0.11",
