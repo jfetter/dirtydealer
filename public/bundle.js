@@ -176,6 +176,13 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
+	$.ajax({
+    url: "\countries.json",
+    success: function (data) {
+        var obj = JSON.parse(data);
+    }
+});
+
 	//******FIREBASE
 	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 	// $scope.data = $firebaseObject(ref);
@@ -197,6 +204,14 @@ angular.module('socialMockup')
 	  };
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
@@ -337,11 +352,3 @@ angular.module('socialMockup')
 		 else{$scope.isLoggedIn = true;}
 	})
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})

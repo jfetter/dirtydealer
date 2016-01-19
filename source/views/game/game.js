@@ -25,6 +25,13 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
+	$.ajax({
+    url: "\countries.json",
+    success: function (data) {
+        var obj = JSON.parse(data);
+    }
+});
+
 	//******FIREBASE
 	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 	// $scope.data = $firebaseObject(ref);
