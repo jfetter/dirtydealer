@@ -2,11 +2,9 @@
 
 var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64"])
 
-
 app.constant('ENV', {
   API_URL: 'http://localhost:3000'
 });
-
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.html5Mode(true);
@@ -93,31 +91,8 @@ app.service('UserService', function($http, ENV, $location, $rootScope, $cookies,
 	this.auth = function(){
 		return $http.get(`${ENV.API_URL}/auth`)
 	};
-	this.favoriteUser = function(userId){
-		var data = {};
-		var decoded = (jwtHelper.decodeToken($cookies.get('token')))
-		data.myId = decoded._id;
-		data.favoriteId = userId
-		return $http.put(`${ENV.API_URL}/user/favorite`, data)
-	};
 	this.editAccount = function(data){
 		return $http.post(`${ENV.API_URL}/user/edit`, data)
-	}
-	this.unFavoriteUser = function(userId){
-		console.log(userId)
-		var data = {};
-		var decoded = (jwtHelper.decodeToken($cookies.get('token')))
-		data.myId = decoded._id;
-		data.unFavoriteId = userId
-		console.log("MYID", data.myId)
-		console.log("THEIRID", data.unFavoriteId)
-		return $http.put(`${ENV.API_URL}/user/unfavorite`, data)
-	}
-	this.eraseUser = function(userId){
-		console.log("USERID", userId)
-		var data = {};
-		data.userId = userId
-		return $http.post(`${ENV.API_URL}/user/erase`, data)
 	}
 	this.loggedIn = function(isLoggedIn){
 			if(isLoggedIn){ return true }
@@ -144,39 +119,6 @@ angular.module('socialMockup')
 'use strict';
 
 angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-						// console.log("EUSER", user)
-						UserService.loggedIn = 'true';
-						$scope.$emit('loggedIn');
-						$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-			swal({
-				type: "error",
-				title: "Uh-Oh!",
-				text: res.data,
-				showConfirmButton: true,
-				confirmButtonText: "I hear ya.",
-			});
-      }
-			var token = $cookies.get('token');
-      var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
-
-'use strict';
-
-angular.module('socialMockup')
-
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){
@@ -192,28 +134,6 @@ angular.module('socialMockup')
 			return;
 		}
 
-		if(!user.email){
-			swal({
-				type: "error",
-				title: "Give us your email address!",
-				text: "C'mon, we know that's a fake!",
-				showConfirmButton: true,
-				confirmButtonText: "I hear ya.",
-			});
-			return;
-		}
-
-		// if("username or email already exists"){
-		// 	swal({
-		// 		type: "error",
-		// 		title: "Give us your email address!",
-		// 		text: "C'mon, we know that's a fake!",
-		// 		showConfirmButton: true,
-		// 		confirmButtonText: "I hear ya.",
-		// 	});
-		// 	return;
-		// }
-
 		UserService.register(user)
 		.then(function(data){
 			swal({
@@ -221,11 +141,43 @@ angular.module('socialMockup')
 				title: "Successful registration!",
 				text: "Hurray. You're a User!",
 				imageUrl: "images/thumbs-up.jpg"
-			});			$state.go('login');
+			});
+			$state.go('login');
 		}, function(err){
 			console.log(err);
 		});
 	}
+});
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
 });
 
 'use strict';
@@ -238,9 +190,6 @@ angular.module('socialMockup')
 	$scope.editPayload = {};
 	var cookies = $cookies.get('token');
 	var token = jwtHelper.decodeToken(cookies)
-	// if(cookies){
-	// 	$scope.userInfo = (jwtHelper.decodeToken(cookies))
-	// }
 	console.log("COOKIES", cookies)
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
@@ -249,28 +198,14 @@ angular.module('socialMockup')
 			 $location.path('/login')
 		 } else{$scope.isLoggedIn = true;}
 	})
+
 	UserService.page($state.params.username)
 	.then(function(res) {
-		console.log("PARAMS", $state.params.name)
-		console.log(res.data.favorites)
 		$scope.user = res.data;
-		$scope.favorites = res.data.favorites;
 		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
 		$scope.isEditing = false;
 		$scope.editPayload.username = $scope.user.username;
-		$scope.editPayload.email = $scope.user.email;
-
-		$scope.editPayload.phone = $scope.user.phone;
-		$scope.editPayload.name = $scope.user.name
-		$scope.editPayload.address = $scope.user.address
 		$scope.editPayload._id = $scope.user._id
-		$scope.editPayload.isAdmin = token.isAdmin
-
-		if ($scope.user.phone ==0){
-			console.log("number is zero")
-			$scope.hasNoPhoneNumber = true;
-			console.log($scope.hasNoPhoneNumber)
-		}
 
     console.log($scope.isEditing)
 		console.log("edit Payload", $scope.editPayload)
@@ -285,21 +220,6 @@ angular.module('socialMockup')
 	}, function(err) {
 		console.error(err)
 	});
-  $scope.test = function(){
-    console.log("TESTING")
-  }
-	$scope.removeFavorite = function (userId){
-		UserService.unFavoriteUser(userId)
-		.then(function(res){
-			console.log(res.data)
-			$scope.userInfo = res.data
-			var cookie = $cookies.get('token');
-			var token = jwtHelper.decodeToken(cookie);
-			console.log("TOKEN: ",token)
-			console.log("INFO: ",$scope.userInfo)
-			$scope.favorites = $scope.userInfo.favorites;
-		})
-	}
 
 	$scope.toggleEdit = function(){
     console.log($scope.isEditing)
@@ -308,17 +228,13 @@ angular.module('socialMockup')
 
 	$scope.saveEdits = function(){
 		console.log("save edits!!!!!" , $scope.editPayload);
-		if(!$scope.editPayload.phone){$scope.editPayload.phone = 0};
-		if(!$scope.editPayload.address){$scope.editPayload.address = ""};
 		UserService.editAccount($scope.editPayload)
-
 		.then(function(response){
 			$scope.$emit('edit', response.data)
 			$scope.user = response.data;
 			$scope.isEditing = !$scope.isEditing;
 			console.log(response.data, "received")
 		})
-
 	}
 
   $scope.uploadImage = function(image){
@@ -328,12 +244,8 @@ angular.module('socialMockup')
       console.log(res.data)
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
       console.log($scope.profileImageSrc)
-
     })
   }
-
-
-
 
 	$scope.exposeData = function(){console.log($scope.myFile)}
 	UserService.isAuthed(cookies)
@@ -342,7 +254,6 @@ angular.module('socialMockup')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
-
 });
 
 'use strict';
@@ -357,7 +268,6 @@ angular.module('socialMockup')
 	}
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
-		// console.log(res.data)
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
@@ -374,36 +284,8 @@ angular.module('socialMockup')
 		$scope.updateSearch();
 	})
 
-	$scope.addFavorite = function (userId){
-		UserService.favoriteUser(userId)
-		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
-		})
-	}
-	$scope.removeFavorite = function (userId){
-		UserService.unFavoriteUser(userId)
-		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
-		})
-	}
-	$scope.eraseUser = function (userId){
-		UserService.eraseUser(userId)
-		.then(function(res){
-			$scope.users = res.data
-			users = res.data
-		})
-	}
 
-	$scope.favorited = function(user){
-		// console.log("USER", user);
-		if (user._id !== $scope.userInfo._id){
-			return ($scope.userInfo.favorites).some(function(favorite){
-				return (user._id === favorite)
-			})
-		} else {return true}
-	}
 	$scope.isUser = function(user){
-		// console.log("USER", user);
 		if (user._id !== $scope.userInfo._id){
 				return (false)
 		} else {return true}
@@ -411,7 +293,6 @@ angular.module('socialMockup')
 		$scope.isAdmin = $scope.userInfo.isAdmin;
 
 	$scope.updateSearch = function(searchTerm){
-		// $scope.searchTerm = searchTerm
 		console.log(searchTerm)
 		if(searchTerm){
 			console.log(searchTerm)

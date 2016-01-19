@@ -10,7 +10,7 @@ var app = express();
 var cookieParser = require("cookie-parser");
 
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/socialMockup');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/cardsagainsthumanity');
 
 app.set('views', 'templates');
 app.set('view engine', 'ejs');
@@ -32,7 +32,6 @@ app.use('/auth', require('./routes/auth'))
 app.use('/', function(req, res){
 	res.render('index')
 });
-
 
 // 404 HANDLER
 app.use(function(req, res){

@@ -10,7 +10,6 @@ angular.module('socialMockup')
 	}
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
-		// console.log(res.data)
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
@@ -27,36 +26,8 @@ angular.module('socialMockup')
 		$scope.updateSearch();
 	})
 
-	$scope.addFavorite = function (userId){
-		UserService.favoriteUser(userId)
-		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
-		})
-	}
-	$scope.removeFavorite = function (userId){
-		UserService.unFavoriteUser(userId)
-		.then(function(res){
-			$scope.userInfo = (jwtHelper.decodeToken(res.data))
-		})
-	}
-	$scope.eraseUser = function (userId){
-		UserService.eraseUser(userId)
-		.then(function(res){
-			$scope.users = res.data
-			users = res.data
-		})
-	}
 
-	$scope.favorited = function(user){
-		// console.log("USER", user);
-		if (user._id !== $scope.userInfo._id){
-			return ($scope.userInfo.favorites).some(function(favorite){
-				return (user._id === favorite)
-			})
-		} else {return true}
-	}
 	$scope.isUser = function(user){
-		// console.log("USER", user);
 		if (user._id !== $scope.userInfo._id){
 				return (false)
 		} else {return true}
@@ -64,7 +35,6 @@ angular.module('socialMockup')
 		$scope.isAdmin = $scope.userInfo.isAdmin;
 
 	$scope.updateSearch = function(searchTerm){
-		// $scope.searchTerm = searchTerm
 		console.log(searchTerm)
 		if(searchTerm){
 			console.log(searchTerm)

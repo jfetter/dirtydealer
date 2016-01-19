@@ -2,11 +2,9 @@
 
 var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64"])
 
-
 app.constant('ENV', {
   API_URL: 'http://localhost:3000'
 });
-
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.html5Mode(true);

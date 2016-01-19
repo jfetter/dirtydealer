@@ -8,46 +8,34 @@ var jwt = require('jwt-simple');
 var User;
 
 var userSchema = Schema({
-	email:{type: String, required: true, unique: true},
-  username: { type: String, required: true, unique: true},
-	name: {type: String, required: true},
-  password: { type: String, required: true },
-	phone: {type: Number},
-	address: {type: String},
+	username: { type: String, required: true, unique: true},
+	password: { type: String, required: true },
 	avatar: {type: String, data:Buffer, default: ''},
-	favorites: [{type: Schema.Types.ObjectId, ref: "User"}],
-	isAdmin: {type: Boolean, default: false}
+	cards: [{type: Schema.Types.ObjectId, ref: "WhiteCards"}],
+	isPlaying: {type: Boolean, default: false}
 });
 
 
 userSchema.statics.register = function(user, cb){
-  var username = user.username;
-  var email = user.email;
-  var name = user.name;
+	var username = user.username;
 	bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(user.password, salt, function(err, password) {
-      User.find({$or: [{username: username}, {email: email}] }, function(err, user){
-        if (err || user[0]){return console.log(err) || alert("Username or email already exists")}
-        console.log(user);
-        var newUser = new User;
-        newUser.username = username;
-        newUser.email = email;
-        newUser.name = name;
-        newUser.password = password;
-        console.log(newUser)
-        newUser.save(function(err, savedUser){
-          console.log('saved user: ', savedUser)
+		bcrypt.hash(user.password, salt, function(err, password) {
+			User.find({username: username}, function(err, user){
+				if (err || user[0]){return console.log(err || "Username already exists")}
+				console.log(user);
+				var newUser = new User;
+				newUser.username = username;
+				newUser.password = password;
+				console.log(newUser)
+				newUser.save(function(err, savedUser){
+					console.log('saved user: ', savedUser)
 					console.log(err);
-
-          savedUser.password = null;
-          cb(err, savedUser)
-        })
-      })
-
-    });
-});
-
-
+					savedUser.password = null;
+					cb(err, savedUser)
+				})
+			})
+		});
+	});
 }
 
 
@@ -60,24 +48,12 @@ userSchema.statics.login = function(user, cb){
 		bcrypt.compare(user.password, dbUser.password, function(err, correct){
 			if(err || !correct) return cb(err || 'Incorrect username or password');
 			dbUser.password = null;
-      dbUser.avatar = null
+			dbUser.avatar = null
 			cb(null, dbUser);
 		})
 	})
-	// User.find({$or: [{username: username}, {email: username}]}, function(err, userReturned){
-	// 	console.log(userReturned.length)
-	// 	if(userReturned.length){
-	// 		bcrypt.compare(password, userReturned[0].password, function(err, res){
-	// 			userReturned[0].password = null
-	// 			cb(null, userReturned[0])
-	// 		})
-	//
-	// 	}else{cb('no user found', null)}
-	// 	if(err){return console.log(err)}
-	// 	})
-	}
+}
 
 User = mongoose.model('User', userSchema);
-
 
 module.exports = User;
