@@ -30,18 +30,18 @@
   </div>
 
   <!--   all of this will go in our waiting for players state -->
-  <p>waiting for {{ 3 - numPlayers}} players</p>
+  <div class="row" >
+    <h1>waiting for {{ 3 - numPlayers}} players</h1>
 
-  <h2>PLAYERS</h2>
-  <div ng-repeat="player in playerss track by $index">
-    <p> {{playerss}}</p>
+    <h2>PLAYERS</h2>
+    <div ng-repeat="player in playerss track by $index">
+      <p> {{playerss}}</p>
+    </div>
   </div>
-  <button ng-click="removePlayer()">Quit</button>
+    <button ng-click="removePlayer()">Quit</button>
 
   <!--   end wiating for players stuff  -->
-  <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
 
-  </div>
 
   <div class="row" ng-if="game.data.state === 'prevote'">
 
