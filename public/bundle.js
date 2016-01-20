@@ -1023,7 +1023,7 @@ angular.module('socialMockup')
 
 .controller('dealingCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
-	// var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	//******DEALING BOTH DECKS:
 	$scope.startDeck = function(user){
@@ -1065,7 +1065,10 @@ angular.module('socialMockup')
 	var exampleHandRef = gameInstance.child("exampleHand")
 	$scope.exampleHand = $firebaseArray(exampleHandRef)
 
-
+	$scope.whoAmI = function(){
+		
+		console.log($scope.user.username)
+	}
 	$scope.howManyCards = function(){
 		console.log("Firebase", $scope.whiteCards.text.length);
 		console.log("Local", whiteCards.length);
