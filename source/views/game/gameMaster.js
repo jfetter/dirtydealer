@@ -26,9 +26,9 @@ angular.module('socialMockup')
 
 
 	//********TIMER:
-	$scope.counter = 60;
+	$scope.counter = 90;
 	var mytimeout = null; // the current timeoutID
-	// Actual timer method, counts down every second, stops on zero.
+	// actual timer method, counts down every second, stops on zero
 	$scope.onTimeout = function() {
 		if($scope.counter ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
@@ -38,57 +38,46 @@ angular.module('socialMockup')
 		$scope.counter--;
 		mytimeout = $timeout($scope.onTimeout, 1000);
 	};
-
-	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
+	$scope.startTimer = function() {
+		mytimeout = $timeout($scope.onTimeout, 1000);
+	};
+	// stops and resets the current timer
+	$scope.stopTimer = function() {
+		$scope.$broadcast('timer-stopped', $scope.counter);
+		$scope.counter = 90;
+		$timeout.cancel(mytimeout);
+	};
+	// triggered, when the timer stops, you can do something here, maybe show a visual indicator or vibrate the device
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
-			swal({
-				type: "error",
-				title: "Uh-Oh!",
-				text: "Time is up.",
-				showConfirmButton: true,
-				confirmButtonText: "Ok.",
-			});
+			console.log('your time ran out!');
 		}
 	});
 
-	/////****ADD AND REMOVE PLAYERS:
-	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
-	var playersRef = gameInstance.child("players");
-	var messageRef = gameInstance.child("messages")
-	$scope.playerss = $firebaseArray(playersRef);
+	var playersRef = GameService.gameInstance.child("players");
+	var messageRef = GameService.gameInstance.child("messages")
+	$scope.playerss = GameService.playerss
 	$scope.numPlayers = 0;
+	/////****ADD AND REMOVE PLAYERS:
+
+
+
 
 	// create an array to store each player's info
-	$scope.addPlayer = function(){
-		// figure out how to pull user id info ... maybe store it on rootscope?
-		var thisPlayer = Date.now();
-		localStorage.player = thisPlayer;
-		console.log("this player logged In", localStorage.player)
-		//**The next line kicks off the timer!
-		mytimeout = $timeout($scope.onTimeout, 1000);
-		playersRef.child(thisPlayer).set({player: thisPlayer});
-	}
+	// $scope.addPlayer = function(){
+	// 	GameService.addPlayer();
+	// }
 	if (!localStorage.thisPlayer){
-		$scope.addPlayer();
-	}
-
-		//remove players
-$scope.removePlayer = function(){
-    var player = JSON.parse(localStorage.player);
-		console.log("player to remove", player);
-		playersRef.child(player).remove();
-		console.log("players before remove", $scope.playerss)
-		localStorage.removeItem("player");
-		console.log("players after remove", $scope.playerss)
-		$state.go("userPage");
+		GameService.addPlayer();
 	}
 
 
+	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			$scope.numPlayers ++;
+			console.log("current Players", $scope.playerss)
 		});
 	});
 
@@ -100,27 +89,13 @@ $scope.removePlayer = function(){
 		});
 	});
 
-//initialize new game
-$scope.launchNewGame = function(){
-	$scope.numPlayers = 0;
-	console.log("NEW GAME");
-}
-	//add player to waiting room when they click join
-	if ($scope.numPlayers < 3 ){
-		$scope.phase = "waitingForPlayers";
-		} else {
-		$scope.launchNewGame();
+$scope.removePlayer = function(){
+		GameService.removePlayer();
 	}
 
-
-
-
 	// *******MESSAGES
-	$scope.messages = $firebaseArray(messageRef);
+	$scope.messages = GameService.messages;
 	$scope.addMessage = function(message) {
-		console.log(message);
-		$scope.messages.$add({
-			text: message
-		});
-	};
+		GameService.addMessage(message);
+	}
 });
