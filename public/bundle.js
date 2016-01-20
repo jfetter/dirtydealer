@@ -1027,18 +1027,19 @@ angular.module('socialMockup')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
-	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
-	this.whiteCardRef = gameInstance.child("whiteCards")
-	var whiteCardRef = this.whiteCardRef;
-	this.blackCardRef = gameInstance.child("blackCards")
-	var blackCardRef = this.blackCardRef;
+	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+	this.whiteCardRef = this.gameInstance.child("whiteCards")
+	//var whiteCardRef = this.whiteCardRef;
+	this.blackCardRef = this.gameInstance.child("blackCards")
+	//var blackCardRef = this.blackCardRef;
 
 
-	this.playersRef = gameInstance.child("players");
-	var playersRef = this.playersRef
-	this.messageRef = gameInstance.child("messages")
-	var messageRef = this.messageRef
+
+	// this.playersRef = gameInstance.child("players");
+	// var playersRef = this.playersRef
+	// this.messageRef = gameInstance.child("messages")
+	// var messageRef = this.messageRef
 
 
 
@@ -1046,8 +1047,8 @@ angular.module('socialMockup')
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
-		whiteCardRef.$add({array: whiteCards})
-		blackCardRef.$add(blackCards)
+		this.gameInstance.child('whiteCards').set({array: whiteCards})
+		this.gameInstance.child('blackCards').set(blackCards)
 	}
 
 	//******DEALING BLACK CARDS:
@@ -1171,8 +1172,8 @@ angular.module('socialMockup')
 
 	var currentState = '';
 
-		CardsService.startDeck();
 	var gameState = function() {
+	 	CardsService.startDeck();
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
@@ -1245,7 +1246,6 @@ $scope.$on('timer-stopped', function(event, remaining) {
 	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
 		$timeout(function() {
-			$scope.numPlayers ++;
 			console.log("current Players", $scope.playerss)
 		});
 	});
@@ -1253,7 +1253,6 @@ $scope.$on('timer-stopped', function(event, remaining) {
 	//update number of players when a player quits
 	playersRef.on("child_removed", function() {
 		$timeout(function() {
-			$scope.numPlayers -= 1;
 			console.log("PLAYER QUIT", playersRef)
 		});
 	});

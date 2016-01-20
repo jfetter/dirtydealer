@@ -43,8 +43,8 @@ angular.module('socialMockup')
 
 	var currentState = '';
 
-		CardsService.startDeck();
 	var gameState = function() {
+	 	CardsService.startDeck();
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
@@ -117,7 +117,6 @@ $scope.$on('timer-stopped', function(event, remaining) {
 	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
 		$timeout(function() {
-			$scope.numPlayers ++;
 			console.log("current Players", $scope.playerss)
 		});
 	});
@@ -125,7 +124,6 @@ $scope.$on('timer-stopped', function(event, remaining) {
 	//update number of players when a player quits
 	playersRef.on("child_removed", function() {
 		$timeout(function() {
-			$scope.numPlayers -= 1;
 			console.log("PLAYER QUIT", playersRef)
 		});
 	});
