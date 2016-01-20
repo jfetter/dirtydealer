@@ -6,7 +6,7 @@
   <!-- all changes from our Firebase database magically appear here! -->
   <!-- <h1>You said: {{ data.text }}</h1> -->
 
-<!-- //***Firebase Tutorials.  -->
+  <!-- //***Firebase Tutorials.  -->
   <ul>
     <li ng-repeat="message in messages">
       <!-- edit a message -->
@@ -20,21 +20,25 @@
     <input ng-model="newMessageText" type="text" />
     <button type="submit">Add Message</button>
   </form>
-    <button ng-click="addPlayer()">join</button>
 
-  <p>{{numPlayers}} are playing</p>
+  <div ng-controller="dealingCardsCtrl">
+    <button ng-click="startDeck()">Start Deck</button>
+  </div>
 
-<button ng-click="startDeck()">Start Deck</button>
+  <div>
+    <game-timer />
+  </div>
 
+  <!--   all of this will go in our waiting for players state -->
+  <p>waiting for {{ 3 - numPlayers}} players</p>
 
+  <h2>PLAYERS</h2>
+  <div ng-repeat="player in playerss track by $index">
+    <p> {{playerss}}</p>
+  </div>
+  <button ng-click="removePlayer()">Quit</button>
 
-<!-- TIMER -->
-  {{counter}}
-  <button ng-click='startTimer()'>Start
-  <button ng-click='stopTimer()'>Stop
-
-
-
+  <!--   end wiating for players stuff  -->
   <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
 
   </div>

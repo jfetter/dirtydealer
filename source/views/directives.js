@@ -4,7 +4,11 @@ angular.module("socialMockup")
 
 .directive('gameTimer', function() {
   return {
-    templateUrl: "game/timer.html"
+    restrict: "AE",
+    templateUrl: "game/timer.html",
+    scope: {
+      text: 'ettsts'
+    }
   };
 })
 
