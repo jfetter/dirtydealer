@@ -90,6 +90,18 @@ angular.module('socialMockup')
 		});
 	});
 
+	// +//initialize new game 
+ // +$scope.launchNewGame = function(){
+ // +	$scope.numPlayers = 0; 
+ // +	console.log("NEW GAME");
+ // +}
+ // +	//add player to waiting room when they click join
+ // +	if ($scope.numPlayers < 3 ){
+ // +		$scope.phase = "waitingForPlayers";
+ // +		} else {
+ // +		$scope.launchNewGame();
+ // +	}
+
 $scope.removePlayer = function(){
 		GameService.removePlayer();
 		$state.go("userPage");

@@ -976,7 +976,7 @@ angular.module('socialMockup')
 	this.removePlayer = function(){
     var player = JSON.parse(localStorage.player);
 		console.log("player to remove", player);
-		playersRef.child("player").remove();
+		playersRef.child(player).remove();
 		console.log("players before remove", this.playerss)
 		localStorage.removeItem("player");
 		console.log("players after remove", this.playerss)
@@ -989,10 +989,11 @@ this.addPlayer = function(){
     //deal cards function here to populate array
 		localStorage.player = thisPlayer;
 		console.log("this player logged In", localStorage.player)
-		playersRef.child('player').set({
-      player: thisPlayer,
+		playersRef.child(thisPlayer).set({
+      playerId: thisPlayer,
       cards: cards,
-      gamePoints: 0
+      gamePoints: 0,
+      hello: "hello"
     });
 	}
 
@@ -1179,6 +1180,18 @@ angular.module('socialMockup')
 		});
 	});
 
+	// +//initialize new game 
+ // +$scope.launchNewGame = function(){
+ // +	$scope.numPlayers = 0; 
+ // +	console.log("NEW GAME");
+ // +}
+ // +	//add player to waiting room when they click join
+ // +	if ($scope.numPlayers < 3 ){
+ // +		$scope.phase = "waitingForPlayers";
+ // +		} else {
+ // +		$scope.launchNewGame();
+ // +	}
+
 $scope.removePlayer = function(){
 		GameService.removePlayer();
 		$state.go("userPage");
@@ -1197,6 +1210,14 @@ angular.module('socialMockup')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
@@ -1228,14 +1249,6 @@ angular.module('socialMockup')
 	}
 
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
