@@ -10,18 +10,19 @@ angular.module('socialMockup')
 	// this.messageRef = this.gameInstance.child("messages")
 	// var messageRef = this.messageRef
 
-	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-	this.whiteCardRef = gameInstance.child("whiteCards")
-	var whiteCardRef = this.whiteCardRef;
-	this.blackCardRef = gameInstance.child("blackCards")
-	var blackCardRef = this.blackCardRef;
+	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+	this.whiteCardRef = this.gameInstance.child("whiteCards")
+	//var whiteCardRef = this.whiteCardRef;
+	this.blackCardRef = this.gameInstance.child("blackCards")
+	//var blackCardRef = this.blackCardRef;
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
-		whiteCardRef.$add({array: whiteCards})
-		blackCardRef.$add(blackCards)
+		this.gameInstance.child('whiteCards').set({array: whiteCards})
+		this.gameInstance.child('blackCards').set(blackCards)
 	}
+
 
 
 	//******DEALING BLACK CARDS:
