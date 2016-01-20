@@ -89,7 +89,6 @@ angular.module('socialMockup')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			$scope.numPlayers ++;
-			console.log("current Players", $scope.playerss)
 		});
 	});
 
