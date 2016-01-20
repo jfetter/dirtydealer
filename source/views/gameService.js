@@ -25,13 +25,15 @@ angular.module('socialMockup')
 
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
-    var cards = ["dirty deeds", "done dirt cheap"];
+    var gamePoints = 0; 
+    var cards = CardService.DealWhite();
     //deal cards function here to populate array
 		localStorage.player = thisPlayer;
-		console.log("this player logged In", localStorage.player)
+		//console.log("this player logged In", localStorage.player)
 		playersRef.child(thisPlayer).set({
       playerId: thisPlayer,
-      cards: cards
+      cards: cards,
+      gamePoints: gamePoints
     });
 	}
 
