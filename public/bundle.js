@@ -1111,43 +1111,75 @@ angular.module('socialMockup')
 	}
 
 
-
-
-	//********TIMER:
-	$scope.counter = 90;
-	var mytimeout = null; // the current timeoutID
-	// actual timer method, counts down every second, stops on zero
-	$scope.onTimeout = function() {
-		if($scope.counter ===  0) {
-			$scope.$broadcast('timer-stopped', 0);
-			$timeout.cancel(mytimeout);
-			return;
-		}
-		$scope.counter--;
-		mytimeout = $timeout($scope.onTimeout, 1000);
-	};
-	$scope.startTimer = function() {
-		mytimeout = $timeout($scope.onTimeout, 1000);
-	};
-	// stops and resets the current timer
-	$scope.stopTimer = function() {
-		$scope.$broadcast('timer-stopped', $scope.counter);
-		$scope.counter = 90;
-		$timeout.cancel(mytimeout);
-	};
-	// triggered, when the timer stops, you can do something here, maybe show a visual indicator or vibrate the device
-	$scope.$on('timer-stopped', function(event, remaining) {
-		if(remaining === 0) {
-			console.log('your time ran out!');
-		}
-	});
-
-
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	$scope.playerss = GameService.playerss 
 
-	$scope.numPlayers = 0;
+	$scope.numPlayers = $scope.playerss.length;
+	/* ______________
+	|              |
+	|  States:     |
+	|______________| */
+
+
+
+
+	var currentState = '';
+
+	var gameState = function() {
+		console.log("in game state function")
+		var gameStates = ['prevote', 'vote', 'postvote'];
+		var count = 0; 
+		currentState = gameStates[count]
+		switch (currentState) {
+
+			case 'prevote':
+  		//need an '&&' no white card has been selected?
+			mytimeout = $timeout($scope.onTimeout, 1000);
+			currentState = 'prevote';
+			console.log('CURRENT STATE IS PREVOTE');
+			// break;
+		
+
+	}
+}
+
+	//initialize new game or display waiting room
+ if ($scope.numPlayers < 3 ){
+ 		console.log("less than 3 players")
+ 		//$scope.phase = "waitingForPlayers";
+ 		} else {
+ 		gameState();
+ 	}
+
+
+//********TIMER:
+$scope.counter = 60;
+var mytimeout = null; // the current timeoutID
+// Actual timer method, counts down every second, stops on zero.
+$scope.onTimeout = function() {
+	if($scope.counter ===  0) {
+		$scope.$broadcast('timer-stopped', 0);
+		$timeout.cancel(mytimeout);
+		return;
+	}
+	$scope.counter--;
+	mytimeout = $timeout($scope.onTimeout, 1000);
+};
+
+// Triggered, when the timer stops, can do something here, maybe show a visual alert.
+$scope.$on('timer-stopped', function(event, remaining) {
+	if(remaining === 0) {
+		swal({
+			type: "error",
+			title: "Uh-Oh!",
+			text: "Time is up.",
+			showConfirmButton: true,
+			confirmButtonText: "Ok.",
+		});
+	}
+});
+
 	/////****ADD AND REMOVE PLAYERS:
 
 
@@ -1177,18 +1209,6 @@ angular.module('socialMockup')
 			console.log("PLAYER QUIT", playersRef)
 		});
 	});
-
-	// +//initialize new game 
- // +$scope.launchNewGame = function(){
- // +	$scope.numPlayers = 0; 
- // +	console.log("NEW GAME");
- // +}
- // +	//add player to waiting room when they click join
- // +	if ($scope.numPlayers < 3 ){
- // +		$scope.phase = "waitingForPlayers";
- // +		} else {
- // +		$scope.launchNewGame();
- // +	}
 
 $scope.removePlayer = function(){
 		GameService.removePlayer();
@@ -1246,6 +1266,39 @@ angular.module('socialMockup')
 		});
 	}
 
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
 });
 
 'use strict';
@@ -1322,37 +1375,4 @@ angular.module('socialMockup')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
-});
-
-'use strict';
-
-angular.module('socialMockup')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
 });
