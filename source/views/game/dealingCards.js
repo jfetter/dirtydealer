@@ -65,18 +65,15 @@ angular.module('socialMockup')
 		console.log("New cards", whiteCards)
 		for(var i = 0; i<10; i++){
 			var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
-			// var takenCards = whiteCards[rando];
 			var takenCards = $scope.whiteCards[0][rando];
 			console.log("Rando", rando)
 			console.log("Taken cards", takenCards)
 			whiteCards.splice(rando, 1);
 			$scope.exampleHand.$add(takenCards)
 			console.log("Cards left", whiteCards.length)
-
 			$scope.whiteCards.$remove(0);
 			$scope.whiteCards.$save(whiteCards);
 		}
-			// $scope.whiteCards.$add(whiteCards);
 	}
 
 
