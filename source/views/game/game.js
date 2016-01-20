@@ -41,7 +41,6 @@ angular.module('socialMockup')
 	//******FIREBASE
 	//create a new game instance on the scope
 	$scope.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-
 	 // set up a reference for all of the players currently in this game instance
 	 var playersRef = $scope.gameInstance.child("players");
 	 var messageRef = $scope.gameInstance.child("messages")
