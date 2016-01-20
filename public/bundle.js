@@ -1004,14 +1004,6 @@ this.addPlayer = function(){
 'use strict';
 
 angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('socialMockup')
 
 
 .controller('dealingCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
@@ -1020,7 +1012,7 @@ angular.module('socialMockup')
 
 	//******DEALING BOTH DECKS:
 	$scope.startDeck = function(user){
-		$scope.whiteCards.$add(whiteCards)
+		$scope.whiteCards.$add({text: whiteCards, player: ''})
 		$scope.blackCards.$add(blackCards)
 	}
 
@@ -1051,54 +1043,45 @@ angular.module('socialMockup')
 	$scope.exampleHand = $firebaseArray(exampleHandRef)
 
 
-
-	$scope.startingBand = function(user){
-		$scope.whiteCards.$remove(0);
-		for(var i = 0; i<10; i++){
-			var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
-			var takenCards = $scope.whiteCards[0][rando];
-			console.log("Taken cards", takenCards)
-		}
-		$scope.whiteCards.$add(whiteCards);
-	}
-
 	$scope.howManyCards = function(){
-		console.log("Firebase", $scope.whiteCards[0].length);
+		console.log("Firebase", $scope.whiteCards.text.length);
 		console.log("Local", whiteCards.length);
 	}
 	$scope.takeASingleCard = function(){
 		$scope.whiteCards.$remove($scope.whiteCards[3])
 		console.log($scope.whiteCards.$remove)
+	}
 
+	$scope.killCards = function(){
+		$scope.whiteCards.$remove(0);
+		$scope.blackCards.$remove(0);
+		$scope.exampleHand.$remove(0);
 	}
 	$scope.startingHand = function(){
-		whiteCards = $scope.whiteCards[0]
-		console.log("New cards", whiteCards)
+		var basedCards = $scope.whiteCards[0]
+		console.log("New cards", basedCards)
 		for(var i = 0; i<10; i++){
-			var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
-			var takenCards = $scope.whiteCards[0][rando];
+			var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
+			var takenCards = basedCards.text[rando];
 			console.log("Rando", rando)
 			console.log("Taken cards", takenCards)
-			whiteCards.splice(rando, 1);
+			basedCards.text.splice(rando, 1);
 			$scope.exampleHand.$add(takenCards)
-			console.log("Cards left", whiteCards.length)
+			console.log("Cards left", basedCards.text.length)
 			$scope.whiteCards.$remove(0);
-			$scope.whiteCards.$save(whiteCards);
 		}
+			$scope.whiteCards.$add(basedCards);
 	}
-
-
-
 	$scope.drawOne = function(user){
-		$scope.whiteCards.$remove(0);
-		var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
-		var takenCards = whiteCards[rando];
+		var basedCards = $scope.whiteCards[0]
+		var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
+		var takenCards = basedCards.text[rando];
+		basedCards.text.splice(rando, 1);
 		$scope.exampleHand.$add(takenCards)
-		whiteCards.splice(rando, 1);
-		$scope.whiteCards.$add(whiteCards);
+		$scope.whiteCards.$remove(0);
+		$scope.whiteCards.$add(basedCards);
+		console.log("Cards left", basedCards.text.length)
 	}
-
-
 });
 
 'use strict';
@@ -1214,6 +1197,45 @@ angular.module('socialMockup')
 'use strict';
 
 angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
+
+'use strict';
+
+angular.module('socialMockup')
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){
@@ -1318,35 +1340,4 @@ angular.module('socialMockup')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
-});
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
 });
