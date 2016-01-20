@@ -18,14 +18,18 @@ angular.module('socialMockup')
 	var blackCardRef = gameInstance.child("blackCards")
 	$scope.blackCards = $firebaseArray(blackCardRef)
 
+	var scenarioCardRef = gameInstance.child("scenarioCardRef")
+	$scope.scenarioCardRef = $firebaseArray(scenarioCardRef)
 
 
 	$scope.dealBlackCard = function(user){
-		$scope.blackCards = blackCards;
-		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
-		console.log($scope.blackCards[deal])
+		$scope.blackCards.$remove(0);
+		var rando = Math.floor((Math.random() * blackCards.length ) + 0);
+		var takenCards = blackCards[rando];
+		$scope.scenarioCardRef.$add(takenCards)
+		blackCards.splice(rando, 1);
+		$scope.blackCards.$add(blackCards);
 	}
-
 
 
 	//******DEALING WHITE CARDS:
@@ -35,26 +39,7 @@ angular.module('socialMockup')
 	var exampleHandRef = gameInstance.child("exampleHand")
 	$scope.exampleHand = $firebaseArray(exampleHandRef)
 
-	// $scope.startingHand = function(user){
-	//   for(var i = 0; i<10; i++){
-	//     var rando = Math.floor(Math.random() * (whiteCards.length - 0)) + 0;
-	//     $scope.whiteCards.$add(whiteCards[rando])
-	//     $scope.whiteCards.splice(rando, 1)
-	//   }
-	// }
 
-	// $scope.startingHand = function(user){
-	// 	$scope.whiteCards.$remove();
-	// 	$scope.exampleHand.$remove();
-	//   for(var i = 0; i<10; i++){
-	//     var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
-	//     $scope.exampleHand.$add(whiteCards[rando])
-	// 		whiteCards.splice(rando, 1);
-	// 		console.log("Cards left", whiteCards.length)
-	// 		$scope.whiteCards.$remove(rando);
-	//   }
-	// 		$scope.whiteCards.$add(whiteCards);
-	// }
 
 	$scope.startingHand = function(user){
 		$scope.whiteCards.$remove(0);
@@ -67,6 +52,15 @@ angular.module('socialMockup')
 			whiteCards.splice(rando, 1);
 			console.log("Cards left", whiteCards.length)
 		}
+		$scope.whiteCards.$add(whiteCards);
+	}
+
+	$scope.drawOne = function(user){
+		$scope.whiteCards.$remove(0);
+		var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
+		var takenCards = whiteCards[rando];
+		$scope.exampleHand.$add(takenCards)
+		whiteCards.splice(rando, 1);
 		$scope.whiteCards.$add(whiteCards);
 	}
 
