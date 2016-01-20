@@ -17,7 +17,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
-app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope){
+app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope, GameService){
   var cookies = $cookies.get('token');
   var username;
   if(cookies){
@@ -60,8 +60,10 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
 
   $scope.logout = function(){
     $cookies.remove('token');
+    if (localStorage.playing){localStorage.removeItem('player')}
     $state.go('login')
     $scope.isLoggedIn = false;
+    GameService.removePlayer();
   }
   $scope.goHome = function(){
     var username = $scope.userInfo.username

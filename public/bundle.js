@@ -17,7 +17,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
-app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope){
+app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope, GameService){
   var cookies = $cookies.get('token');
   var username;
   if(cookies){
@@ -60,8 +60,10 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
 
   $scope.logout = function(){
     $cookies.remove('token');
+    if (localStorage.playing){localStorage.removeItem('player')}
     $state.go('login')
     $scope.isLoggedIn = false;
+    GameService.removePlayer();
   }
   $scope.goHome = function(){
     var username = $scope.userInfo.username
@@ -107,40 +109,7 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
 })
-'use strict';
 
-var app = angular.module('socialMockup');
-
-app.service('GameService', function($http, $rootScope, ENV, $location, $firebaseObject, $firebaseArray, $cookies){
-	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
-
-	// this.cards = function(){
-	// 	// return $http.get('source/json/whiteCards.json');
-	// 	console.log(whiteCards)
-	// }
-
- // waiting state
- // display `waiting for players message`
- //accumulate users, when there are enough users start game.
-
-	// $scope.players = $firebaseArray(ref);
-
-
-
-
-
-////pre vote state/////
-	 //initialize gameService
-
-	 // start turn timer
-
-	 //pull a black card from `deck`
-
-	 //deal hand of white cards
-
-
-
-})
 
 
 var blackCards = [
@@ -974,13 +943,12 @@ var whiteCards = [
 angular.module("socialMockup")
 
 .directive('gameTimer', function() {
-  // return {
-  //   restrict: "AE",
-  //   templateUrl: "game/timer.html",
-  //   scope: {
-  //     text: 'ettsts'
-  //   }
-  // };
+  return {
+    templateUrl: "game/timer.html",
+    // controller: "gameMasterCtrl",
+    // scope: {
+    //   counter: '@counter
+  };
 })
 
 .directive('dealCards', function() {
@@ -988,6 +956,57 @@ angular.module("socialMockup")
     templateUrl: "game/cards.html",
     controller: "dealingCardsCtrl"
   };
+})
+
+'use strict';
+angular.module('socialMockup')
+
+.service('GameService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+
+	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+
+	this.playersRef = this.gameInstance.child("players");
+	var playersRef = this.playersRef
+	this.messageRef = this.gameInstance.child("messages")
+	var messageRef = this.messageRef;
+	this.playerss = $firebaseArray(playersRef); 
+	this.messages = $firebaseArray(messageRef);
+
+			//remove players
+	this.removePlayer = function(){
+    var player = JSON.parse(localStorage.player);
+		console.log("player to remove", player);
+		playersRef.child("player").remove();
+		console.log("players before remove", this.playerss)
+		localStorage.removeItem("player");
+		console.log("players after remove", this.playerss)
+}
+
+this.addPlayer = function(){
+		var thisPlayer = Date.now();
+		localStorage.player = thisPlayer;
+		console.log("this player logged In", localStorage.player)
+		playersRef.child('player').set({player: thisPlayer});
+	}
+
+	this.addMessage = function(message) {
+		console.log(message);
+		this.messages.$add({
+			text: message
+			// user: $id
+			// timestamp: Date.now();
+		});
+	}
+
+});
+
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
 })
 
 'use strict';
@@ -1139,42 +1158,30 @@ angular.module('socialMockup')
 	});
 
 
+	var playersRef = GameService.gameInstance.child("players");
+	var messageRef = GameService.gameInstance.child("messages")
+	$scope.playerss = GameService.playerss 
 
-
-	/////****ADD AND REMOVE PLAYERS:
-	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-
-	var playersRef = gameInstance.child("players");
-	var messageRef = gameInstance.child("messages")
-	$scope.playerss = $firebaseArray(playersRef); 
 	$scope.numPlayers = 0;
+	/////****ADD AND REMOVE PLAYERS:
+
+
+
 
 	// create an array to store each player's info
-	$scope.addPlayer = function(){
-		// figure out how to pull user id info ... maybe store it on rootscope?
-		var thisPlayer = Date.now();
-		localStorage.player = thisPlayer;
-		console.log("this player logged In", localStorage.player)
-		playersRef.child('player').set({player: thisPlayer});
-	}
+	// $scope.addPlayer = function(){
+	// 	GameService.addPlayer();
+	// }
 	if (!localStorage.thisPlayer){
-		$scope.addPlayer();
+		GameService.addPlayer();
 	}
 
-		//remove players
-	$scope.removePlayer = function(){
-    var player = JSON.parse(localStorage.player);
-		console.log("player to remove", player);
-		playersRef.child("player").remove();
-		console.log("players before remove", $scope.playerss)
-		localStorage.removeItem("player");
-		console.log("players after remove", $scope.playerss)
-	}
 
 	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			$scope.numPlayers ++;
+			console.log("current Players", $scope.playerss)
 		});
 	});
 
@@ -1186,60 +1193,21 @@ angular.module('socialMockup')
 		});
 	});
 
-
+$scope.removePlayer = function(){
+		GameService.removePlayer();
+	}
 
 	// *******MESSAGES
-	$scope.messages = $firebaseArray(messageRef);
+	$scope.messages = GameService.messages;
 	$scope.addMessage = function(message) {
-		console.log(message);
-		$scope.messages.$add({
-			text: message
-		});
-	};
+		GameService.addMessage(message);
+	}
 });
+
 
 angular.module('socialMockup')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
-
-});
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
 
 });
 
@@ -1350,4 +1318,35 @@ angular.module('socialMockup')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
+});
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
 });
