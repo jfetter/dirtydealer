@@ -14,6 +14,7 @@ angular.module("socialMockup")
 
 .directive('dealCards', function() {
   return {
-    templateUrl: "game/cards.html"
+    templateUrl: "game/cards.html",
+    controller: "dealingCardsCtrl"
   };
 })

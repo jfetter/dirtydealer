@@ -142,26 +142,6 @@ app.service('GameService', function($http, $rootScope, ENV, $location, $firebase
 
 })
 
-"use strict";
-
-angular.module("socialMockup")
-
-.directive('gameTimer', function() {
-  // return {
-  //   restrict: "AE",
-  //   templateUrl: "game/timer.html",
-  //   scope: {
-  //     text: 'ettsts'
-  //   }
-  // };
-})
-
-.directive('dealCards', function() {
-  return {
-    templateUrl: "game/cards.html"
-  };
-})
-
 
 var blackCards = [
 {
@@ -988,6 +968,27 @@ var whiteCards = [
 "Stormtroopers.",
 "Throwing a virgin into a volcano."
 ]
+
+"use strict";
+
+angular.module("socialMockup")
+
+.directive('gameTimer', function() {
+  // return {
+  //   restrict: "AE",
+  //   templateUrl: "game/timer.html",
+  //   scope: {
+  //     text: 'ettsts'
+  //   }
+  // };
+})
+
+.directive('dealCards', function() {
+  return {
+    templateUrl: "game/cards.html",
+    controller: "dealingCardsCtrl"
+  };
+})
 
 'use strict';
 
