@@ -142,26 +142,6 @@ app.service('GameService', function($http, $rootScope, ENV, $location, $firebase
 
 })
 
-"use strict";
-
-angular.module("socialMockup")
-
-.directive('gameTimer', function() {
-  return {
-    restrict: "AE",
-    templateUrl: "game/timer.html",
-    scope: {
-      text: 'ettsts'
-    }
-  };
-})
-
-.directive('dealCards', function() {
-  return {
-    templateUrl: "game/cards.html"
-  };
-})
-
 
 var blackCards = [
 {
@@ -989,153 +969,25 @@ var whiteCards = [
 "Throwing a virgin into a volcano."
 ]
 
-'use strict';
+"use strict";
 
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
+angular.module("socialMockup")
 
+.directive('gameTimer', function() {
+  return {
+    restrict: "AE",
+    templateUrl: "game/timer.html",
+    scope: {
+      text: 'ettsts'
+    }
+  };
 })
 
-'use strict';
-
-angular.module('socialMockup')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
-
-'use strict';
-
-angular.module('socialMockup')
-
-
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
-	$scope.user = {};
-	$scope.editPayload = {};
-	var cookies = $cookies.get('token');
-	var token = jwtHelper.decodeToken(cookies)
-	console.log("COOKIES", cookies)
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		console.log(res.data)
-		 if (res.data === "authRequired"){
-			 $location.path('/login')
-		 } else{$scope.isLoggedIn = true;}
-	})
-
-	UserService.page($state.params.username)
-	.then(function(res) {
-		$scope.user = res.data;
-		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
-		$scope.isEditing = false;
-		$scope.editPayload.username = $scope.user.username;
-		$scope.editPayload._id = $scope.user._id
-
-    console.log($scope.isEditing)
-		console.log("edit Payload", $scope.editPayload)
-		console.log('token:',token);
-		console.log('scope user username: ', $scope.user.username);
-    if(res.data.avatar){
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
-    } else {
-      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
-    }
-
-	}, function(err) {
-		console.error(err)
-	});
-
-	$scope.toggleEdit = function(){
-    console.log($scope.isEditing)
-		$scope.isEditing = !$scope.isEditing
-	}
-
-	$scope.saveEdits = function(){
-		console.log("save edits!!!!!" , $scope.editPayload);
-		UserService.editAccount($scope.editPayload)
-		.then(function(response){
-			$scope.$emit('edit', response.data)
-			$scope.user = response.data;
-			$scope.isEditing = !$scope.isEditing;
-			console.log(response.data, "received")
-		})
-	}
-
-  $scope.uploadImage = function(image){
-    console.log(image)
-    UserService.uploadImage(image, $scope.user._id)
-    .then(function(res){
-      console.log(res.data)
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
-      console.log($scope.profileImageSrc)
-    })
-  }
-
-	$scope.exposeData = function(){console.log($scope.myFile)}
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		console.log(res.data)
-		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;}
-	})
-});
+.directive('dealCards', function() {
+  return {
+    templateUrl: "game/cards.html"
+  };
+})
 
 'use strict';
 
@@ -1144,31 +996,36 @@ angular.module('socialMockup')
 
 .controller('dealingCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
+var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
-// //******DEALING BOTH DECKS:
-// $scope.startDeck = function(user){
-//   $scope.whiteCards.$add(whiteCards)
-//   $scope.blackCards.$add(blackCards)
-// }
-//
-//
-// //******DEALING BLACK CARDS:
-// var blackCardRef = gameInstance.child("blackCards")
-// $scope.blackCards = $firebaseArray(blackCardRef)
-//
-//
-// $scope.dealBlackCard = function(user){
-//   $scope.blackCards = blackCards;
-//   var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
-//   console.log($scope.blackCards[deal])
-// }
-//
-//
-//
-// //******DEALING WHITE CARDS:
-// var whiteCardRef = gameInstance.child("whiteCards")
-// $scope.whiteCards = $firebaseArray(whiteCardRef)
-//
+//******DEALING BOTH DECKS:
+$scope.startDeck = function(user){
+  $scope.whiteCards.$add(whiteCards)
+  $scope.blackCards.$add(blackCards)
+}
+
+
+//******DEALING BLACK CARDS:
+var blackCardRef = gameInstance.child("blackCards")
+$scope.blackCards = $firebaseArray(blackCardRef)
+
+
+
+$scope.dealBlackCard = function(user){
+  $scope.blackCards = blackCards;
+  var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
+  console.log($scope.blackCards[deal])
+}
+
+
+
+//******DEALING WHITE CARDS:
+var whiteCardRef = gameInstance.child("whiteCards")
+$scope.whiteCards = $firebaseArray(whiteCardRef)
+
+var exampleHandRef = gameInstance.child("exampleHand")
+// $scope.exampleHand = $firebaseArray(exampleHandRef)
+
 // $scope.startingHand = function(user){
 //   for(var i = 0; i<10; i++){
 //     var rando = Math.floor(Math.random() * (whiteCards.length - 0)) + 0;
@@ -1176,6 +1033,21 @@ angular.module('socialMockup')
 //     $scope.whiteCards.splice(rando, 1)
 //   }
 // }
+
+$scope.startingHand = function(user){
+	$scope.whiteCards.$remove();
+  for(var i = 0; i<10; i++){
+		$scope.exampleHand = $firebaseArray(exampleHandRef)
+
+    var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
+		$scope.exampleHand.$remove(rando);
+    $scope.exampleHand.$add(whiteCards[rando])
+		whiteCards.splice(rando, 1);
+		console.log("Cards left", whiteCards.length)
+		$scope.whiteCards.$remove(rando);
+  }
+		$scope.whiteCards.$add(whiteCards);
+}
 
 });
 
@@ -1269,7 +1141,6 @@ angular.module('socialMockup')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			$scope.numPlayers ++;
-			console.log("current Players", $scope.playerss)
 		});
 	});
 
@@ -1297,4 +1168,152 @@ angular.module('socialMockup')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
+});
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+
+.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
+	$scope.user = {};
+	$scope.editPayload = {};
+	var cookies = $cookies.get('token');
+	var token = jwtHelper.decodeToken(cookies)
+	console.log("COOKIES", cookies)
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		console.log(res.data)
+		 if (res.data === "authRequired"){
+			 $location.path('/login')
+		 } else{$scope.isLoggedIn = true;}
+	})
+
+	UserService.page($state.params.username)
+	.then(function(res) {
+		$scope.user = res.data;
+		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
+		$scope.isEditing = false;
+		$scope.editPayload.username = $scope.user.username;
+		$scope.editPayload._id = $scope.user._id
+
+    console.log($scope.isEditing)
+		console.log("edit Payload", $scope.editPayload)
+		console.log('token:',token);
+		console.log('scope user username: ', $scope.user.username);
+    if(res.data.avatar){
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
+    } else {
+      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
+    }
+
+	}, function(err) {
+		console.error(err)
+	});
+
+	$scope.toggleEdit = function(){
+    console.log($scope.isEditing)
+		$scope.isEditing = !$scope.isEditing
+	}
+
+	$scope.saveEdits = function(){
+		console.log("save edits!!!!!" , $scope.editPayload);
+		UserService.editAccount($scope.editPayload)
+		.then(function(response){
+			$scope.$emit('edit', response.data)
+			$scope.user = response.data;
+			$scope.isEditing = !$scope.isEditing;
+			console.log(response.data, "received")
+		})
+	}
+
+  $scope.uploadImage = function(image){
+    console.log(image)
+    UserService.uploadImage(image, $scope.user._id)
+    .then(function(res){
+      console.log(res.data)
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
+      console.log($scope.profileImageSrc)
+    })
+  }
+
+	$scope.exposeData = function(){console.log($scope.myFile)}
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		console.log(res.data)
+		 if (res.data === "authRequired"){$location.path('/login')}
+		 else{$scope.isLoggedIn = true;}
+	})
 });
