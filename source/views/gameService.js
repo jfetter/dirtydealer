@@ -39,3 +39,4 @@ this.addPlayer = function(){
 	}
 
 });
+

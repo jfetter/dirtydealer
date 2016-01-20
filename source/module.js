@@ -60,6 +60,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
 
   $scope.logout = function(){
     $cookies.remove('token');
+    if (localStorage.playing){localStorage.removeItem('player')}
     $state.go('login')
     $scope.isLoggedIn = false;
     GameService.removePlayer();

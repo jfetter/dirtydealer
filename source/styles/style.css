@@ -1,3 +1,28 @@
+/* ______________
+  |              |
+  |  Shared:     |
+  |______________| */
+
+h1, p, .navbar, div, button, .modal, li, a {
+  font-family: 'Righteous', cursive;
+}
+
+.navbar-brand {
+  font-size: 80px;
+  color: white
+}
+
+.navbar {
+  font-size: 50px
+  color: white
+}
+
+#backgroundGif {
+  z-index: -1;
+  position: relative;
+  height: 100%;
+}
+
 #userImage {
   max-height: 50vh;
   max-width: 50vh;

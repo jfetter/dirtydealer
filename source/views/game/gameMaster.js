@@ -58,6 +58,7 @@ angular.module('socialMockup')
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	$scope.playerss = GameService.playerss 
+
 	$scope.numPlayers = 0;
 	/////****ADD AND REMOVE PLAYERS:
 
