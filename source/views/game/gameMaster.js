@@ -92,6 +92,7 @@ angular.module('socialMockup')
 
 $scope.removePlayer = function(){
 		GameService.removePlayer();
+		$state.go("userPage");
 	}
 
 	// *******MESSAGES

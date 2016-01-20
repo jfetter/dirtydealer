@@ -20,21 +20,38 @@ angular.module('socialMockup')
 		console.log("players before remove", this.playerss)
 		localStorage.removeItem("player");
 		console.log("players after remove", this.playerss)
+
 }
 
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
+    var cards = ["dirty deeds", "done dirt cheap"];
+    //deal cards function here to populate array
 		localStorage.player = thisPlayer;
 		console.log("this player logged In", localStorage.player)
-		playersRef.child('player').set({player: thisPlayer});
+		playersRef.child('player').set({
+      player: thisPlayer,
+      cards: cards,
+      gamePoints: 0
+    });
 	}
+
+  this.updatePlayerAfterVote = function(){
+    // find player in player array
+    if (player.votes > highestVotes){
+    //increment this players points key 
+    }
+    // restockHand(n); where n = number of cards to replace in hand
+    console.log("player should have new cards and new point total now")
+  }
 
 	this.addMessage = function(message) {
 		console.log(message);
+    var player = JSON.parse(localStorage.player);
 		this.messages.$add({
-			text: message
-			// user: $id
-			// timestamp: Date.now();
+			 text: message,
+			 player: player,
+			 timestamp: Date.now()
 		});
 	}
 
