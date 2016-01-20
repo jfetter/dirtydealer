@@ -8,7 +8,7 @@ angular.module('socialMockup')
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages")
-	var messageRef = this.messageRef;
+	var messageRef = this.messageRef
 	this.playerss = $firebaseArray(playersRef); 
 	this.messages = $firebaseArray(messageRef);
 
@@ -31,9 +31,7 @@ this.addPlayer = function(){
 		console.log("this player logged In", localStorage.player)
 		playersRef.child(thisPlayer).set({
       playerId: thisPlayer,
-      cards: cards,
-      gamePoints: 0,
-      hello: "hello"
+      cards: cards
     });
 	}
 
