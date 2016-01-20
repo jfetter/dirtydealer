@@ -19,17 +19,30 @@ angular.module('socialMockup')
 	$scope.blackCards = $firebaseArray(blackCardRef)
 
 	var scenarioCardRef = gameInstance.child("scenarioCardRef")
-	$scope.scenarioCardRef = $firebaseArray(scenarioCardRef)
+	$scope.scenarioCard = $firebaseArray(scenarioCardRef)
 
 
+	// $scope.dealBlackCard = function(user){
+	// 	$scope.blackCards.$remove(0);
+	// 	var rando = Math.floor((Math.random() * blackCards.length ) + 0);
+	// 	var takenCards = blackCards[rando];
+	// 	$scope.scenarioCardRef.$add(takenCards)
+	// 	blackCards.splice(rando, 1);
+	// 	$scope.blackCards.$add(blackCards);
+	// }
 	$scope.dealBlackCard = function(user){
+		$scope.scenarioCard.$remove(0);
+		var basedCards = $scope.blackCards[0]
+		console.log("BASE", basedCards)
+		var rando = Math.floor((Math.random() * basedCards.length ) + 0);
+		var takenCards = basedCards[rando];
+		$scope.scenarioCard.$add(takenCards)
+		basedCards.splice(rando, 1);
 		$scope.blackCards.$remove(0);
-		var rando = Math.floor((Math.random() * blackCards.length ) + 0);
-		var takenCards = blackCards[rando];
-		$scope.scenarioCardRef.$add(takenCards)
-		blackCards.splice(rando, 1);
-		$scope.blackCards.$add(blackCards);
+		$scope.blackCards.$add(basedCards);
+		console.log("Cards left", basedCards.length)
 	}
+
 
 
 	//******DEALING WHITE CARDS:
