@@ -1023,6 +1023,154 @@ this.addPlayer = function(){
 'use strict';
 
 angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+
+.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
+	$scope.user = {};
+	$scope.editPayload = {};
+	var cookies = $cookies.get('token');
+	var token = jwtHelper.decodeToken(cookies)
+	console.log("COOKIES", cookies)
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		console.log(res.data)
+		 if (res.data === "authRequired"){
+			 $location.path('/login')
+		 } else{$scope.isLoggedIn = true;}
+	})
+
+	UserService.page($state.params.username)
+	.then(function(res) {
+		$scope.user = res.data;
+		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
+		$scope.isEditing = false;
+		$scope.editPayload.username = $scope.user.username;
+		$scope.editPayload._id = $scope.user._id
+
+    console.log($scope.isEditing)
+		console.log("edit Payload", $scope.editPayload)
+		console.log('token:',token);
+		console.log('scope user username: ', $scope.user.username);
+    if(res.data.avatar){
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
+    } else {
+      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
+    }
+
+	}, function(err) {
+		console.error(err)
+	});
+
+	$scope.toggleEdit = function(){
+    console.log($scope.isEditing)
+		$scope.isEditing = !$scope.isEditing
+	}
+
+	$scope.saveEdits = function(){
+		console.log("save edits!!!!!" , $scope.editPayload);
+		UserService.editAccount($scope.editPayload)
+		.then(function(response){
+			$scope.$emit('edit', response.data)
+			$scope.user = response.data;
+			$scope.isEditing = !$scope.isEditing;
+			console.log(response.data, "received")
+		})
+	}
+
+  $scope.uploadImage = function(image){
+    console.log(image)
+    UserService.uploadImage(image, $scope.user._id)
+    .then(function(res){
+      console.log(res.data)
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
+      console.log($scope.profileImageSrc)
+    })
+  }
+
+	$scope.exposeData = function(){console.log($scope.myFile)}
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		console.log(res.data)
+		 if (res.data === "authRequired"){$location.path('/login')}
+		 else{$scope.isLoggedIn = true;}
+	})
+});
+
+'use strict';
+
+angular.module('socialMockup')
 
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
@@ -1153,7 +1301,7 @@ angular.module('socialMockup')
 
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
-	$scope.playerss = GameService.playerss 
+	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 
@@ -1170,53 +1318,53 @@ angular.module('socialMockup')
 	var currentState = '';
 
 	var gameState = function() {
-	 	CardsService.startDeck();
+		CardsService.startDeck();
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
-		var count = 0; 
+		var count = 0;
 		currentState = gameStates[count]
 		switch (currentState) {
 
 			case 'prevote':
-  		//need an '&&' no white card has been selected?
+			//need an '&&' no white card has been selected?
 			mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			// break;
-		
 
+
+		}
 	}
-}
 
 
 
-//********TIMER:
-$scope.counter = 60;
-var mytimeout = null; // the current timeoutID
-// Actual timer method, counts down every second, stops on zero.
-$scope.onTimeout = function() {
-	if($scope.counter ===  0) {
-		$scope.$broadcast('timer-stopped', 0);
-		$timeout.cancel(mytimeout);
-		return;
-	}
-	$scope.counter--;
-	mytimeout = $timeout($scope.onTimeout, 1000);
-};
+	//********TIMER:
+	$scope.counter = 60;
+	var mytimeout = null; // the current timeoutID
+	// Actual timer method, counts down every second, stops on zero.
+	$scope.onTimeout = function() {
+		if($scope.counter ===  0) {
+			$scope.$broadcast('timer-stopped', 0);
+			$timeout.cancel(mytimeout);
+			return;
+		}
+		$scope.counter--;
+		mytimeout = $timeout($scope.onTimeout, 1000);
+	};
 
-// Triggered, when the timer stops, can do something here, maybe show a visual alert.
-$scope.$on('timer-stopped', function(event, remaining) {
-	if(remaining === 0) {
-		swal({
-			type: "error",
-			title: "Uh-Oh!",
-			text: "Time is up.",
-			showConfirmButton: true,
-			confirmButtonText: "Ok.",
-		});
-	}
-});
+	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
+	$scope.$on('timer-stopped', function(event, remaining) {
+		if(remaining === 0) {
+			swal({
+				type: "error",
+				title: "Uh-Oh!",
+				text: "Time is up.",
+				showConfirmButton: true,
+				confirmButtonText: "Ok.",
+			});
+		}
+	});
 
 	/////****ADD AND REMOVE PLAYERS:
 
@@ -1234,9 +1382,12 @@ $scope.$on('timer-stopped', function(event, remaining) {
 
 	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
-		$timeout(function() {			
+		$timeout(function() {
 			console.log("player Joined", $scope.playerss)
-			$scope.numPlayers = $scope.playerss.length
+			if ($scope.playerss.length >= 3) {
+				console.log("WE FUCKING KNOW ITS THREE MAN");
+				gameState();
+			}
 		});
 	});
 
@@ -1248,7 +1399,7 @@ $scope.$on('timer-stopped', function(event, remaining) {
 		});
 	});
 
-$scope.removePlayer = function(){
+	$scope.removePlayer = function(){
 		GameService.removePlayer();
 		$state.go("userPage");
 	}
@@ -1260,168 +1411,18 @@ $scope.removePlayer = function(){
 	}
 
 	//initialize new game or display waiting room
- if ($scope.numPlayers != 3 ){
- 		console.log("less than 3 players")
- 		//$scope.phase = "waitingForPlayers";
- 		} else {
- 		gameState();
- 	}
+	if ($scope.numPlayers != 3 ){
+		console.log("less than 3 players")
+		//$scope.phase = "waitingForPlayers";
+	} else {
+		gameState();
+	}
 
 });
-
-
 
 
 angular.module('socialMockup')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
-});
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('socialMockup')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
-
-'use strict';
-
-angular.module('socialMockup')
-
-
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
-	$scope.user = {};
-	$scope.editPayload = {};
-	var cookies = $cookies.get('token');
-	var token = jwtHelper.decodeToken(cookies)
-	console.log("COOKIES", cookies)
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		console.log(res.data)
-		 if (res.data === "authRequired"){
-			 $location.path('/login')
-		 } else{$scope.isLoggedIn = true;}
-	})
-
-	UserService.page($state.params.username)
-	.then(function(res) {
-		$scope.user = res.data;
-		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
-		$scope.isEditing = false;
-		$scope.editPayload.username = $scope.user.username;
-		$scope.editPayload._id = $scope.user._id
-
-    console.log($scope.isEditing)
-		console.log("edit Payload", $scope.editPayload)
-		console.log('token:',token);
-		console.log('scope user username: ', $scope.user.username);
-    if(res.data.avatar){
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
-    } else {
-      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
-    }
-
-	}, function(err) {
-		console.error(err)
-	});
-
-	$scope.toggleEdit = function(){
-    console.log($scope.isEditing)
-		$scope.isEditing = !$scope.isEditing
-	}
-
-	$scope.saveEdits = function(){
-		console.log("save edits!!!!!" , $scope.editPayload);
-		UserService.editAccount($scope.editPayload)
-		.then(function(response){
-			$scope.$emit('edit', response.data)
-			$scope.user = response.data;
-			$scope.isEditing = !$scope.isEditing;
-			console.log(response.data, "received")
-		})
-	}
-
-  $scope.uploadImage = function(image){
-    console.log(image)
-    UserService.uploadImage(image, $scope.user._id)
-    .then(function(res){
-      console.log(res.data)
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
-      console.log($scope.profileImageSrc)
-    })
-  }
-
-	$scope.exposeData = function(){console.log($scope.myFile)}
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		console.log(res.data)
-		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;}
-	})
 });

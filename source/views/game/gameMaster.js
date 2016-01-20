@@ -28,7 +28,7 @@ angular.module('socialMockup')
 
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
-	$scope.playerss = GameService.playerss 
+	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 
@@ -45,53 +45,53 @@ angular.module('socialMockup')
 	var currentState = '';
 
 	var gameState = function() {
-	 	CardsService.startDeck();
+		CardsService.startDeck();
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
-		var count = 0; 
+		var count = 0;
 		currentState = gameStates[count]
 		switch (currentState) {
 
 			case 'prevote':
-  		//need an '&&' no white card has been selected?
+			//need an '&&' no white card has been selected?
 			mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			// break;
-		
 
+
+		}
 	}
-}
 
 
 
-//********TIMER:
-$scope.counter = 60;
-var mytimeout = null; // the current timeoutID
-// Actual timer method, counts down every second, stops on zero.
-$scope.onTimeout = function() {
-	if($scope.counter ===  0) {
-		$scope.$broadcast('timer-stopped', 0);
-		$timeout.cancel(mytimeout);
-		return;
-	}
-	$scope.counter--;
-	mytimeout = $timeout($scope.onTimeout, 1000);
-};
+	//********TIMER:
+	$scope.counter = 60;
+	var mytimeout = null; // the current timeoutID
+	// Actual timer method, counts down every second, stops on zero.
+	$scope.onTimeout = function() {
+		if($scope.counter ===  0) {
+			$scope.$broadcast('timer-stopped', 0);
+			$timeout.cancel(mytimeout);
+			return;
+		}
+		$scope.counter--;
+		mytimeout = $timeout($scope.onTimeout, 1000);
+	};
 
-// Triggered, when the timer stops, can do something here, maybe show a visual alert.
-$scope.$on('timer-stopped', function(event, remaining) {
-	if(remaining === 0) {
-		swal({
-			type: "error",
-			title: "Uh-Oh!",
-			text: "Time is up.",
-			showConfirmButton: true,
-			confirmButtonText: "Ok.",
-		});
-	}
-});
+	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
+	$scope.$on('timer-stopped', function(event, remaining) {
+		if(remaining === 0) {
+			swal({
+				type: "error",
+				title: "Uh-Oh!",
+				text: "Time is up.",
+				showConfirmButton: true,
+				confirmButtonText: "Ok.",
+			});
+		}
+	});
 
 	/////****ADD AND REMOVE PLAYERS:
 
@@ -109,9 +109,12 @@ $scope.$on('timer-stopped', function(event, remaining) {
 
 	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
-		$timeout(function() {			
+		$timeout(function() {
 			console.log("player Joined", $scope.playerss)
-			$scope.numPlayers = $scope.playerss.length
+			if ($scope.playerss.length >= 3) {
+				console.log("WE FUCKING KNOW ITS THREE MAN");
+				gameState();
+			}
 		});
 	});
 
@@ -123,7 +126,7 @@ $scope.$on('timer-stopped', function(event, remaining) {
 		});
 	});
 
-$scope.removePlayer = function(){
+	$scope.removePlayer = function(){
 		GameService.removePlayer();
 		$state.go("userPage");
 	}
@@ -135,13 +138,11 @@ $scope.removePlayer = function(){
 	}
 
 	//initialize new game or display waiting room
- if ($scope.numPlayers != 3 ){
- 		console.log("less than 3 players")
- 		//$scope.phase = "waitingForPlayers";
- 		} else {
- 		gameState();
- 	}
+	if ($scope.numPlayers != 3 ){
+		console.log("less than 3 players")
+		//$scope.phase = "waitingForPlayers";
+	} else {
+		gameState();
+	}
 
 });
-
-
