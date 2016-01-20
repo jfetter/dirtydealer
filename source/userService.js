@@ -35,37 +35,5 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
 })
-'use strict';
-
-var app = angular.module('socialMockup');
-
-app.service('GameService', function($http, $rootScope, ENV, $location, $firebaseObject, $firebaseArray, $cookies){
-	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
-
-	// this.cards = function(){
-	// 	// return $http.get('source/json/whiteCards.json');
-	// 	console.log(whiteCards)
-	// }
-
- // waiting state
- // display `waiting for players message`
- //accumulate users, when there are enough users start game.
-
-	// $scope.players = $firebaseArray(ref);
 
 
-
-
-
-////pre vote state/////
-	 //initialize gameService
-
-	 // start turn timer
-
-	 //pull a black card from `deck`
-
-	 //deal hand of white cards
-
-
-
-})

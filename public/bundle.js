@@ -17,7 +17,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		.state('userPage', {url: '/userpage/{username}', templateUrl: 'views/userPage/userPage.html', controller: 'userPageCtrl'})
 })
 
-app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope){
+app.controller('MasterController', function(UserService, $cookies, jwtHelper, $scope, $state, $rootScope, GameService){
   var cookies = $cookies.get('token');
   var username;
   if(cookies){
@@ -62,6 +62,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     $cookies.remove('token');
     $state.go('login')
     $scope.isLoggedIn = false;
+    GameService.removePlayer();
   }
   $scope.goHome = function(){
     var username = $scope.userInfo.username
@@ -107,40 +108,8 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
 })
-'use strict';
-
-var app = angular.module('socialMockup');
-
-app.service('GameService', function($http, $rootScope, ENV, $location, $firebaseObject, $firebaseArray, $cookies){
-	var ref = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
-
-	// this.cards = function(){
-	// 	// return $http.get('source/json/whiteCards.json');
-	// 	console.log(whiteCards)
-	// }
-
- // waiting state
- // display `waiting for players message`
- //accumulate users, when there are enough users start game.
-
-	// $scope.players = $firebaseArray(ref);
 
 
-
-
-
-////pre vote state/////
-	 //initialize gameService
-
-	 // start turn timer
-
-	 //pull a black card from `deck`
-
-	 //deal hand of white cards
-
-
-
-})
 
 
 var blackCards = [
@@ -1223,39 +1192,6 @@ angular.module('socialMockup')
 
 angular.module('socialMockup')
 
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
-
-'use strict';
-
-angular.module('socialMockup')
-
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
 	$scope.user = {};
@@ -1326,4 +1262,37 @@ angular.module('socialMockup')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
+});
+
+'use strict';
+
+angular.module('socialMockup')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
 });
