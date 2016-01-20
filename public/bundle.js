@@ -993,6 +993,14 @@ angular.module("socialMockup")
 'use strict';
 
 angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('socialMockup')
 
 
 .controller('dealingCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
@@ -1113,7 +1121,6 @@ angular.module('socialMockup')
 		}
 	});
 
-
 	/////****ADD AND REMOVE PLAYERS:
 	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
@@ -1193,14 +1200,6 @@ angular.module('socialMockup')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 

@@ -52,7 +52,6 @@ angular.module('socialMockup')
 		}
 	});
 
-
 	/////****ADD AND REMOVE PLAYERS:
 	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
