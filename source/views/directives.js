@@ -11,9 +11,9 @@ angular.module("socialMockup")
   };
 })
 
-.directive('dealCards', function() {
-  return {
-    templateUrl: "game/cards.html",
-    controller: "dealingCardsCtrl"
-  };
-})
+// .directive('dealCards', function() {
+//   return {
+//     templateUrl: "game/cards.html",
+//     controller: "dealingCardsCtrl"
+//   };
+// })

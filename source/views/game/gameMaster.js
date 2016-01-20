@@ -3,7 +3,10 @@
 angular.module('socialMockup')
 
 
-.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardService, $http){
+.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
+
+
+
 
 	//*******USERAUTH:
 	var cookies = $cookies.get('token');
@@ -25,7 +28,9 @@ angular.module('socialMockup')
 
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
-	$scope.playerss = GameService.playerss 
+	$scope.playerss = GameService.playerss
+	$scope.whiteCardRef = CardsService.whiteCardRef;
+	$scope.blackCardRef = CardsService.blackCardRef;
 
 	$scope.numPlayers = $scope.playerss.length;
 	/* ______________
@@ -38,12 +43,12 @@ angular.module('socialMockup')
 
 	var currentState = '';
 
+		CardsService.startDeck();
 	var gameState = function() {
 		//send a deck of black cards and white to Firebase
-		CardService.startDeck();
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
-		var count = 0; 
+		var count = 0;
 		currentState = gameStates[count]
 		switch (currentState) {
 
@@ -53,7 +58,7 @@ angular.module('socialMockup')
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			// break;
-		
+
 
 	}
 }
@@ -63,6 +68,7 @@ angular.module('socialMockup')
  		console.log("less than 3 players")
  		//$scope.phase = "waitingForPlayers";
  		} else if ($scope.numPlayers === 3){
+			console.log("READY")
  		gameState();
  	}
 
@@ -135,5 +141,3 @@ $scope.removePlayer = function(){
 		GameService.addMessage(message);
 	}
 });
-
-
