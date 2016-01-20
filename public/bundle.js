@@ -142,26 +142,6 @@ app.service('GameService', function($http, $rootScope, ENV, $location, $firebase
 
 })
 
-"use strict";
-
-angular.module("socialMockup")
-
-.directive('gameTimer', function() {
-  return {
-    restrict: "AE",
-    templateUrl: "game/timer.html",
-    scope: {
-      text: 'ettsts'
-    }
-  };
-})
-
-.directive('dealCards', function() {
-  return {
-    templateUrl: "game/cards.html"
-  };
-})
-
 
 var blackCards = [
 {
@@ -989,6 +969,26 @@ var whiteCards = [
 "Throwing a virgin into a volcano."
 ]
 
+"use strict";
+
+angular.module("socialMockup")
+
+.directive('gameTimer', function() {
+  // return {
+  //   restrict: "AE",
+  //   templateUrl: "game/timer.html",
+  //   scope: {
+  //     text: 'ettsts'
+  //   }
+  // };
+})
+
+.directive('dealCards', function() {
+  return {
+    templateUrl: "game/cards.html"
+  };
+})
+
 'use strict';
 
 angular.module('socialMockup')
@@ -996,37 +996,6 @@ angular.module('socialMockup')
 	console.log('homeCtrl');
 
 })
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
 
 'use strict';
 
@@ -1059,6 +1028,37 @@ angular.module('socialMockup')
 			console.log(err);
 		});
 	}
+});
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
 });
 
 'use strict';
@@ -1243,7 +1243,7 @@ angular.module('socialMockup')
 
 	var playersRef = gameInstance.child("players");
 	var messageRef = gameInstance.child("messages")
-	$scope.playerss = $firebaseArray(playersRef);
+	$scope.playerss = $firebaseArray(playersRef); 
 	$scope.numPlayers = 0;
 
 	// create an array to store each player's info
@@ -1251,18 +1251,21 @@ angular.module('socialMockup')
 		// figure out how to pull user id info ... maybe store it on rootscope?
 		var thisPlayer = Date.now();
 		localStorage.player = thisPlayer;
-		console.log("this player logged In", thisPlayer)
-		playersRef.child(thisPlayer).set({thisPlayer: thisPlayer})
+		console.log("this player logged In", localStorage.player)
+		playersRef.child('player').set({player: thisPlayer});
 	}
 	if (!localStorage.thisPlayer){
 		$scope.addPlayer();
 	}
 
-	//remove players
+		//remove players
 	$scope.removePlayer = function(){
+    var player = JSON.parse(localStorage.player);
+		console.log("player to remove", player);
+		playersRef.child("player").remove();
+		console.log("players before remove", $scope.playerss)
 		localStorage.removeItem("player");
-		playersRef.
-		console.log("REMOVED");
+		console.log("players after remove", $scope.playerss)
 	}
 
 	//add player to waiting room when they click join

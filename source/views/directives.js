@@ -3,13 +3,13 @@
 angular.module("socialMockup")
 
 .directive('gameTimer', function() {
-  return {
-    restrict: "AE",
-    templateUrl: "game/timer.html",
-    scope: {
-      text: 'ettsts'
-    }
-  };
+  // return {
+  //   restrict: "AE",
+  //   templateUrl: "game/timer.html",
+  //   scope: {
+  //     text: 'ettsts'
+  //   }
+  // };
 })
 
 .directive('dealCards', function() {

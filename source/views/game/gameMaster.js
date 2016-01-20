@@ -62,7 +62,7 @@ angular.module('socialMockup')
 
 	var playersRef = gameInstance.child("players");
 	var messageRef = gameInstance.child("messages")
-	$scope.playerss = $firebaseArray(playersRef);
+	$scope.playerss = $firebaseArray(playersRef); 
 	$scope.numPlayers = 0;
 
 	// create an array to store each player's info
@@ -70,18 +70,21 @@ angular.module('socialMockup')
 		// figure out how to pull user id info ... maybe store it on rootscope?
 		var thisPlayer = Date.now();
 		localStorage.player = thisPlayer;
-		console.log("this player logged In", thisPlayer)
-		playersRef.child(thisPlayer).set({thisPlayer: thisPlayer})
+		console.log("this player logged In", localStorage.player)
+		playersRef.child('player').set({player: thisPlayer});
 	}
 	if (!localStorage.thisPlayer){
 		$scope.addPlayer();
 	}
 
-	//remove players
+		//remove players
 	$scope.removePlayer = function(){
+    var player = JSON.parse(localStorage.player);
+		console.log("player to remove", player);
+		playersRef.child("player").remove();
+		console.log("players before remove", $scope.playerss)
 		localStorage.removeItem("player");
-		playersRef.
-		console.log("REMOVED");
+		console.log("players after remove", $scope.playerss)
 	}
 
 	//add player to waiting room when they click join
