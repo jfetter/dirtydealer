@@ -21,41 +21,43 @@
     <button type="submit">Add Message</button>
   </form>
 
-  <button ng-click="startDeck()">Start Deck</button>
+  <div ng-controller="dealingCardsCtrl">
+    <button ng-click="startDeck()">Start Deck</button>
+  </div>
 
   <div>
-    <game-Timer />
+    <game-timer />
   </div>
 
-    <!--   all of this will go in our waiting for players state -->
-    <p>waiting for {{ 3 - numPlayers}} players</p>
+  <!--   all of this will go in our waiting for players state -->
+  <p>waiting for {{ 3 - numPlayers}} players</p>
 
-    <h2>PLAYERS</h2>
-    <div ng-repeat="player in playerss track by $index">
-      <p> {{playerss}}</p>
-    </div>
-    <button ng-click="removePlayer()">Quit</button>
+  <h2>PLAYERS</h2>
+  <div ng-repeat="player in playerss track by $index">
+    <p> {{playerss}}</p>
+  </div>
+  <button ng-click="removePlayer()">Quit</button>
 
-    <!--   end wiating for players stuff  -->
-    <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
-
-    </div>
-
-    <div class="row" ng-if="game.data.state === 'prevote'">
-
-    </div>
-
-    <div class="row" ng-if="game.data.state === 'vote'">
-
-    </div>
-
-    <div class="row" ng-if="game.data.state === 'postvote'">
-
-    </div>
-
-    <div class="row" ng-if="game.data.state === 'win'">
-
-    </div>
-
+  <!--   end wiating for players stuff  -->
+  <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
 
   </div>
+
+  <div class="row" ng-if="game.data.state === 'prevote'">
+
+  </div>
+
+  <div class="row" ng-if="game.data.state === 'vote'">
+
+  </div>
+
+  <div class="row" ng-if="game.data.state === 'postvote'">
+
+  </div>
+
+  <div class="row" ng-if="game.data.state === 'win'">
+
+  </div>
+
+
+</div>
