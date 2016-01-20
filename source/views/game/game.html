@@ -24,6 +24,15 @@
 
   <p>{{numPlayers}} are playing</p>
 <button ng-click="startDeck()">Start Deck</button>
+
+
+<!-- TIMER -->
+  {{counter}}
+  <button ng-click='startTimer()'>Start
+  <button ng-click='stopTimer()'>Stop
+
+
+
   <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
 
   </div>

@@ -1028,6 +1028,7 @@ angular.module('socialMockup')
 	//******FIREBASE
 	//create a new game instance on the scope
 	$scope.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+
 	 // set up a reference for all of the players currently in this game instance
 	 var playersRef = $scope.gameInstance.child("players");
 	 var messageRef = $scope.gameInstance.child("messages")
@@ -1063,21 +1064,33 @@ angular.module('socialMockup')
       });
 
 
-  // Keep track of when the logged-in user in connected or disconnected from Firebase
-  // $scope.rootRef.child(".info/connected").on("value", function(dataSnapshot) {
-  //   if (dataSnapshot.val() === true) {
-  //     // Remove the user from the logged-in users list when they get disconnected
-  //     var loggedInUsersRef = $scope.rootRef.child("loggedInUsers/" + $scope.authData.provider + "/" + $scope.authData.uid);
-  //     loggedInUsersRef.onDisconnect().remove();
-
-  //     // Add the user to the logged-in users list when they get connected
-  //     var username = ($scope.authData.provider === "github") ? $scope.authData.github.username : $scope.authData.twitter.username;
-  //     loggedInUsersRef.set({
-  //       imageUrl: ($scope.authData.provider === "github") ? $scope.authData.github.cachedUserProfile.avatar_url : $scope.authData.twitter.cachedUserProfile.profile_image_url_https,
-  //       userUrl: ($scope.authData.provider === "github") ?  "https://github.com/" + username : "https://twitter.com/" + username,
-  //       username: username
-  //     });
-  //   }
+	$scope.counter = 90;
+	var mytimeout = null; // the current timeoutID
+	// actual timer method, counts down every second, stops on zero
+	$scope.onTimeout = function() {
+		if($scope.counter ===  0) {
+			$scope.$broadcast('timer-stopped', 0);
+			$timeout.cancel(mytimeout);
+			return;
+		}
+		$scope.counter--;
+		mytimeout = $timeout($scope.onTimeout, 1000);
+	};
+	$scope.startTimer = function() {
+		mytimeout = $timeout($scope.onTimeout, 1000);
+	};
+	// stops and resets the current timer
+	$scope.stopTimer = function() {
+		$scope.$broadcast('timer-stopped', $scope.counter);
+		$scope.counter = 90;
+		$timeout.cancel(mytimeout);
+	};
+	// triggered, when the timer stops, you can do something here, maybe show a visual indicator or vibrate the device
+	$scope.$on('timer-stopped', function(event, remaining) {
+		if(remaining === 0) {
+			console.log('your time ran out!');
+		}
+	});
 
 
 	$scope.startingHand = function(user){
@@ -1091,7 +1104,7 @@ angular.module('socialMockup')
 		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
 		console.log($scope.blackCards[deal])
 	}
-	
+
 	$scope.startDeck = function(user){
 			$scope.whiteCards.$add(whiteCards)
 			$scope.blackCards.$add(blackCards)
@@ -1099,22 +1112,22 @@ angular.module('socialMockup')
 
 
 	//var syncObject = $firebaseObject(ref);
-  // synchronize the object with a three-way data binding
-  //syncObject.$bindTo($scope, "data");
+	// synchronize the object with a three-way data binding
+	//syncObject.$bindTo($scope, "data");
 
 
 
 	// create a synchronized array
-	  $scope.messages = $firebaseArray(messageRef);
-	  // add new items to the array
-	  // the message is automatically added to our Firebase database!
-	  $scope.addMessage = function(message) {
-			// console.log($scope.newMessageText);
-			console.log(message);
-	    $scope.messages.$add({
-	      text: message
-	    });
-	  };
+	$scope.messages = $firebaseArray(messageRef);
+	// add new items to the array
+	// the message is automatically added to our Firebase database!
+	$scope.addMessage = function(message) {
+		// console.log($scope.newMessageText);
+		console.log(message);
+		$scope.messages.$add({
+			text: message
+		});
+	};
 
 });
 
