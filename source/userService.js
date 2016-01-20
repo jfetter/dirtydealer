@@ -36,4 +36,3 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 	};
 })
 
-
