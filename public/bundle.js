@@ -1012,18 +1012,18 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
-	$scope.getCards = function(user){
-		$scope.whiteCards = whiteCards;
-		for(var i = 0; i<10; i++){
-			var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
-			console.log($scope.whiteCards[rando])
-			$scope.whiteCards.splice(rando, 1)
-		}
-		console.log($scope.whiteCards.length);
-		$scope.blackCards = blackCards;
-		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
-		console.log($scope.blackCards[deal])
-	}
+	// $scope.getCards = function(user){
+	// 	$scope.whiteCards = whiteCards;
+	// 	for(var i = 0; i<10; i++){
+	// 		var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
+	// 		console.log($scope.whiteCards[rando])
+	// 		$scope.whiteCards.splice(rando, 1)
+	// 	}
+	// 	console.log($scope.whiteCards.length);
+	// 	$scope.blackCards = blackCards;
+	// 	var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
+	// 	console.log($scope.blackCards[deal])
+	// }
 
 	//******FIREBASE
 	//create a new game instance on the scope
@@ -1031,12 +1031,16 @@ angular.module('socialMockup')
 	 // set up a reference for all of the players currently in this game instance
 	 var playersRef = $scope.gameInstance.child("players");
 	 var messageRef = $scope.gameInstance.child("messages")
-
+	 var whiteCardRef = $scope.gameInstance.child("whiteCards")
+	 var blackCardRef = $scope.gameInstance.child("blackCards")
 	 $scope.numPlayers = 0;
 
 	// create an array to store each player's info
   $scope.playerss = $firebaseArray(playersRef);
-  $scope.addPlayer =function(){
+	$scope.whiteCards = $firebaseArray(whiteCardRef)
+	$scope.blackCards = $firebaseArray(blackCardRef)
+
+  $scope.addPlayer = function(){
   	// figure out how to pull user id info ... maybe store it on rootscope?
   	var thisPlayer = cookies;
   	console.log("this player logged In", thisPlayer)
@@ -1076,6 +1080,22 @@ angular.module('socialMockup')
   //   }
 
 
+	$scope.startingHand = function(user){
+		for(var i = 0; i<10; i++){
+			var rando = Math.floor(Math.random() * (whiteCards.length - 0)) + 0;
+			$scope.whiteCards.$add(whiteCards[rando])
+			$scope.whiteCards.splice(rando, 1)
+		}
+		console.log($scope.whiteCards.length);
+		$scope.blackCards = blackCards;
+		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
+		console.log($scope.blackCards[deal])
+	}
+	
+	$scope.startDeck = function(user){
+			$scope.whiteCards.$add(whiteCards)
+			$scope.blackCards.$add(blackCards)
+	}
 
 
 	//var syncObject = $firebaseObject(ref);
