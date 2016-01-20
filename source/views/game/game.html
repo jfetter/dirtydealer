@@ -23,6 +23,12 @@
 
   <p>{{numPlayers}} are playing</p>
 
+<!-- TIMER -->
+  {{counter}}
+  <button ng-click='startTimer()'>Start
+  <button ng-click='stopTimer()'>Stop
+
+
   <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
 
   </div>
