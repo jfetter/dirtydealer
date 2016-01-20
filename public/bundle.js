@@ -1157,7 +1157,8 @@ angular.module('socialMockup')
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 
-	$scope.numPlayers = $scope.playerss.length;
+
+	//$scope.numPlayers = $scope.playerss.length;
 	/* ______________
 	|              |
 	|  States:     |
@@ -1189,10 +1190,10 @@ angular.module('socialMockup')
 }
 
 	//initialize new game or display waiting room
- if ($scope.numPlayers < 3 ){
+ if ($scope.playerss.length < 3 ){
  		console.log("less than 3 players")
  		//$scope.phase = "waitingForPlayers";
- 		} else if ($scope.numPlayers === 3){
+ 		} else if ($scope.playerss.length === 3){
  		gameState();
  	}
 
