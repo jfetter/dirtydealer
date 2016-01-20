@@ -9,7 +9,7 @@ angular.module('socialMockup')
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages")
 	var messageRef = this.messageRef;
-	this.playerss = $firebaseArray(playersRef); 
+	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 
 			//remove players
@@ -39,4 +39,3 @@ this.addPlayer = function(){
 	}
 
 });
-

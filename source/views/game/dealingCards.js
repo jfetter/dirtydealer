@@ -5,7 +5,7 @@ angular.module('socialMockup')
 
 .controller('dealingCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
-	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	// var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	//******DEALING BOTH DECKS:
 	$scope.startDeck = function(user){
@@ -21,15 +21,10 @@ angular.module('socialMockup')
 	var scenarioCardRef = gameInstance.child("scenarioCardRef")
 	$scope.scenarioCard = $firebaseArray(scenarioCardRef)
 
+	$scope.listPlayers = function(){
+		console.log("Players?", playersRef)
+	}
 
-	// $scope.dealBlackCard = function(user){
-	// 	$scope.blackCards.$remove(0);
-	// 	var rando = Math.floor((Math.random() * blackCards.length ) + 0);
-	// 	var takenCards = blackCards[rando];
-	// 	$scope.scenarioCardRef.$add(takenCards)
-	// 	blackCards.splice(rando, 1);
-	// 	$scope.blackCards.$add(blackCards);
-	// }
 	$scope.dealBlackCard = function(user){
 		$scope.scenarioCard.$remove(0);
 		var basedCards = $scope.blackCards[0]
