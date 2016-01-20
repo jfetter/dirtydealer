@@ -8,7 +8,7 @@ angular.module('socialMockup')
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages")
-	var messageRef = this.messageRef;
+	var messageRef = this.messageRef
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 
@@ -16,25 +16,41 @@ angular.module('socialMockup')
 	this.removePlayer = function(){
     var player = JSON.parse(localStorage.player);
 		console.log("player to remove", player);
-		playersRef.child("player").remove();
+		playersRef.child(player).remove();
 		console.log("players before remove", this.playerss)
 		localStorage.removeItem("player");
 		console.log("players after remove", this.playerss)
+
 }
 
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
+    var cards = ["dirty deeds", "done dirt cheap"];
+    //deal cards function here to populate array
 		localStorage.player = thisPlayer;
 		console.log("this player logged In", localStorage.player)
-		playersRef.child('player').set({player: thisPlayer});
+		playersRef.child(thisPlayer).set({
+      playerId: thisPlayer,
+      cards: cards
+    });
 	}
+
+  this.updatePlayerAfterVote = function(){
+    // find player in player array
+    if (player.votes > highestVotes){
+    //increment this players points key
+    }
+    // restockHand(n); where n = number of cards to replace in hand
+    console.log("player should have new cards and new point total now")
+  }
 
 	this.addMessage = function(message) {
 		console.log(message);
+    var player = JSON.parse(localStorage.player);
 		this.messages.$add({
-			text: message
-			// user: $id
-			// timestamp: Date.now();
+			 text: message,
+			 player: player,
+			 timestamp: Date.now()
 		});
 	}
 

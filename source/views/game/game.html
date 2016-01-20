@@ -8,7 +8,7 @@
 
   <!-- //***Firebase Tutorials.  -->
   <ul>
-    <li ng-repeat="message in messages">
+    <li ng-repeat="message in messages"> <p>{{message.player}}</p>
       <!-- edit a message -->
       <input ng-model="message.text" ng-change="messages.$save(message)" />
       <!-- delete a message -->
