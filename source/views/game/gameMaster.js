@@ -3,7 +3,7 @@
 angular.module('socialMockup')
 
 
-.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
+.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardService, $http){
 
 	//*******USERAUTH:
 	var cookies = $cookies.get('token');
@@ -39,6 +39,8 @@ angular.module('socialMockup')
 	var currentState = '';
 
 	var gameState = function() {
+		//send a deck of black cards and white to Firebase
+		CardService.startDeck();
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0; 
@@ -60,7 +62,7 @@ angular.module('socialMockup')
  if ($scope.numPlayers < 3 ){
  		console.log("less than 3 players")
  		//$scope.phase = "waitingForPlayers";
- 		} else {
+ 		} else if ($scope.numPlayers === 3){
  		gameState();
  	}
 
@@ -133,3 +135,5 @@ $scope.removePlayer = function(){
 		GameService.addMessage(message);
 	}
 });
+
+

@@ -961,7 +961,7 @@ angular.module("socialMockup")
 'use strict';
 angular.module('socialMockup')
 
-.service('GameService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+.service('GameService', function($http, $firebaseObject, CardService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
@@ -986,7 +986,8 @@ angular.module('socialMockup')
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
     var gamePoints = 0; 
-    var cards = CardService.DealWhite();
+    var cards = ["test1", "test2"];
+    //var cards = CardService.DealWhite();
     //deal cards function here to populate array
 		localStorage.player = thisPlayer;
 		//console.log("this player logged In", localStorage.player)
@@ -1018,17 +1019,19 @@ this.addPlayer = function(){
 
 });
 
+
 'use strict';
 
 angular.module('socialMockup')
 
 
-.controller('dealingCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
+.service('CardsService', function($timeout, GameService $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	//******DEALING BOTH DECKS:
-	$scope.startDeck = function(user){
+	this.startDeck = function(){
+		console.log("IN START DECK")
 		$scope.whiteCards.$add({text: whiteCards, player: ''})
 		$scope.blackCards.$add(blackCards)
 	}
@@ -1045,7 +1048,7 @@ angular.module('socialMockup')
 		console.log("Players?", playersRef)
 	}
 
-	$scope.dealBlackCard = function(user){
+	$scope.dealBlackCard = function(){
 		$scope.scenarioCard.$remove(0);
 		var basedCards = $scope.blackCards[0]
 		console.log("BASE", basedCards)
@@ -1117,7 +1120,7 @@ angular.module('socialMockup')
 angular.module('socialMockup')
 
 
-.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
+.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardService, $http){
 
 	//*******USERAUTH:
 	var cookies = $cookies.get('token');
@@ -1153,6 +1156,8 @@ angular.module('socialMockup')
 	var currentState = '';
 
 	var gameState = function() {
+		//send a deck of black cards and white to Firebase
+		CardService.startDeck();
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0; 
@@ -1174,7 +1179,7 @@ angular.module('socialMockup')
  if ($scope.numPlayers < 3 ){
  		console.log("less than 3 players")
  		//$scope.phase = "waitingForPlayers";
- 		} else {
+ 		} else if ($scope.numPlayers === 3){
  		gameState();
  	}
 
@@ -1247,6 +1252,8 @@ $scope.removePlayer = function(){
 		GameService.addMessage(message);
 	}
 });
+
+
 
 
 angular.module('socialMockup')
