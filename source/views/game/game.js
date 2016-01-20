@@ -3,7 +3,7 @@
 angular.module('socialMockup')
 
 
-.controller('gameCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray){
+.controller('gameCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 	//*******USERAUTH
 	var cookies = $cookies.get('token');
@@ -25,12 +25,18 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
-	$.ajax({
-    url: "\countries.json",
-    success: function (data) {
-        var obj = JSON.parse(data);
-    }
-});
+	$scope.getCards = function(user){
+		$scope.whiteCards = whiteCards;
+		for(var i = 0; i<10; i++){
+			var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
+			console.log($scope.whiteCards[rando])
+			$scope.whiteCards.splice(rando, 1)
+		}
+		console.log($scope.whiteCards.length);
+		$scope.blackCards = blackCards;
+		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
+		console.log($scope.blackCards[deal])
+	}
 
 	//******FIREBASE
 	//create a new game instance on the scope
@@ -38,9 +44,9 @@ angular.module('socialMockup')
 	 // set up a reference for all of the players currently in this game instance
 	 var playersRef = $scope.gameInstance.child("players");
 	 var messageRef = $scope.gameInstance.child("messages")
-	 
-	 $scope.numPlayers = 0; 
-	 
+
+	 $scope.numPlayers = 0;
+
 	// create an array to store each player's info
   $scope.playerss = $firebaseArray(playersRef);
   $scope.addPlayer =function(){
