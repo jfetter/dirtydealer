@@ -69,23 +69,24 @@ angular.module('socialMockup')
 		console.log("this player logged In", localStorage.player)
 		//**The next line kicks off the timer!
 		mytimeout = $timeout($scope.onTimeout, 1000);
-		playersRef.child('player').set({player: thisPlayer});
+		playersRef.child(thisPlayer).set({player: thisPlayer});
 	}
 	if (!localStorage.thisPlayer){
 		$scope.addPlayer();
 	}
 
-	//remove players
-	$scope.removePlayer = function(){
-		var player = JSON.parse(localStorage.player);
+		//remove players
+$scope.removePlayer = function(){
+    var player = JSON.parse(localStorage.player);
 		console.log("player to remove", player);
-		playersRef.child("player").remove();
+		playersRef.child(player).remove();
 		console.log("players before remove", $scope.playerss)
 		localStorage.removeItem("player");
 		console.log("players after remove", $scope.playerss)
+		$state.go("userPage");
 	}
 
-	//add player to waiting room when they click join
+
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			$scope.numPlayers ++;
@@ -99,6 +100,19 @@ angular.module('socialMockup')
 			console.log("PLAYER QUIT", playersRef)
 		});
 	});
+
+//initialize new game
+$scope.launchNewGame = function(){
+	$scope.numPlayers = 0;
+	console.log("NEW GAME");
+}
+	//add player to waiting room when they click join
+	if ($scope.numPlayers < 3 ){
+		$scope.phase = "waitingForPlayers";
+		} else {
+		$scope.launchNewGame();
+	}
+
 
 
 
