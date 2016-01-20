@@ -951,17 +951,17 @@ angular.module("socialMockup")
   };
 })
 
-.directive('dealCards', function() {
-  return {
-    templateUrl: "game/cards.html",
-    controller: "dealingCardsCtrl"
-  };
-})
+// .directive('dealCards', function() {
+//   return {
+//     templateUrl: "game/cards.html",
+//     controller: "dealingCardsCtrl"
+//   };
+// })
 
 'use strict';
 angular.module('socialMockup')
 
-.service('GameService', function($http, $firebaseObject, CardService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+.service('GameService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
@@ -1025,94 +1025,101 @@ this.addPlayer = function(){
 angular.module('socialMockup')
 
 
-.service('CardsService', function($timeout, GameService $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
+.service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
+
+	// this.playersRef = this.gameInstance.child("players");
+	// var playersRef = this.playersRef
+	// this.messageRef = this.gameInstance.child("messages")
+	// var messageRef = this.messageRef
 
 	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	this.whiteCardRef = gameInstance.child("whiteCards")
+	var whiteCardRef = this.whiteCardRef;
+	this.blackCardRef = gameInstance.child("blackCards")
+	var blackCardRef = this.blackCardRef;
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
-		$scope.whiteCards.$add({text: whiteCards, player: ''})
-		$scope.blackCards.$add(blackCards)
+		whiteCardRef.$add({array: whiteCards})
+		blackCardRef.$add(blackCards)
 	}
 
 
 	//******DEALING BLACK CARDS:
-	var blackCardRef = gameInstance.child("blackCards")
-	$scope.blackCards = $firebaseArray(blackCardRef)
+	//$scope.blackCards = $firebaseArray(blackCardRef)
 
-	var scenarioCardRef = gameInstance.child("scenarioCardRef")
-	$scope.scenarioCard = $firebaseArray(scenarioCardRef)
+	// var scenarioCardRef = gameInstance.child("scenarioCardRef")
+	// $scope.scenarioCard = $firebaseArray(scenarioCardRef)
 
-	$scope.listPlayers = function(){
-		console.log("Players?", playersRef)
-	}
+	// $scope.listPlayers = function(){
+	// 	console.log("Players?", playersRef)
+	// }
 
-	$scope.dealBlackCard = function(){
-		$scope.scenarioCard.$remove(0);
-		var basedCards = $scope.blackCards[0]
-		console.log("BASE", basedCards)
-		var rando = Math.floor((Math.random() * basedCards.length ) + 0);
-		var takenCards = basedCards[rando];
-		$scope.scenarioCard.$add(takenCards)
-		basedCards.splice(rando, 1);
-		$scope.blackCards.$remove(0);
-		$scope.blackCards.$add(basedCards);
-		console.log("Cards left", basedCards.length)
-	}
+	// $scope.dealBlackCard = function(){
+	// 	$scope.scenarioCard.$remove(0);
+	// 	var basedCards = $scope.blackCards[0]
+	// 	console.log("BASE", basedCards)
+	// 	var rando = Math.floor((Math.random() * basedCards.length ) + 0);
+	// 	var takenCards = basedCards[rando];
+	// 	$scope.scenarioCard.$add(takenCards)
+	// 	basedCards.splice(rando, 1);
+	// 	$scope.blackCards.$remove(0);
+	// 	$scope.blackCards.$add(basedCards);
+	// 	console.log("Cards left", basedCards.length)
+	// }
 
 
 
 	//******DEALING WHITE CARDS:
-	var whiteCardRef = gameInstance.child("whiteCards")
-	$scope.whiteCards = $firebaseArray(whiteCardRef)
+	//$scope.whiteCards = $firebaseArray(whiteCardRef)
 
-	var exampleHandRef = gameInstance.child("exampleHand")
-	$scope.exampleHand = $firebaseArray(exampleHandRef)
+	// var exampleHandRef = gameInstance.child("exampleHand")
+	// $scope.exampleHand = $firebaseArray(exampleHandRef)
 
-	$scope.whoAmI = function(){
+	// $scope.whoAmI = function(){
 		
-		console.log($scope.user.username)
-	}
-	$scope.howManyCards = function(){
-		console.log("Firebase", $scope.whiteCards.text.length);
-		console.log("Local", whiteCards.length);
-	}
-	$scope.takeASingleCard = function(){
-		$scope.whiteCards.$remove($scope.whiteCards[3])
-		console.log($scope.whiteCards.$remove)
-	}
+	// 	console.log($scope.user.username)
+	// }
+	// $scope.howManyCards = function(){
+	// 	console.log("Firebase", $scope.whiteCards.text.length);
+	// 	console.log("Local", whiteCards.length);
+	// }
+	// $scope.takeASingleCard = function(){
+	// 	$scope.whiteCards.$remove($scope.whiteCards[3])
+	// 	console.log($scope.whiteCards.$remove)
+	// }
 
-	$scope.killCards = function(){
-		$scope.whiteCards.$remove(0);
-		$scope.blackCards.$remove(0);
-		$scope.exampleHand.$remove(0);
-	}
-	$scope.startingHand = function(){
-		var basedCards = $scope.whiteCards[0]
-		console.log("New cards", basedCards)
-		for(var i = 0; i<10; i++){
-			var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
-			var takenCards = basedCards.text[rando];
-			console.log("Rando", rando)
-			console.log("Taken cards", takenCards)
-			basedCards.text.splice(rando, 1);
-			$scope.exampleHand.$add(takenCards)
-			console.log("Cards left", basedCards.text.length)
-			$scope.whiteCards.$remove(0);
-		}
-			$scope.whiteCards.$add(basedCards);
-	}
-	$scope.drawOne = function(user){
-		var basedCards = $scope.whiteCards[0]
-		var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
-		var takenCards = basedCards.text[rando];
-		basedCards.text.splice(rando, 1);
-		$scope.exampleHand.$add(takenCards)
-		$scope.whiteCards.$remove(0);
-		$scope.whiteCards.$add(basedCards);
-		console.log("Cards left", basedCards.text.length)
-	}
+	// $scope.killCards = function(){
+	// 	$scope.whiteCards.$remove(0);
+	// 	$scope.blackCards.$remove(0);
+	// 	$scope.exampleHand.$remove(0);
+	// }
+	// $scope.startingHand = function(){
+	// 	var basedCards = $scope.whiteCards[0]
+	// 	console.log("New cards", basedCards)
+	// 	for(var i = 0; i<10; i++){
+	// 		var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
+	// 		var takenCards = basedCards.text[rando];
+	// 		console.log("Rando", rando)
+	// 		console.log("Taken cards", takenCards)
+	// 		basedCards.text.splice(rando, 1);
+	// 		$scope.exampleHand.$add(takenCards)
+	// 		console.log("Cards left", basedCards.text.length)
+	// 		$scope.whiteCards.$remove(0);
+	// 	}
+	// 		$scope.whiteCards.$add(basedCards);
+	// }
+	// $scope.drawOne = function(user){
+	// 	var basedCards = $scope.whiteCards[0]
+	// 	var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
+	// 	var takenCards = basedCards.text[rando];
+	// 	basedCards.text.splice(rando, 1);
+	// 	$scope.exampleHand.$add(takenCards)
+	// 	$scope.whiteCards.$remove(0);
+	// 	$scope.whiteCards.$add(basedCards);
+	// 	console.log("Cards left", basedCards.text.length)
+	// }
 });
 
 'use strict';
@@ -1120,7 +1127,10 @@ angular.module('socialMockup')
 angular.module('socialMockup')
 
 
-.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardService, $http){
+.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
+
+
+
 
 	//*******USERAUTH:
 	var cookies = $cookies.get('token');
@@ -1143,6 +1153,8 @@ angular.module('socialMockup')
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	$scope.playerss = GameService.playerss 
+	$scope.whiteCardRef = CardsService.whiteCardRef;
+	$scope.blackCardRef = CardsService.blackCardRef;
 
 	$scope.numPlayers = $scope.playerss.length;
 	/* ______________
@@ -1157,7 +1169,7 @@ angular.module('socialMockup')
 
 	var gameState = function() {
 		//send a deck of black cards and white to Firebase
-		CardService.startDeck();
+		CardsService.startDeck();
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0; 

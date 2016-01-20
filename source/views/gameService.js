@@ -1,7 +1,7 @@
 'use strict';
 angular.module('socialMockup')
 
-.service('GameService', function($http, $firebaseObject, CardService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+.service('GameService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
