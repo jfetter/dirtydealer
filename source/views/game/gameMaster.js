@@ -55,37 +55,23 @@ angular.module('socialMockup')
 	});
 
 
-
-
-	/////****ADD AND REMOVE PLAYERS:
-	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-
-	var playersRef = gameInstance.child("players");
-	var messageRef = gameInstance.child("messages")
-	$scope.playerss = $firebaseArray(playersRef); 
+	var playersRef = GameService.gameInstance.child("players");
+	var messageRef = GameService.gameInstance.child("messages")
+	$scope.playerss = GameService.playerss 
 	$scope.numPlayers = 0;
+	/////****ADD AND REMOVE PLAYERS:
+
+
+
 
 	// create an array to store each player's info
-	$scope.addPlayer = function(){
-		// figure out how to pull user id info ... maybe store it on rootscope?
-		var thisPlayer = Date.now();
-		localStorage.player = thisPlayer;
-		console.log("this player logged In", localStorage.player)
-		playersRef.child('player').set({player: thisPlayer});
-	}
+	// $scope.addPlayer = function(){
+	// 	GameService.addPlayer();
+	// }
 	if (!localStorage.thisPlayer){
-		$scope.addPlayer();
+		GameService.addPlayer();
 	}
 
-		//remove players
-	$scope.removePlayer = function(){
-    var player = JSON.parse(localStorage.player);
-		console.log("player to remove", player);
-		playersRef.child("player").remove();
-		console.log("players before remove", $scope.playerss)
-		localStorage.removeItem("player");
-		console.log("players after remove", $scope.playerss)
-	}
 
 	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
@@ -103,14 +89,13 @@ angular.module('socialMockup')
 		});
 	});
 
-
+$scope.removePlayer = function(){
+		GameService.removePlayer();
+	}
 
 	// *******MESSAGES
-	$scope.messages = $firebaseArray(messageRef);
+	$scope.messages = GameService.messages;
 	$scope.addMessage = function(message) {
-		console.log(message);
-		$scope.messages.$add({
-			text: message
-		});
-	};
+		GameService.addMessage(message);
+	}
 });
