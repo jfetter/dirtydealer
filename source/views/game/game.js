@@ -25,22 +25,9 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
-	$scope.getCards = function(user){
-		$scope.whiteCards = whiteCards;
-		for(var i = 0; i<10; i++){
-			var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
-			console.log($scope.whiteCards[rando])
-			$scope.whiteCards.splice(rando, 1)
-		}
-		console.log($scope.whiteCards.length);
-		$scope.blackCards = blackCards;
-		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
-		console.log($scope.blackCards[deal])
-	}
-
 	//******FIREBASE
 	//create a new game instance on the scope
-	$scope.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 	 // set up a reference for all of the players currently in this game instance
 	 var playersRef = $scope.gameInstance.child("players");
 	 var messageRef = $scope.gameInstance.child("messages")
@@ -116,9 +103,62 @@ angular.module('socialMockup')
 	//     });
 	//   }
 
+	 var playersRef = gameInstance.child("players");
+	 var messageRef = gameInstance.child("messages")
+	 $scope.playerss = $firebaseArray(playersRef);
+	 $scope.numPlayers = 0;
+
+	// create an array to store each player's info
+  $scope.addPlayer = function(){
+  	// figure out how to pull user id info ... maybe store it on rootscope?
+  	var thisPlayer = Date.now();
+  	localStorage.player = thisPlayer;
+  	console.log("this player logged In", thisPlayer)
+  	playersRef.child(thisPlayer).set({thisPlayer: thisPlayer})
+  }
+  if (!localStorage.thisPlayer){
+  	$scope.addPlayer();
+  }
+
+  //remove players
+  $scope.removePlayer = function(){
+  	localStorage.removeItem("player");
+  	playersRef.
+  	console.log("REMOVED");
+  }
+
+//add player to waiting room when they click join
+	 playersRef.on("child_added", function() {
+        $timeout(function() {
+          $scope.numPlayers ++;
+          console.log("current Players", $scope.playerss)
+        });
+      });
+
+	 //update number of players when a player quits
+      playersRef.on("child_removed", function() {
+        $timeout(function() {
+          $scope.numPlayers -= 1;
+          console.log("PLAYER QUIT", playersRef)
+        });
+      });
 
 
+  // Keep track of when the logged-in user in connected or disconnected from Firebase
+  // $scope.rootRef.child(".info/connected").on("value", function(dataSnapshot) {
+  //   if (dataSnapshot.val() === true) {
+  //     // Remove the user from the logged-in users list when they get disconnected
+  //     var loggedInUsersRef = $scope.rootRef.child("loggedInUsers/" + $scope.authData.provider + "/" + $scope.authData.uid);
+  //     loggedInUsersRef.onDisconnect().remove();
 
+  //     // Add the user to the logged-in users list when they get connected
+  //     var username = ($scope.authData.provider === "github") ? $scope.authData.github.username : $scope.authData.twitter.username;
+  //     loggedInUsersRef.set({
+  //       imageUrl: ($scope.authData.provider === "github") ? $scope.authData.github.cachedUserProfile.avatar_url : $scope.authData.twitter.cachedUserProfile.profile_image_url_https,
+  //       userUrl: ($scope.authData.provider === "github") ?  "https://github.com/" + username : "https://twitter.com/" + username,
+  //       username: username
+  //     });
+  //   }
 	//var syncObject = $firebaseObject(ref);
 	// synchronize the object with a three-way data binding
 	//syncObject.$bindTo($scope, "data");
