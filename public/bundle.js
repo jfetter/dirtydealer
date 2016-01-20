@@ -1158,7 +1158,7 @@ angular.module('socialMockup')
 	$scope.blackCardRef = CardsService.blackCardRef;
 
 
-	//$scope.numPlayers = $scope.playerss.length;
+	$scope.numPlayers;
 	/* ______________
 	|              |
 	|  States:     |
@@ -1189,13 +1189,6 @@ angular.module('socialMockup')
 	}
 }
 
-	//initialize new game or display waiting room
- if ($scope.playerss.length < 3 ){
- 		console.log("less than 3 players")
- 		//$scope.phase = "waitingForPlayers";
- 		} else if ($scope.playerss.length === 3){
- 		gameState();
- 	}
 
 
 //********TIMER:
@@ -1242,7 +1235,8 @@ $scope.$on('timer-stopped', function(event, remaining) {
 	//add player to waiting room when they click join
 	playersRef.on("child_added", function() {
 		$timeout(function() {			
-			console.log("current Players", $scope.playerss)
+			console.log("player Joined", $scope.playerss)
+			$scope.numPlayers = $scope.playerss.length
 		});
 	});
 
@@ -1250,6 +1244,7 @@ $scope.$on('timer-stopped', function(event, remaining) {
 	playersRef.on("child_removed", function() {
 		$timeout(function() {
 			console.log("PLAYER QUIT", playersRef)
+			$scope.numPlayers = $scope.playerss.length
 		});
 	});
 
@@ -1263,6 +1258,15 @@ $scope.removePlayer = function(){
 	$scope.addMessage = function(message) {
 		GameService.addMessage(message);
 	}
+
+	//initialize new game or display waiting room
+ if ($scope.numPlayers != 3 ){
+ 		console.log("less than 3 players")
+ 		//$scope.phase = "waitingForPlayers";
+ 		} else {
+ 		gameState();
+ 	}
+
 });
 
 
@@ -1273,14 +1277,6 @@ angular.module('socialMockup')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
@@ -1312,6 +1308,14 @@ angular.module('socialMockup')
 	}
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
