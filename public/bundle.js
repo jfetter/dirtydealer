@@ -974,13 +974,13 @@ var whiteCards = [
 angular.module("socialMockup")
 
 .directive('gameTimer', function() {
-  return {
-    restrict: "AE",
-    templateUrl: "game/timer.html",
-    scope: {
-      text: 'ettsts'
-    }
-  };
+  // return {
+  //   restrict: "AE",
+  //   templateUrl: "game/timer.html",
+  //   scope: {
+  //     text: 'ettsts'
+  //   }
+  // };
 })
 
 .directive('dealCards', function() {
@@ -996,58 +996,71 @@ angular.module('socialMockup')
 
 .controller('dealingCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
-var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
-//******DEALING BOTH DECKS:
-$scope.startDeck = function(user){
-  $scope.whiteCards.$add(whiteCards)
-  $scope.blackCards.$add(blackCards)
-}
-
-
-//******DEALING BLACK CARDS:
-var blackCardRef = gameInstance.child("blackCards")
-$scope.blackCards = $firebaseArray(blackCardRef)
+	//******DEALING BOTH DECKS:
+	$scope.startDeck = function(user){
+		$scope.whiteCards.$add(whiteCards)
+		$scope.blackCards.$add(blackCards)
+	}
 
 
-
-$scope.dealBlackCard = function(user){
-  $scope.blackCards = blackCards;
-  var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
-  console.log($scope.blackCards[deal])
-}
+	//******DEALING BLACK CARDS:
+	var blackCardRef = gameInstance.child("blackCards")
+	$scope.blackCards = $firebaseArray(blackCardRef)
 
 
 
-//******DEALING WHITE CARDS:
-var whiteCardRef = gameInstance.child("whiteCards")
-$scope.whiteCards = $firebaseArray(whiteCardRef)
+	$scope.dealBlackCard = function(user){
+		$scope.blackCards = blackCards;
+		var deal = Math.floor(Math.random() * ($scope.blackCards.length - 0)) + 0;
+		console.log($scope.blackCards[deal])
+	}
 
-var exampleHandRef = gameInstance.child("exampleHand")
-// $scope.exampleHand = $firebaseArray(exampleHandRef)
 
-// $scope.startingHand = function(user){
-//   for(var i = 0; i<10; i++){
-//     var rando = Math.floor(Math.random() * (whiteCards.length - 0)) + 0;
-//     $scope.whiteCards.$add(whiteCards[rando])
-//     $scope.whiteCards.splice(rando, 1)
-//   }
-// }
 
-$scope.startingHand = function(user){
-	$scope.whiteCards.$remove();
-  for(var i = 0; i<10; i++){
-		$scope.exampleHand = $firebaseArray(exampleHandRef)
+	//******DEALING WHITE CARDS:
+	var whiteCardRef = gameInstance.child("whiteCards")
+	$scope.whiteCards = $firebaseArray(whiteCardRef)
 
-    var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
-		$scope.exampleHand.$remove(rando);
-    $scope.exampleHand.$add(whiteCards[rando])
-		whiteCards.splice(rando, 1);
-		console.log("Cards left", whiteCards.length)
-		$scope.whiteCards.$remove(rando);
-  }
+	var exampleHandRef = gameInstance.child("exampleHand")
+	$scope.exampleHand = $firebaseArray(exampleHandRef)
+
+	// $scope.startingHand = function(user){
+	//   for(var i = 0; i<10; i++){
+	//     var rando = Math.floor(Math.random() * (whiteCards.length - 0)) + 0;
+	//     $scope.whiteCards.$add(whiteCards[rando])
+	//     $scope.whiteCards.splice(rando, 1)
+	//   }
+	// }
+
+	// $scope.startingHand = function(user){
+	// 	$scope.whiteCards.$remove();
+	// 	$scope.exampleHand.$remove();
+	//   for(var i = 0; i<10; i++){
+	//     var rando = Math.floor(Math.random() * ($scope.whiteCards.length - 0)) + 0;
+	//     $scope.exampleHand.$add(whiteCards[rando])
+	// 		whiteCards.splice(rando, 1);
+	// 		console.log("Cards left", whiteCards.length)
+	// 		$scope.whiteCards.$remove(rando);
+	//   }
+	// 		$scope.whiteCards.$add(whiteCards);
+	// }
+
+	$scope.startingHand = function(user){
+		$scope.whiteCards.$remove(0);
+		for(var i = 0; i<10; i++){
+			var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
+			var takenCards = whiteCards[rando];
+			console.log("Rando", rando)
+			console.log("Taken cards", takenCards)
+			$scope.exampleHand.$add(takenCards)
+			whiteCards.splice(rando, 1);
+			console.log("Cards left", whiteCards.length)
+		}
 		$scope.whiteCards.$add(whiteCards);
-}
+	}
+
 
 });
 
@@ -1115,7 +1128,7 @@ angular.module('socialMockup')
 
 	var playersRef = gameInstance.child("players");
 	var messageRef = gameInstance.child("messages")
-	$scope.playerss = $firebaseArray(playersRef);
+	$scope.playerss = $firebaseArray(playersRef); 
 	$scope.numPlayers = 0;
 
 	// create an array to store each player's info
@@ -1123,18 +1136,21 @@ angular.module('socialMockup')
 		// figure out how to pull user id info ... maybe store it on rootscope?
 		var thisPlayer = Date.now();
 		localStorage.player = thisPlayer;
-		console.log("this player logged In", thisPlayer)
-		playersRef.child(thisPlayer).set({thisPlayer: thisPlayer})
+		console.log("this player logged In", localStorage.player)
+		playersRef.child('player').set({player: thisPlayer});
 	}
 	if (!localStorage.thisPlayer){
 		$scope.addPlayer();
 	}
 
-	//remove players
+		//remove players
 	$scope.removePlayer = function(){
+    var player = JSON.parse(localStorage.player);
+		console.log("player to remove", player);
+		playersRef.child("player").remove();
+		console.log("players before remove", $scope.playerss)
 		localStorage.removeItem("player");
-		playersRef.
-		console.log("REMOVED");
+		console.log("players after remove", $scope.playerss)
 	}
 
 	//add player to waiting room when they click join
