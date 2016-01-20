@@ -1,7 +1,7 @@
 'use strict';
 angular.module('socialMockup')
 
-.service('GameService', function($http, $firebaseObject, CardService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
@@ -25,7 +25,7 @@ angular.module('socialMockup')
 
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
-    var gamePoints = 0; 
+    var gamePoints = 0;
     var cards = ["test1", "test2"];
     //var cards = CardService.DealWhite();
     //deal cards function here to populate array
@@ -58,4 +58,3 @@ this.addPlayer = function(){
 	}
 
 });
-

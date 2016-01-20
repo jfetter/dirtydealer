@@ -3,9 +3,10 @@
 angular.module('socialMockup')
 
 
-.service('CardsService', function($timeout, GameService $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
+.service('CardsService', function($timeout, $location, $rootScope, $scope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
@@ -13,7 +14,6 @@ angular.module('socialMockup')
 		$scope.whiteCards.$add({text: whiteCards, player: ''})
 		$scope.blackCards.$add(blackCards)
 	}
-
 
 	//******DEALING BLACK CARDS:
 	var blackCardRef = gameInstance.child("blackCards")
@@ -49,7 +49,7 @@ angular.module('socialMockup')
 	$scope.exampleHand = $firebaseArray(exampleHandRef)
 
 	$scope.whoAmI = function(){
-		
+
 		console.log($scope.user.username)
 	}
 	$scope.howManyCards = function(){

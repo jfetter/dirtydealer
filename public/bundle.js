@@ -961,7 +961,7 @@ angular.module("socialMockup")
 'use strict';
 angular.module('socialMockup')
 
-.service('GameService', function($http, $firebaseObject, CardService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
@@ -985,7 +985,7 @@ angular.module('socialMockup')
 
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
-    var gamePoints = 0; 
+    var gamePoints = 0;
     var cards = ["test1", "test2"];
     //var cards = CardService.DealWhite();
     //deal cards function here to populate array
@@ -1019,15 +1019,15 @@ this.addPlayer = function(){
 
 });
 
-
 'use strict';
 
 angular.module('socialMockup')
 
 
-.service('CardsService', function($timeout, GameService $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
+.service('CardsService', function($timeout, $location, $rootScope, $scope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
@@ -1035,7 +1035,6 @@ angular.module('socialMockup')
 		$scope.whiteCards.$add({text: whiteCards, player: ''})
 		$scope.blackCards.$add(blackCards)
 	}
-
 
 	//******DEALING BLACK CARDS:
 	var blackCardRef = gameInstance.child("blackCards")
@@ -1071,7 +1070,7 @@ angular.module('socialMockup')
 	$scope.exampleHand = $firebaseArray(exampleHandRef)
 
 	$scope.whoAmI = function(){
-		
+
 		console.log($scope.user.username)
 	}
 	$scope.howManyCards = function(){
