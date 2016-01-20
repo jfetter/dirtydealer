@@ -48,8 +48,8 @@ angular.module('socialMockup')
 
   //remove players
   $scope.removePlayer = function(){
-  	localStorage.removeItem("thisPlayer");
-
+  	localStorage.removeItem("player");
+  	playersRef.
   	console.log("REMOVED");
   }
 
