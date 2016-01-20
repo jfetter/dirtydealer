@@ -1033,19 +1033,45 @@ angular.module('socialMockup')
 
 
 
-	$scope.startingHand = function(user){
+	$scope.startingBand = function(user){
 		$scope.whiteCards.$remove(0);
 		for(var i = 0; i<10; i++){
 			var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
-			var takenCards = whiteCards[rando];
-			console.log("Rando", rando)
+			var takenCards = $scope.whiteCards[0][rando];
 			console.log("Taken cards", takenCards)
-			$scope.exampleHand.$add(takenCards)
-			whiteCards.splice(rando, 1);
-			console.log("Cards left", whiteCards.length)
 		}
 		$scope.whiteCards.$add(whiteCards);
 	}
+
+	$scope.howManyCards = function(){
+		console.log("Firebase", $scope.whiteCards[0].length);
+		console.log("Local", whiteCards.length);
+	}
+	$scope.takeASingleCard = function(){
+		$scope.whiteCards.$remove($scope.whiteCards[3])
+		console.log($scope.whiteCards.$remove)
+
+	}
+	$scope.startingHand = function(){
+		whiteCards = $scope.whiteCards[0]
+		console.log("New cards", whiteCards)
+		for(var i = 0; i<10; i++){
+			var rando = Math.floor((Math.random() * whiteCards.length ) + 0);
+			// var takenCards = whiteCards[rando];
+			var takenCards = $scope.whiteCards[0][rando];
+			console.log("Rando", rando)
+			console.log("Taken cards", takenCards)
+			whiteCards.splice(rando, 1);
+			$scope.exampleHand.$add(takenCards)
+			console.log("Cards left", whiteCards.length)
+
+			$scope.whiteCards.$remove(0);
+			$scope.whiteCards.$save(whiteCards);
+		}
+			// $scope.whiteCards.$add(whiteCards);
+	}
+
+
 
 	$scope.drawOne = function(user){
 		$scope.whiteCards.$remove(0);
@@ -1184,14 +1210,6 @@ angular.module('socialMockup')
 'use strict';
 
 angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('socialMockup')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -1219,6 +1237,14 @@ angular.module('socialMockup')
 	}
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
