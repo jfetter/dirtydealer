@@ -178,30 +178,41 @@ angular.module('socialMockup')
 
 	//******FIREBASE
 	//create a new game instance on the scope
-	$scope.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	var gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 	 // set up a reference for all of the players currently in this game instance
-	 var playersRef = $scope.gameInstance.child("players");
-	 var messageRef = $scope.gameInstance.child("messages")
-	 
+	 var playersRef = gameInstance.child("players");
+	 var messageRef = gameInstance.child("messages")
+	 $scope.playerss = $firebaseArray(playersRef);
 	 $scope.numPlayers = 0; 
 	 
 	// create an array to store each player's info
-  $scope.playerss = $firebaseArray(playersRef);
-  $scope.addPlayer =function(){
+  $scope.addPlayer = function(){
   	// figure out how to pull user id info ... maybe store it on rootscope?
-  	var thisPlayer = cookies;
+  	var thisPlayer = Date.now();
+  	localStorage.player = thisPlayer; 
   	console.log("this player logged In", thisPlayer)
-  	$scope.playerss.$add({
-  		id: thisPlayer
-  	})
+  	playersRef.child(thisPlayer).set({thisPlayer: thisPlayer})
+  }
+  if (!localStorage.thisPlayer){
+  	$scope.addPlayer();
+  } 
+
+  //remove players
+  $scope.removePlayer = function(){
+  	localStorage.removeItem("thisPlayer");
+
+  	console.log("REMOVED");
   }
 
+//add player to waiting room when they click join
 	 playersRef.on("child_added", function() {
         $timeout(function() {
           $scope.numPlayers ++;
-          console.log("PLAYER JOINED", $scope.numPlayers)
+          console.log("current Players", $scope.playerss)
         });
       });
+
+	 //update number of players when a player quits
       playersRef.on("child_removed", function() {
         $timeout(function() {
           $scope.numPlayers -= 1;

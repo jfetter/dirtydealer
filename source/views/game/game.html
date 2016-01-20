@@ -21,8 +21,14 @@
   </form>
     <button ng-click="addPlayer()">join</button>
 
-  <p>{{numPlayers}} are playing</p>
-
+  <p>waiting for {{ 3 - numPlayers}} players</p>
+  
+  <h2>PLAYERS</h2>
+  <div ng-repeat="player in playerss track by $index">
+  <p> {{playerss}}</p>
+  </div>
+  <button ng-click="removePlayer()">Quit</button>
+  
   <div class="row" ng-if="game.data.state === 'waitingForPlayers'">
 
   </div>
