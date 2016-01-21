@@ -964,6 +964,8 @@ angular.module('socialMockup')
 
 .service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
+	var cookies = $cookies.get('token');
+	var token = jwtHelper.decodeToken(cookies)
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
@@ -978,7 +980,8 @@ angular.module('socialMockup')
 
 	//remove players
 	this.removePlayer = function(){
-		var player = JSON.parse(localStorage.player);
+		// var player = JSON.parse(localStorage.player);
+		var player = localStorage.player;
 		console.log("player to remove", player);
 		playersRef.child(player).remove();
 		console.log("players before remove", this.playerss)
@@ -987,28 +990,40 @@ angular.module('socialMockup')
 	}
 
 	this.pickCards = function(){
-		var myId = JSON.parse(localStorage.player)
+		// var myId = JSON.parse(localStorage.player)
+		var myId = localStorage.player
 		var myHand = CardsService.startingHand();
 		var tempYourHand = [];
-
+		var gamePoints = 0;
+		
 		//var myHand = ["test3", "test4", "test5", "test6"]
 		this.playersRef.child(myId).set({
-			cards: myHand
+			playerId: myId,
+			username: token.username,
+			cards: myHand,
+			gamePoints: gamePoints
 		});
 		console.log("picking a card")
 		return myHand;
 	}
 
 	this.addPlayer = function(){
-		var thisPlayer = Date.now();
+		// var thisPlayer = token.username;
+		var thisPlayer = token._id;
+		// var thisPlayer = Date.now();
 		var gamePoints = 0;
 		var cards = ["testA", "testB"];
 		//var cards = CardService.DealWhite();
 		//deal cards function here to populate array
+
 		localStorage.player = thisPlayer;
+
+		// token.username = thisPlayer;
+
 		//console.log("this player logged In", localStorage.player)
 		playersRef.child(thisPlayer).set({
 			playerId: thisPlayer,
+			username: token.username,
 			cards: cards,
 			gamePoints: gamePoints
 		});
@@ -1041,20 +1056,25 @@ angular.module('socialMockup')
 			tempYourHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-		var myId = JSON.parse(localStorage.player)
+		// var myId = JSON.parse(localStorage.player)
+		var myId = localStorage.player
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
 		this.votingRef.child(myId).set({
 			text: cardClicked
 		});
 		return tempYourHand.cards;
-// <<<<<<< HEAD
-// =======
-		// return this.votingRef;
-// >>>>>>> 0a9646ddae5fb9a50d4eb062ccb40ac140ae2840
 	}
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
@@ -1274,17 +1294,16 @@ angular.module('socialMockup')
 		GameService.addMessage(message);
 	}
 
-	//VOTING:
-// <<<<<<< HEAD
+	$scope.sayName = function(){
+		var token = jwtHelper.decodeToken(cookies)
+		// console.log("I AM ", $scope.user.username)
+		console.log("TOKEN MASTEr ", token)
+	}
+
 	$scope.addToVotedCards = function(cardClicked, index) {
 		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
-// =======
 }
 	$scope.votes = [];
-// 	$scope.addToVotedCards = function(cardClicked) {
-// 		GameService.addToVotedCards(cardClicked);
-// >>>>>>> 0a9646ddae5fb9a50d4eb062ccb40ac140ae2840
-// 	}
 	votingRef.on("value", function(snap) {
 		$scope.votes = snap.val();
 		console.log(snap.val(), "duddbjddjbdjbkdbdk");
@@ -1297,14 +1316,6 @@ angular.module('socialMockup')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 

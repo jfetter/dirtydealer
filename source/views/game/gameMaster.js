@@ -145,17 +145,16 @@ angular.module('socialMockup')
 		GameService.addMessage(message);
 	}
 
-	//VOTING:
-// <<<<<<< HEAD
+	$scope.sayName = function(){
+		var token = jwtHelper.decodeToken(cookies)
+		// console.log("I AM ", $scope.user.username)
+		console.log("TOKEN MASTEr ", token)
+	}
+
 	$scope.addToVotedCards = function(cardClicked, index) {
 		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
-// =======
 }
 	$scope.votes = [];
-// 	$scope.addToVotedCards = function(cardClicked) {
-// 		GameService.addToVotedCards(cardClicked);
-// >>>>>>> 0a9646ddae5fb9a50d4eb062ccb40ac140ae2840
-// 	}
 	votingRef.on("value", function(snap) {
 		$scope.votes = snap.val();
 		console.log(snap.val(), "duddbjddjbdjbkdbdk");

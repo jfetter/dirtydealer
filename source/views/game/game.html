@@ -20,10 +20,10 @@
     <input ng-model="newMessageText" type="text" />
     <button type="submit">Add Message</button>
   </form>
-  <h5>Voting time</h5>
+  <!-- <h5>Voting time</h5>
   <div ng-repeat="voteCard in voteCards track by $index">
     <span>{{voteCard}}</span>
-  </div>
+  </div> -->
   <h5>Your cards</h5>
   <div ng-repeat="card in myHand track by $index">
     <span ng-click="addToVotedCards(card, $index)">{{card}}</span>
@@ -45,6 +45,7 @@
     <button ng-click="dealBlackCard()">Deal Black Card (working)</button>
     <button ng-click="startingHand()">Get hand (working)</button>
     <button ng-click="draw()">Draw a card(working)</button>
+    <button ng-click="sayName()">Get user's namec</button>
     <!-- <button ng-click="howManyCards()">Count cards</button> -->
     <!-- <button ng-click="takeASingleCard()">Take 1 from deck</button> -->
     <!-- <button ng-click="startingBand()">Random card chosen</button> -->
