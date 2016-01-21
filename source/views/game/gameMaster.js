@@ -34,8 +34,8 @@ angular.module('socialMockup')
 	$scope.startingHand = function(){
 		CardsService.startingHand();
 	}
-	$scope.drawOne = function(){
-		CardsService.drawOne();
+	$scope.draw = function(n){
+		CardsService.draw(n);
 	}
 
 	var playersRef = GameService.gameInstance.child("players");

@@ -72,13 +72,23 @@ angular.module('socialMockup')
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
 	}
-	this.drawOne = function(n){
-		// for(var i = 0)
-		var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-		var takenCard = tempWhiteCard.array[rando];
-		console.log("TAKEN", takenCard);
-		tempWhiteCard.array.splice(rando, 1);
-		this.gameInstance.child("exampleHand").push(takenCard)
-		this.gameInstance.child('whiteCards').set(tempWhiteCard);
+	this.draw = function(n){
+		for(var i=0; i<n; i++){	
+			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
+			var takenCard = tempWhiteCard.array[rando];
+			console.log("TAKEN", takenCard);
+			tempWhiteCard.array.splice(rando, 1);
+			this.gameInstance.child("exampleHand").push(takenCard)
+			this.gameInstance.child('whiteCards').set(tempWhiteCard);
+		}
 	}
+	// this.drawOne = function(n){
+	// 	// for(var i = 0)
+	// 	var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
+	// 	var takenCard = tempWhiteCard.array[rando];
+	// 	console.log("TAKEN", takenCard);
+	// 	tempWhiteCard.array.splice(rando, 1);
+	// 	this.gameInstance.child("exampleHand").push(takenCard)
+	// 	this.gameInstance.child('whiteCards').set(tempWhiteCard);
+	// }
 });
