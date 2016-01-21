@@ -113,9 +113,16 @@ angular.module('socialMockup')
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
 		this.votingRef.child(myId).set({
-			text: cardClicked
+			text: cardClicked,
 		});
 		return tempYourHand.cards;
 	}
-
+	this.voteCard = function(card){
+		var myId = localStorage.player
+		console.log("You're trying to vote for:", card.text)
+		var wop = card.text.replace('.','')
+		this.votingRef.child(wop).push({
+			points: myId
+		});
+	}
 });

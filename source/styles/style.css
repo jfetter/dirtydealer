@@ -27,11 +27,16 @@ h1, p, .navbar, div, button, .modal, li, a {
   max-height: 50vh;
   max-width: 50vh;
 }
+.blackVote{
+  display: inline-block;
+}
 .whiteCard{
   color: black;
   border: 1px solid black;
   height: 250px;
   width: 200px;
+  display: inline-block;
+  float: left;
 }
 .blackCard{
   color: white;
@@ -39,6 +44,7 @@ h1, p, .navbar, div, button, .modal, li, a {
   background-color: black;
   height: 250px;
   width: 200px;
+  display: inline-block;
 }
 .userThumbnail {
   max-height: 8vh;

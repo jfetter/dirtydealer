@@ -64,6 +64,8 @@ angular.module('socialMockup')
 
 	var gameState = function() {
 		CardsService.startDeck();
+		$scope.blackCard = 	CardsService.dealBlackCard();
+		console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
@@ -80,10 +82,10 @@ angular.module('socialMockup')
 			$scope.myHand = GameService.pickCards();
 			if (!$scope.counter){
 				$scope.countDown();
-				}
-
 			}
-			// break;
+
+		}
+		// break;
 	}
 
 
@@ -99,15 +101,15 @@ angular.module('socialMockup')
 	var mytimeout = null; // the current timeoutID
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
-			console.log("COUNTER ", n)
+		console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
 			return;
 		}
-				n--;
-				TimerService.countDown(n);
-				mytimeout = $timeout($scope.countDown, 1000);
+		n--;
+		TimerService.countDown(n);
+		mytimeout = $timeout($scope.countDown, 1000);
 	};
 
 
@@ -165,7 +167,11 @@ angular.module('socialMockup')
 	$scope.addMessage = function(message) {
 		GameService.addMessage(message);
 	}
-
+	$scope.voteCard = function(card){
+		GameService.voteCard(card);
+		console.log("YOU voted for:", card)
+		$scope.voted = true;
+	}
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
 		// console.log("I AM ", $scope.user.username)
@@ -174,7 +180,7 @@ angular.module('socialMockup')
 
 	$scope.addToVotedCards = function(cardClicked, index) {
 		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
-}
+	}
 	$scope.votes = [];
 	votingRef.on("value", function(snap) {
 		$scope.votes = snap.val();

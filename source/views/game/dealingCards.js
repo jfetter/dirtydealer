@@ -32,9 +32,13 @@ angular.module('socialMockup')
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
 		var takenCards = tempBlackCard[rando];
 		console.log("TAKEN", takenCards);
-		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
+		this.gameInstance.child("scenarioCard").set(takenCards)
+		// this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
 		tempBlackCard.splice(rando, 1);
 		this.gameInstance.child('blackCards').set(tempBlackCard);
+		return this.gameInstance.child("scenarioCard");
+		// return this.scenarioCard;
+		// return takenCards;
 	}
 	var tempWhiteCard = [];
 	this.whiteCardRef.on('value', function(snap) {
