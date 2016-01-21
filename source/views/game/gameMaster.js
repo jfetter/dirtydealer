@@ -3,7 +3,7 @@
 angular.module('socialMockup')
 
 
-.controller('gameMasterCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
+.controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
 
 
 
@@ -42,6 +42,7 @@ angular.module('socialMockup')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
+	$scope.timerRef = TimerService.timerRef;
 	var votingRef =  new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/voting");
 	// GameService.gameInstance.child("voting");
 
@@ -56,39 +57,56 @@ angular.module('socialMockup')
 
 	var currentState = '';
 
+
+
 	var gameState = function() {
 		CardsService.startDeck();
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0;
+		var n = 60; 
 		currentState = gameStates[count]
 		switch (currentState) {
 
 			case 'prevote':
 			//need an '&&' no white card has been selected?
-			mytimeout = $timeout($scope.onTimeout, 1000);
+			//mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
+			if (!$scope.counter){
+				$scope.countDown();
+				}
+				
+			}
 			// break;
-		}
 	}
 
 
+
 	//********TIMER:
-	$scope.counter = 60;
+	//$interval(countDown(), 1000)
+
+	$scope.timerRef.on("value", function(snap){
+		$scope.counter = snap.val();	
+	})
+
+	var n = 60; 
 	var mytimeout = null; // the current timeoutID
 	// Actual timer method, counts down every second, stops on zero.
-	$scope.onTimeout = function() {
-		if($scope.counter ===  0) {
+	$scope.countDown = function() {
+			console.log("COUNTER ", n)
+		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
 			return;
 		}
-		$scope.counter--;
-		mytimeout = $timeout($scope.onTimeout, 1000);
+				n--;
+				TimerService.countDown(n);
+				mytimeout = $timeout($scope.countDown, 1000);
 	};
+
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
