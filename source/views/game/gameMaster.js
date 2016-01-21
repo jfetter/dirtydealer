@@ -57,7 +57,10 @@ angular.module('socialMockup')
 
 	var currentState = '';
 
-
+	if($scope.isLoggedIn){
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies)
+	}
 
 	var gameState = function() {
 		CardsService.startDeck();
@@ -65,7 +68,7 @@ angular.module('socialMockup')
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0;
-		var n = 60; 
+		var n = 60;
 		currentState = gameStates[count]
 		switch (currentState) {
 
@@ -78,7 +81,7 @@ angular.module('socialMockup')
 			if (!$scope.counter){
 				$scope.countDown();
 				}
-				
+
 			}
 			// break;
 	}
@@ -89,10 +92,10 @@ angular.module('socialMockup')
 	//$interval(countDown(), 1000)
 
 	$scope.timerRef.on("value", function(snap){
-		$scope.counter = snap.val();	
+		$scope.counter = snap.val();
 	})
 
-	var n = 60; 
+	var n = 60;
 	var mytimeout = null; // the current timeoutID
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {

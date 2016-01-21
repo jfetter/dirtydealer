@@ -6,6 +6,8 @@ app.constant('ENV', {
   API_URL: 'http://localhost:3000'
 });
 
+
+
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.html5Mode(true);
 	$urlRouterProvider.otherwise('/');
@@ -964,8 +966,10 @@ angular.module('socialMockup')
 
 .service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
-	var cookies = $cookies.get('token');
-	var token = jwtHelper.decodeToken(cookies)
+
+
+		var cookies = $cookies.get('token');
+
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
@@ -990,6 +994,11 @@ angular.module('socialMockup')
 	}
 
 	this.pickCards = function(){
+		var cookies = $cookies.get('token');
+
+		var token = jwtHelper.decodeToken(cookies)
+
+
 		// var myId = JSON.parse(localStorage.player)
 		var myId = localStorage.player
 		var myHand = CardsService.startingHand();
@@ -1008,6 +1017,10 @@ angular.module('socialMockup')
 	}
 
 	this.addPlayer = function(){
+		var cookies = $cookies.get('token');
+
+		var token = jwtHelper.decodeToken(cookies)
+
 		// var thisPlayer = token.username;
 		var thisPlayer = token._id;
 		// var thisPlayer = Date.now();
@@ -1199,7 +1212,10 @@ angular.module('socialMockup')
 
 	var currentState = '';
 
-
+	if($scope.isLoggedIn){
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies)
+	}
 
 	var gameState = function() {
 		CardsService.startDeck();
@@ -1326,7 +1342,7 @@ angular.module('socialMockup')
 
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
-
+	
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
 	//var counter = 60;
 	//this.mytimeout = null;
@@ -1342,11 +1358,11 @@ angular.module('socialMockup')
 
 	// 	this.timerRef.on('value', function(snap){
 	// 	console.log(snap)
-	// 	var counter = snap --
+	// 	var counter = snap --	
 	// 	this.timerRef.set(counter);
 	// 	return snap;
 	// })
-
+		
 })
 
 angular.module('socialMockup')

@@ -6,6 +6,8 @@ app.constant('ENV', {
   API_URL: 'http://localhost:3000'
 });
 
+
+
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.html5Mode(true);
 	$urlRouterProvider.otherwise('/');
