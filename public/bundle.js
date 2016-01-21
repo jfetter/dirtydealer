@@ -1085,17 +1085,15 @@ angular.module('socialMockup')
 	});
 	this.startingHand = function(){
 		for(var i = 0; i<10; i++){
-			this.gameInstance.child("exampleHand").set(null);
-			var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
-			var takenCards = tempWhiteCard[rando];
+			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
+			var takenCards = tempWhiteCard.array[rando];
 			console.log("Rando", rando)
 			console.log("Taken cards", takenCards)
-			this.exampleHand = this.gameInstance.child("exampleHand").set(takenCards)
-			tempWhiteCard.splice(rando, 1);
-			console.log("Cards left", tempWhiteCard.length)
-			this.gameInstance.child('whiteCards').set(null);
-			this.gameInstance.child('whiteCards').set(tempWhiteCard)
+			tempWhiteCard.array.splice(rando, 1);
+			console.log("Cards left", tempWhiteCard.array.length)
+			this.gameInstance.child("exampleHand").push(takenCards)
 		}
+		this.gameInstance.child('whiteCards').set(tempWhiteCard)
 	}
 	// $scope.drawOne = function(user){
 	// 	var basedCards = $scope.whiteCards[0]
