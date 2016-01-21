@@ -1095,16 +1095,14 @@ angular.module('socialMockup')
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
 	}
-	// $scope.drawOne = function(user){
-	// 	var basedCards = $scope.whiteCards[0]
-	// 	var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
-	// 	var takenCards = basedCards.text[rando];
-	// 	basedCards.text.splice(rando, 1);
-	// 	$scope.exampleHand.$add(takenCards)
-	// 	$scope.whiteCards.$remove(0);
-	// 	$scope.whiteCards.$add(basedCards);
-	// 	console.log("Cards left", basedCards.text.length)
-	// }
+	this.drawOne = function(user){
+		var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
+		var takenCard = tempWhiteCard.array[rando];
+		console.log("TAKEN", takenCard);
+		tempWhiteCard.array.splice(rando, 1);
+		this.gameInstance.child("exampleHand").push(takenCard)
+		this.gameInstance.child('whiteCards').set(tempWhiteCard);
+	}
 });
 
 'use strict';
@@ -1142,6 +1140,9 @@ angular.module('socialMockup')
 	}
 	$scope.startingHand = function(){
 		CardsService.startingHand();
+	}
+	$scope.drawOne = function(){
+		CardsService.drawOne();
 	}
 
 	var playersRef = GameService.gameInstance.child("players");
