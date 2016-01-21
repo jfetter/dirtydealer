@@ -20,9 +20,13 @@
     <input ng-model="newMessageText" type="text" />
     <button type="submit">Add Message</button>
   </form>
-
+  <h5>Voting time</h5>
+  <div ng-repeat="voteCard in voteCards track by $index">
+    <span>{{voteCard}}</span>
+  </div>
+  <h5>Your cards</h5>
   <div ng-repeat="card in myHand track by $index">
-    <span ng-click="addToVotedCards(card)">{{card}}</span>
+    <span ng-click="addToVotedCards(card, $index)">{{card}}</span>
   </div>
 
 <div>

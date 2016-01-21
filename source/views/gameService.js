@@ -24,12 +24,13 @@ angular.module('socialMockup')
 		console.log("players before remove", this.playerss)
 		localStorage.removeItem("player");
 		console.log("players after remove", this.playerss)
-
 	}
 
 	this.pickCards = function(){
 		var myId = JSON.parse(localStorage.player)
 		var myHand = CardsService.startingHand();
+		var tempYourHand = [];
+
 		//var myHand = ["test3", "test4", "test5", "test6"]
 		this.playersRef.child(myId).set({
 			cards: myHand
@@ -72,12 +73,21 @@ angular.module('socialMockup')
 		});
 	}
 
-	this.addToVotedCards = function(cardClicked) {
-		console.log("BEGINNING");
+	var tempYourHand = [];
+
+		var myId = JSON.parse(localStorage.player)
+		this.playersRef.child(myId).on('value', function(snap){
+			tempYourHand = snap.val()
+			console.log("YO HAND!", tempYourHand)
+		})
+	this.addToVotedCards = function(cardClicked, index) {
+		var myId = JSON.parse(localStorage.player)
+		tempYourHand.cards.splice(index, 1);
+		this.playersRef.child(myId).set(tempYourHand)
 		var playerId = JSON.parse(localStorage.player);
-		console.log(cardClicked, "this is the clicked card");
-		this.votingRef.child(playerId).set({
+		this.votingRef.child(playerId).push({
 			text: cardClicked
 		});
+		return tempYourHand.cards;
 	}
 });

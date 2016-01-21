@@ -153,8 +153,8 @@ angular.module('socialMockup')
 
 
 	//VOTING:
-	$scope.addToVotedCards = function(cardClicked) {
-		GameService.addToVotedCards(cardClicked);
+	$scope.addToVotedCards = function(cardClicked, index) {
+		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
 	}
 
 });
