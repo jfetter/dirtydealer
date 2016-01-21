@@ -985,10 +985,20 @@ angular.module('socialMockup')
 
 }
 
+this.pickCards = function(){
+	var myId = JSON.parse(localStorage.player)
+	var myHand = CardsService.startingHand();
+	//var myHand = ["test3", "test4", "test5", "test6"]
+	this.playersRef.child(myId).set({
+		cards: myHand
+	});
+	console.log("picking a card")
+}
+
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
     var gamePoints = 0;
-    var cards = ["test1", "test2"];
+    var cards = ["testA", "testB"];
     //var cards = CardService.DealWhite();
     //deal cards function here to populate array
 		localStorage.player = thisPlayer;
@@ -1067,7 +1077,7 @@ angular.module('socialMockup')
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
 		console.log("Black", tempBlackCard)
-		console.log("BLength", tempBlackCard.length)
+		//console.log("BLength", tempBlackCard.length)
 	});
 	this.dealBlackCard = function(){
 		this.gameInstance.child("scenarioCard").set(null);
@@ -1084,6 +1094,7 @@ angular.module('socialMockup')
 		console.log("BASE", tempWhiteCard)
 	});
 	this.startingHand = function(){
+		var fullHand = [];
 		for(var i = 0; i<10; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
 			var takenCards = tempWhiteCard.array[rando];
@@ -1091,9 +1102,11 @@ angular.module('socialMockup')
 			console.log("Taken cards", takenCards)
 			tempWhiteCard.array.splice(rando, 1);
 			console.log("Cards left", tempWhiteCard.array.length)
-			this.gameInstance.child("exampleHand").push(takenCards)
+			fullHand.push(takenCards);
+			//this.gameInstance.child("exampleHand").push(takenCards)
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
+			return fullHand;
 	}
 	this.draw = function(n){
 		for(var i=0; i<n; i++){	
@@ -1105,15 +1118,7 @@ angular.module('socialMockup')
 			this.gameInstance.child('whiteCards').set(tempWhiteCard);
 		}
 	}
-	// this.drawOne = function(n){
-	// 	// for(var i = 0)
-	// 	var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-	// 	var takenCard = tempWhiteCard.array[rando];
-	// 	console.log("TAKEN", takenCard);
-	// 	tempWhiteCard.array.splice(rando, 1);
-	// 	this.gameInstance.child("exampleHand").push(takenCard)
-	// 	this.gameInstance.child('whiteCards').set(tempWhiteCard);
-	// }
+
 });
 
 'use strict';
@@ -1188,6 +1193,8 @@ angular.module('socialMockup')
 			mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
+			GameService.pickCards();
+
 			// break;
 
 

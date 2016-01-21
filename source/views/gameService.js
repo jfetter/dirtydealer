@@ -25,10 +25,20 @@ angular.module('socialMockup')
 
 }
 
+this.pickCards = function(){
+	var myId = JSON.parse(localStorage.player)
+	var myHand = CardsService.startingHand();
+	//var myHand = ["test3", "test4", "test5", "test6"]
+	this.playersRef.child(myId).set({
+		cards: myHand
+	});
+	console.log("picking a card")
+}
+
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
     var gamePoints = 0;
-    var cards = ["test1", "test2"];
+    var cards = ["testA", "testB"];
     //var cards = CardService.DealWhite();
     //deal cards function here to populate array
 		localStorage.player = thisPlayer;

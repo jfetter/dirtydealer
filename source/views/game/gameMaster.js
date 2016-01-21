@@ -70,6 +70,8 @@ angular.module('socialMockup')
 			mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
+			GameService.pickCards();
+
 			// break;
 
 
