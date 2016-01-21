@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 

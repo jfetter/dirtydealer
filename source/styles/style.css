@@ -1,7 +1,31 @@
 /* ______________
-  |              |
-  |  Shared:     |
-  |______________| */
+|              |
+|  Messages:   |
+|______________| */
+
+#messageContainer {
+  text-align: center;
+}
+
+#playerMessageName {
+  color: lightblue;
+  font-size: 30px;
+}
+
+#messageSent {
+  color: darkblue;
+}
+
+#addMessageInput {
+  text-align: center;
+}
+
+
+
+/* ______________
+|              |
+|  Shared:     |
+|______________| */
 
 h1, p, .navbar, div, button, .modal, li, a {
   font-family: 'Righteous', cursive;

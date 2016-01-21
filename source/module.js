@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
+var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
   API_URL: 'http://localhost:3000'

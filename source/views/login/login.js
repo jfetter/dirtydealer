@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)

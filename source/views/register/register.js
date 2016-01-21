@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){

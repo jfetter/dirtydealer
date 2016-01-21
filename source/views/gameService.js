@@ -1,23 +1,21 @@
 'use strict';
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
-
-
-		var cookies = $cookies.get('token');
+	var cookies = $cookies.get('token');
 
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
-	this.messageRef = this.gameInstance.child("messages")
+	this.messageRef = this.gameInstance.child("messages");
 	var messageRef = this.messageRef
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
-	this.votingRef = this.gameInstance.child("voting")
+	this.votingRef = this.gameInstance.child("voting");
 
 
 	//remove players
@@ -89,16 +87,22 @@ angular.module('socialMockup')
 		console.log("player should have new cards and new point total now")
 	}
 
-	this.addMessage = function(message) {
-		console.log(message);
-		var player = JSON.parse(localStorage.player);
+	this.addMessage = function(message, player) {
+		if(!message) return;
+
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies);
+		console.log(message, "MESSAGE I TYPE WHOO");
+
+		var myId = localStorage.player;
+		var thisPlayer = token._id;
+
 		this.messages.$add({
 			text: message,
-			player: player,
+			username: token.username,
 			timestamp: Date.now()
 		});
 	}
-
 	var tempYourHand = [];
 
 	this.addToVotedCards = function(cardClicked, index) {

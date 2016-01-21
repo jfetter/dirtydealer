@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
+var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
   API_URL: 'http://localhost:3000'
@@ -76,7 +76,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
 
 'use strict';
 
-var app = angular.module('socialMockup');
+var app = angular.module('cardsAgainstHumanity');
 
 app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 	this.register = function(user){
@@ -112,6 +112,142 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 	};
 })
 
+"use strict";
+
+angular.module("cardsAgainstHumanity")
+
+.directive('gameTimer', function() {
+  return {
+    templateUrl: "game/timer.html",
+    // controller: "gameMasterCtrl",
+  };
+})
+
+'use strict';
+angular.module('cardsAgainstHumanity')
+
+
+.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+
+	var cookies = $cookies.get('token');
+
+
+	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+
+	this.playersRef = this.gameInstance.child("players");
+	var playersRef = this.playersRef
+	this.messageRef = this.gameInstance.child("messages");
+	var messageRef = this.messageRef
+	this.playerss = $firebaseArray(playersRef);
+	this.messages = $firebaseArray(messageRef);
+	this.votingRef = this.gameInstance.child("voting");
+
+
+	//remove players
+	this.removePlayer = function(){
+		// var player = JSON.parse(localStorage.player);
+		var player = localStorage.player;
+		console.log("player to remove", player);
+		playersRef.child(player).remove();
+		console.log("players before remove", this.playerss)
+		localStorage.removeItem("player");
+		console.log("players after remove", this.playerss)
+	}
+
+	this.pickCards = function(){
+		var cookies = $cookies.get('token');
+
+		var token = jwtHelper.decodeToken(cookies)
+
+
+		// var myId = JSON.parse(localStorage.player)
+		var myId = localStorage.player
+		var myHand = CardsService.startingHand();
+		var tempYourHand = [];
+		var gamePoints = 0;
+
+		//var myHand = ["test3", "test4", "test5", "test6"]
+		this.playersRef.child(myId).set({
+			playerId: myId,
+			username: token.username,
+			cards: myHand,
+			gamePoints: gamePoints
+		});
+		console.log("picking a card")
+		return myHand;
+	}
+
+	this.addPlayer = function(){
+		var cookies = $cookies.get('token');
+
+		var token = jwtHelper.decodeToken(cookies)
+
+		// var thisPlayer = token.username;
+		var thisPlayer = token._id;
+		// var thisPlayer = Date.now();
+		var gamePoints = 0;
+		var cards = ["testA", "testB"];
+		//var cards = CardService.DealWhite();
+		//deal cards function here to populate array
+
+		localStorage.player = thisPlayer;
+
+		// token.username = thisPlayer;
+
+		//console.log("this player logged In", localStorage.player)
+		playersRef.child(thisPlayer).set({
+			playerId: thisPlayer,
+			username: token.username,
+			cards: cards,
+			gamePoints: gamePoints
+		});
+	}
+
+	this.updatePlayerAfterVote = function(){
+		// find player in player array
+		if (player.votes > highestVotes){
+			//increment this players points key
+		}
+		// restockHand(n); where n = number of cards to replace in hand
+		console.log("player should have new cards and new point total now")
+	}
+
+	this.addMessage = function(message, player) {
+		if(!message) return;
+
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies);
+		console.log(message, "MESSAGE I TYPE WHOO");
+
+		var myId = localStorage.player;
+		var thisPlayer = token._id;
+
+		this.messages.$add({
+			text: message,
+			username: token.username,
+			timestamp: Date.now()
+		});
+	}
+	var tempYourHand = [];
+
+	this.addToVotedCards = function(cardClicked, index) {
+		// var myId = JSON.parse(localStorage.player)
+		var myId = localStorage.player
+		this.playersRef.child(myId).on('value', function(snap){
+			tempYourHand = snap.val()
+			console.log("YO HAND!", tempYourHand)
+		})
+		// var myId = JSON.parse(localStorage.player)
+		var myId = localStorage.player
+		tempYourHand.cards.splice(index, 1);
+		this.playersRef.child(myId).set(tempYourHand)
+		this.votingRef.child(myId).set({
+			text: cardClicked
+		});
+		return tempYourHand.cards;
+	}
+
+});
 
 
 var blackCards = [
@@ -940,151 +1076,9 @@ var whiteCards = [
 "Throwing a virgin into a volcano."
 ]
 
-"use strict";
-
-angular.module("socialMockup")
-
-.directive('gameTimer', function() {
-  return {
-    templateUrl: "game/timer.html",
-    // controller: "gameMasterCtrl",
-    // scope: {
-    //   counter: '@counter
-  };
-})
-
-// .directive('dealCards', function() {
-//   return {
-//     templateUrl: "game/cards.html",
-//     controller: "dealingCardsCtrl"
-//   };
-// })
-
-'use strict';
-angular.module('socialMockup')
-
-
-.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
-
-
-
-		var cookies = $cookies.get('token');
-
-
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-
-	this.playersRef = this.gameInstance.child("players");
-	var playersRef = this.playersRef
-	this.messageRef = this.gameInstance.child("messages")
-	var messageRef = this.messageRef
-	this.playerss = $firebaseArray(playersRef);
-	this.messages = $firebaseArray(messageRef);
-	this.votingRef = this.gameInstance.child("voting")
-
-
-	//remove players
-	this.removePlayer = function(){
-		// var player = JSON.parse(localStorage.player);
-		var player = localStorage.player;
-		console.log("player to remove", player);
-		playersRef.child(player).remove();
-		console.log("players before remove", this.playerss)
-		localStorage.removeItem("player");
-		console.log("players after remove", this.playerss)
-	}
-
-	this.pickCards = function(){
-		var cookies = $cookies.get('token');
-
-		var token = jwtHelper.decodeToken(cookies)
-
-
-		// var myId = JSON.parse(localStorage.player)
-		var myId = localStorage.player
-		var myHand = CardsService.startingHand();
-		var tempYourHand = [];
-		var gamePoints = 0;
-
-		//var myHand = ["test3", "test4", "test5", "test6"]
-		this.playersRef.child(myId).set({
-			playerId: myId,
-			username: token.username,
-			cards: myHand,
-			gamePoints: gamePoints
-		});
-		console.log("picking a card")
-		return myHand;
-	}
-
-	this.addPlayer = function(){
-		var cookies = $cookies.get('token');
-
-		var token = jwtHelper.decodeToken(cookies)
-
-		// var thisPlayer = token.username;
-		var thisPlayer = token._id;
-		// var thisPlayer = Date.now();
-		var gamePoints = 0;
-		var cards = ["testA", "testB"];
-		//var cards = CardService.DealWhite();
-		//deal cards function here to populate array
-
-		localStorage.player = thisPlayer;
-
-		// token.username = thisPlayer;
-
-		//console.log("this player logged In", localStorage.player)
-		playersRef.child(thisPlayer).set({
-			playerId: thisPlayer,
-			username: token.username,
-			cards: cards,
-			gamePoints: gamePoints
-		});
-	}
-
-	this.updatePlayerAfterVote = function(){
-		// find player in player array
-		if (player.votes > highestVotes){
-			//increment this players points key
-		}
-		// restockHand(n); where n = number of cards to replace in hand
-		console.log("player should have new cards and new point total now")
-	}
-
-	this.addMessage = function(message) {
-		console.log(message);
-		var player = JSON.parse(localStorage.player);
-		this.messages.$add({
-			text: message,
-			player: player,
-			timestamp: Date.now()
-		});
-	}
-
-	var tempYourHand = [];
-
-	this.addToVotedCards = function(cardClicked, index) {
-		// var myId = JSON.parse(localStorage.player)
-		var myId = localStorage.player
-		this.playersRef.child(myId).on('value', function(snap){
-			tempYourHand = snap.val()
-			console.log("YO HAND!", tempYourHand)
-		})
-		// var myId = JSON.parse(localStorage.player)
-		var myId = localStorage.player
-		tempYourHand.cards.splice(index, 1);
-		this.playersRef.child(myId).set(tempYourHand)
-		this.votingRef.child(myId).set({
-			text: cardClicked
-		});
-		return tempYourHand.cards;
-	}
-
-});
-
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
@@ -1155,14 +1149,15 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
 
-
-
-	//*******USERAUTH:
+	/* ______________
+	|              |
+	|  User Auth:  |
+	|______________| */
 	var cookies = $cookies.get('token');
 	if(cookies){
 		$scope.userInfo = (jwtHelper.decodeToken(cookies))
@@ -1179,6 +1174,10 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
+	/* ______________
+	|              |
+	| Card Dealing:|
+	|______________| */
 	$scope.startDeck = function(){
 		CardsService.startDeck();
 	}
@@ -1192,6 +1191,11 @@ angular.module('socialMockup')
 		CardsService.draw(n);
 	}
 
+
+	/* ______________
+	|              |
+	| Firebase:    |
+	|______________| */
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	$scope.playerss = GameService.playerss
@@ -1204,12 +1208,12 @@ angular.module('socialMockup')
 	$scope.myHand = [];
 
 	$scope.numPlayers;
+
+
 	/* ______________
 	|              |
 	|  States:     |
 	|______________| */
-
-
 	var currentState = '';
 
 	if($scope.isLoggedIn){
@@ -1219,8 +1223,6 @@ angular.module('socialMockup')
 
 	var gameState = function() {
 		CardsService.startDeck();
-		//send a deck of black cards and white to Firebase
-		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0;
 		var n = 60;
@@ -1228,43 +1230,39 @@ angular.module('socialMockup')
 		switch (currentState) {
 
 			case 'prevote':
-			//need an '&&' no white card has been selected?
-			//mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
 			if (!$scope.counter){
 				$scope.countDown();
-				}
-
 			}
-			// break;
+		}
 	}
 
 
-
-	//********TIMER:
-	//$interval(countDown(), 1000)
+	/* ______________
+	|              |
+	| Timer:       |
+	|______________| */
 
 	$scope.timerRef.on("value", function(snap){
 		$scope.counter = snap.val();
 	})
 
 	var n = 60;
-	var mytimeout = null; // the current timeoutID
+	var mytimeout = null;
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
-			console.log("COUNTER ", n)
+		console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
 			return;
 		}
-				n--;
-				TimerService.countDown(n);
-				mytimeout = $timeout($scope.countDown, 1000);
+		n--;
+		TimerService.countDown(n);
+		mytimeout = $timeout($scope.countDown, 1000);
 	};
-
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
@@ -1279,18 +1277,17 @@ angular.module('socialMockup')
 		}
 	});
 
+	/* ______________
+	|              |
+	| Players:     |
+	|______________|
+	*/	// Create array to store each player's info.
 
-	/////****ADD AND REMOVE PLAYERS:
-	// create an array to store each player's info
-	// $scope.addPlayer = function(){
-	// 	GameService.addPlayer();
-	// }
 	if (!localStorage.thisPlayer){
 		GameService.addPlayer();
 	}
 
-
-	//add player to waiting room when they click join
+	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			console.log("current Players", $scope.playerss)
@@ -1302,7 +1299,7 @@ angular.module('socialMockup')
 		});
 	});
 
-	//update number of players when a player quits
+	//Update number of players when a player quits.
 	playersRef.on("child_removed", function() {
 		$timeout(function() {
 			console.log("PLAYER QUIT", playersRef)
@@ -1315,21 +1312,31 @@ angular.module('socialMockup')
 		$state.go("userPage");
 	}
 
-	// *******MESSAGES
+
+	/* ______________
+	|              |
+	| Messages:    |
+	|______________| */
 	$scope.messages = GameService.messages;
 	$scope.addMessage = function(message) {
 		GameService.addMessage(message);
+		// $scope.newMessageText = "";
 	}
 
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
-		// console.log("I AM ", $scope.user.username)
-		console.log("TOKEN MASTEr ", token)
+		console.log("TOKEN MASTER ", token)
 	}
+
+
+	/* ______________
+	|              |
+	| Votes:       |
+	|______________| */
 
 	$scope.addToVotedCards = function(cardClicked, index) {
 		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
-}
+	}
 	$scope.votes = [];
 	votingRef.on("value", function(snap) {
 		$scope.votes = snap.val();
@@ -1338,11 +1345,11 @@ angular.module('socialMockup')
 });
 
 'use strict';
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
-	
+
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
 	//var counter = 60;
 	//this.mytimeout = null;
@@ -1358,14 +1365,14 @@ angular.module('socialMockup')
 
 	// 	this.timerRef.on('value', function(snap){
 	// 	console.log(snap)
-	// 	var counter = snap --	
+	// 	var counter = snap --
 	// 	this.timerRef.set(counter);
 	// 	return snap;
 	// })
-		
+
 })
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
@@ -1373,7 +1380,7 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 .controller('homeCtrl', function($scope){
 	console.log('homeCtrl');
 
@@ -1381,7 +1388,7 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -1412,40 +1419,7 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
-
-'use strict';
-
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
@@ -1517,4 +1491,37 @@ angular.module('socialMockup')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
 });

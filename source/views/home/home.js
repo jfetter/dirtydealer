@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 .controller('homeCtrl', function($scope){
 	console.log('homeCtrl');
 
