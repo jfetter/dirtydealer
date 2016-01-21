@@ -25,7 +25,7 @@ angular.module('socialMockup')
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
 		console.log("Black", tempBlackCard)
-		console.log("BLength", tempBlackCard.length)
+		//console.log("BLength", tempBlackCard.length)
 	});
 	this.dealBlackCard = function(){
 		this.gameInstance.child("scenarioCard").set(null);
@@ -42,6 +42,7 @@ angular.module('socialMockup')
 		console.log("BASE", tempWhiteCard)
 	});
 	this.startingHand = function(){
+		var fullHand = [];
 		for(var i = 0; i<10; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
 			var takenCards = tempWhiteCard.array[rando];
@@ -49,9 +50,11 @@ angular.module('socialMockup')
 			console.log("Taken cards", takenCards)
 			tempWhiteCard.array.splice(rando, 1);
 			console.log("Cards left", tempWhiteCard.array.length)
-			this.gameInstance.child("exampleHand").push(takenCards)
+			fullHand.push(takenCards);
+			//this.gameInstance.child("exampleHand").push(takenCards)
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
+			return fullHand;
 	}
 	this.draw = function(n){
 		for(var i=0; i<n; i++){
