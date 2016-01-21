@@ -1033,6 +1033,7 @@ angular.module('socialMockup')
 	//var whiteCardRef = this.whiteCardRef;
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	//var blackCardRef = this.blackCardRef;
+	this.scenarioCard = this.gameInstance.child("scenarioCard")
 
 
 
@@ -1055,24 +1056,30 @@ angular.module('socialMockup')
 	// $scope.blackCards = $firebaseArray(blackCardRef)
 	//
 	// var scenarioCardRef = gameInstance.child("scenarioCardRef")
-	// $scope.scenarioCard = $firebaseArray(scenarioCardRef)
 	//
 	// $scope.listPlayers = function(){
 	// 	console.log("Players?", playersRef)
 	// }
 	//
-	// $scope.dealBlackCard = function(){
-	// 	$scope.scenarioCard.$remove(0);
-	// 	var basedCards = $scope.blackCards[0]
-	// 	console.log("BASE", basedCards)
-	// 	var rando = Math.floor((Math.random() * basedCards.length ) + 0);
-	// 	var takenCards = basedCards[rando];
-	// 	$scope.scenarioCard.$add(takenCards)
-	// 	basedCards.splice(rando, 1);
-	// 	$scope.blackCards.$remove(0);
-	// 	$scope.blackCards.$add(basedCards);
-	// 	console.log("Cards left", basedCards.length)
-	// }
+		var basedCards = [];
+		this.blackCardRef.on('value', function(snap) {
+			basedCards = snap.val();
+			console.log("BASE", basedCards)
+		});
+	this.dealBlackCard = function(){
+		this.gameInstance.child("scenarioCard").set(null);
+		var rando = Math.floor((Math.random() * basedCards.length ) + 0);
+		var takenCards = basedCards[rando];
+		console.log("TAKEN", takenCards);
+		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
+		basedCards.splice(rando, 1);
+		this.gameInstance.child('blackCards').set(basedCards)
+		// console.log("Cards left", basedCards.length)
+    this.blackCardRef.on('value', function(snap) {
+      basedCards = snap.val();
+      console.log("BASE", basedCards)
+    });
+	}
 	//
 	//
 	//
@@ -1154,6 +1161,12 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
+	$scope.startDeck = function(){
+		CardsService.startDeck();
+	}
+	$scope.dealBlackCard = function(){
+		CardsService.dealBlackCard();
+	}
 
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
@@ -1161,7 +1174,8 @@ angular.module('socialMockup')
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 
-	$scope.numPlayers = $scope.playerss.length;
+
+	//$scope.numPlayers = $scope.playerss.length;
 	/* ______________
 	|              |
 	|  States:     |
@@ -1193,11 +1207,10 @@ angular.module('socialMockup')
 }
 
 	//initialize new game or display waiting room
- if ($scope.numPlayers < 3 ){
+ if ($scope.playerss.length < 3 ){
  		console.log("less than 3 players")
  		//$scope.phase = "waitingForPlayers";
- 		} else if ($scope.numPlayers === 3){
-			console.log("READY")
+ 		} else if ($scope.playerss.length === 3){
  		gameState();
  	}
 

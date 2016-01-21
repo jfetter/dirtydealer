@@ -10,6 +10,7 @@ angular.module('socialMockup')
 	//var whiteCardRef = this.whiteCardRef;
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	//var blackCardRef = this.blackCardRef;
+	this.scenarioCard = this.gameInstance.child("scenarioCard")
 
 
 
@@ -32,13 +33,37 @@ angular.module('socialMockup')
 	// $scope.blackCards = $firebaseArray(blackCardRef)
 	//
 	// var scenarioCardRef = gameInstance.child("scenarioCardRef")
-	// $scope.scenarioCard = $firebaseArray(scenarioCardRef)
 	//
 	// $scope.listPlayers = function(){
 	// 	console.log("Players?", playersRef)
 	// }
 	//
-	// $scope.dealBlackCard = function(){
+		var basedCards = [];
+		this.blackCardRef.on('value', function(snap) {
+			basedCards = snap.val();
+			console.log("BASE", basedCards)
+		});
+	this.dealBlackCard = function(){
+
+		// $scope.scenarioCard.$remove(0);
+		this.gameInstance.child("scenarioCard").set(null);
+		// var basedCards = $scope.blackCards[0]
+
+
+		var rando = Math.floor((Math.random() * basedCards.length ) + 0);
+		var takenCards = basedCards[rando];
+		// $scope.scenarioCard.$add(takenCards)
+		console.log("TAKEN", takenCards);
+
+		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
+		basedCards.splice(rando, 1);
+		// $scope.blackCards.$remove(0);
+		this.gameInstance.child('blackCards').set(null);
+		// $scope.blackCards.$add(basedCards);
+		this.gameInstance.child('blackCards').set(basedCards)
+		// console.log("Cards left", basedCards.length)
+	}
+	// this.dealBlackCard = function(){
 	// 	$scope.scenarioCard.$remove(0);
 	// 	var basedCards = $scope.blackCards[0]
 	// 	console.log("BASE", basedCards)
@@ -50,6 +75,7 @@ angular.module('socialMockup')
 	// 	$scope.blackCards.$add(basedCards);
 	// 	console.log("Cards left", basedCards.length)
 	// }
+
 	//
 	//
 	//
