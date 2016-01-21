@@ -14,16 +14,6 @@ angular.module('socialMockup')
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
 	this.exampleHand = this.gameInstance.child("exampleHand")
 
-
-
-	// this.playersRef = gameInstance.child("players");
-	// var playersRef = this.playersRef
-	// this.messageRef = gameInstance.child("messages")
-	// var messageRef = this.messageRef
-
-
-
-
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
@@ -31,15 +21,6 @@ angular.module('socialMockup')
 		this.gameInstance.child('blackCards').set(blackCards)
 	}
 
-	//******DEALING BLACK CARDS:
-	// $scope.blackCards = $firebaseArray(blackCardRef)
-	//
-	// var scenarioCardRef = gameInstance.child("scenarioCardRef")
-	//
-	// $scope.listPlayers = function(){
-	// 	console.log("Players?", playersRef)
-	// }
-	//
 	var tempBlackCard = [];
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
@@ -73,7 +54,7 @@ angular.module('socialMockup')
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
 	}
 	this.draw = function(n){
-		for(var i=0; i<n; i++){	
+		for(var i=0; i<n; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
 			var takenCard = tempWhiteCard.array[rando];
 			console.log("TAKEN", takenCard);
@@ -82,13 +63,5 @@ angular.module('socialMockup')
 			this.gameInstance.child('whiteCards').set(tempWhiteCard);
 		}
 	}
-	// this.drawOne = function(n){
-	// 	// for(var i = 0)
-	// 	var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-	// 	var takenCard = tempWhiteCard.array[rando];
-	// 	console.log("TAKEN", takenCard);
-	// 	tempWhiteCard.array.splice(rando, 1);
-	// 	this.gameInstance.child("exampleHand").push(takenCard)
-	// 	this.gameInstance.child('whiteCards').set(tempWhiteCard);
-	// }
+
 });
