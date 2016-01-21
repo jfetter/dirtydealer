@@ -42,7 +42,9 @@ angular.module('socialMockup')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-	$scope.votingdRef = CardsService.votingRef;
+	var votingRef =  new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/voting");
+	// GameService.gameInstance.child("voting");
+
 	$scope.myHand = [];
 
 	$scope.numPlayers;
@@ -50,8 +52,6 @@ angular.module('socialMockup')
 	|              |
 	|  States:     |
 	|______________| */
-
-
 
 
 	var currentState = '';
@@ -71,11 +71,7 @@ angular.module('socialMockup')
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
-
 			// break;
-
-
-
 		}
 	}
 
@@ -106,7 +102,6 @@ angular.module('socialMockup')
 			});
 		}
 	});
-
 
 
 	/////****ADD AND REMOVE PLAYERS:
@@ -150,11 +145,14 @@ angular.module('socialMockup')
 		GameService.addMessage(message);
 	}
 
-
-
 	//VOTING:
+	$scope.votes = [];
+
 	$scope.addToVotedCards = function(cardClicked) {
 		GameService.addToVotedCards(cardClicked);
 	}
-
+	votingRef.on("value", function(snap) {
+		$scope.votes = snap.val();
+		console.log(snap.val(), "duddbjddjbdjbkdbdk");
+	});
 });

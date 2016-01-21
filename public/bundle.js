@@ -1039,16 +1039,9 @@ angular.module('socialMockup')
 		this.votingRef.child(playerId).set({
 			text: cardClicked
 		});
+		return this.votingRef;
 	}
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
@@ -1184,7 +1177,9 @@ angular.module('socialMockup')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-	$scope.votingdRef = CardsService.votingRef;
+	var votingRef =  new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/voting");
+	// GameService.gameInstance.child("voting");
+
 	$scope.myHand = [];
 
 	$scope.numPlayers;
@@ -1192,8 +1187,6 @@ angular.module('socialMockup')
 	|              |
 	|  States:     |
 	|______________| */
-
-
 
 
 	var currentState = '';
@@ -1213,11 +1206,7 @@ angular.module('socialMockup')
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
-
 			// break;
-
-
-
 		}
 	}
 
@@ -1248,7 +1237,6 @@ angular.module('socialMockup')
 			});
 		}
 	});
-
 
 
 	/////****ADD AND REMOVE PLAYERS:
@@ -1292,13 +1280,16 @@ angular.module('socialMockup')
 		GameService.addMessage(message);
 	}
 
-
-
 	//VOTING:
+	$scope.votes = [];
+
 	$scope.addToVotedCards = function(cardClicked) {
 		GameService.addToVotedCards(cardClicked);
 	}
-
+	votingRef.on("value", function(snap) {
+		$scope.votes = snap.val();
+		console.log(snap.val(), "duddbjddjbdjbkdbdk");
+	});
 });
 
 
@@ -1307,6 +1298,14 @@ angular.module('socialMockup')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 

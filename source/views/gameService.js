@@ -79,5 +79,6 @@ angular.module('socialMockup')
 		this.votingRef.child(playerId).set({
 			text: cardClicked
 		});
+		return this.votingRef;
 	}
 });
