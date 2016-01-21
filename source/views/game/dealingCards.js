@@ -10,7 +10,9 @@ angular.module('socialMockup')
 	//var whiteCardRef = this.whiteCardRef;
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	//var blackCardRef = this.blackCardRef;
+
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
+	this.exampleHand = this.gameInstance.child("exampleHand")
 
 
 
@@ -38,86 +40,40 @@ angular.module('socialMockup')
 	// 	console.log("Players?", playersRef)
 	// }
 	//
-		var basedCards = [];
-		this.blackCardRef.on('value', function(snap) {
-			basedCards = snap.val();
-			console.log("BASE", basedCards)
-		});
+	var tempBlackCard = [];
+	this.blackCardRef.on('value', function(snap) {
+		tempBlackCard = snap.val();
+		console.log("Black", tempBlackCard)
+		console.log("BLength", tempBlackCard.length)
+	});
 	this.dealBlackCard = function(){
-
-		// $scope.scenarioCard.$remove(0);
 		this.gameInstance.child("scenarioCard").set(null);
-		// var basedCards = $scope.blackCards[0]
-
-
-		var rando = Math.floor((Math.random() * basedCards.length ) + 0);
-		var takenCards = basedCards[rando];
-		// $scope.scenarioCard.$add(takenCards)
+		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
+		var takenCards = tempBlackCard[rando];
 		console.log("TAKEN", takenCards);
-
 		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
-		basedCards.splice(rando, 1);
-		// $scope.blackCards.$remove(0);
-		this.gameInstance.child('blackCards').set(null);
-		// $scope.blackCards.$add(basedCards);
-		this.gameInstance.child('blackCards').set(basedCards)
-		// console.log("Cards left", basedCards.length)
+		tempBlackCard.splice(rando, 1);
+		this.gameInstance.child('blackCards').set(tempBlackCard);
 	}
-	// this.dealBlackCard = function(){
-	// 	$scope.scenarioCard.$remove(0);
-	// 	var basedCards = $scope.blackCards[0]
-	// 	console.log("BASE", basedCards)
-	// 	var rando = Math.floor((Math.random() * basedCards.length ) + 0);
-	// 	var takenCards = basedCards[rando];
-	// 	$scope.scenarioCard.$add(takenCards)
-	// 	basedCards.splice(rando, 1);
-	// 	$scope.blackCards.$remove(0);
-	// 	$scope.blackCards.$add(basedCards);
-	// 	console.log("Cards left", basedCards.length)
-	// }
-
-	//
-	//
-	//
-	// // ******DEALING WHITE CARDS:
-	// $scope.whiteCards = $firebaseArray(whiteCardRef)
-	//
-	// var exampleHandRef = gameInstance.child("exampleHand")
-	// $scope.exampleHand = $firebaseArray(exampleHandRef)
-	//
-	// $scope.whoAmI = function(){
-	//
-	// 	console.log($scope.user.username)
-	// }
-	// $scope.howManyCards = function(){
-	// 	console.log("Firebase", $scope.whiteCards.text.length);
-	// 	console.log("Local", whiteCards.length);
-	// }
-	// $scope.takeASingleCard = function(){
-	// 	$scope.whiteCards.$remove($scope.whiteCards[3])
-	// 	console.log($scope.whiteCards.$remove)
-	// }
-	//
-	// $scope.killCards = function(){
-	// 	$scope.whiteCards.$remove(0);
-	// 	$scope.blackCards.$remove(0);
-	// 	$scope.exampleHand.$remove(0);
-	// }
-	// $scope.startingHand = function(){
-	// 	var basedCards = $scope.whiteCards[0]
-	// 	console.log("New cards", basedCards)
-	// 	for(var i = 0; i<10; i++){
-	// 		var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
-	// 		var takenCards = basedCards.text[rando];
-	// 		console.log("Rando", rando)
-	// 		console.log("Taken cards", takenCards)
-	// 		basedCards.text.splice(rando, 1);
-	// 		$scope.exampleHand.$add(takenCards)
-	// 		console.log("Cards left", basedCards.text.length)
-	// 		$scope.whiteCards.$remove(0);
-	// 	}
-	// 		$scope.whiteCards.$add(basedCards);
-	// }
+	var tempWhiteCard = [];
+	this.whiteCardRef.on('value', function(snap) {
+		tempWhiteCard = snap.val();
+		console.log("BASE", tempWhiteCard)
+	});
+	this.startingHand = function(){
+		for(var i = 0; i<10; i++){
+			this.gameInstance.child("exampleHand").set(null);
+			var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
+			var takenCards = tempWhiteCard[rando];
+			console.log("Rando", rando)
+			console.log("Taken cards", takenCards)
+			this.exampleHand = this.gameInstance.child("exampleHand").set(takenCards)
+			tempWhiteCard.splice(rando, 1);
+			console.log("Cards left", tempWhiteCard.length)
+			this.gameInstance.child('whiteCards').set(null);
+			this.gameInstance.child('whiteCards').set(tempWhiteCard)
+		}
+	}
 	// $scope.drawOne = function(user){
 	// 	var basedCards = $scope.whiteCards[0]
 	// 	var rando = Math.floor((Math.random() * basedCards.text.length ) + 0);
