@@ -65,7 +65,6 @@ angular.module('socialMockup')
 	}
 
 
-
 	//********TIMER:
 	$scope.counter = 60;
 	var mytimeout = null; // the current timeoutID

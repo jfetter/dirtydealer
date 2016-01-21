@@ -25,7 +25,7 @@ angular.module('socialMockup')
 
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
-    var gamePoints = 0; 
+    var gamePoints = 0;
     var cards = ["test1", "test2"];
     //var cards = CardService.DealWhite();
     //deal cards function here to populate array
@@ -58,4 +58,3 @@ this.addPlayer = function(){
 	}
 
 });
-
