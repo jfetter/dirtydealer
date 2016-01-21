@@ -995,7 +995,7 @@ angular.module('socialMockup')
 		var myHand = CardsService.startingHand();
 		var tempYourHand = [];
 		var gamePoints = 0;
-		
+
 		//var myHand = ["test3", "test4", "test5", "test6"]
 		this.playersRef.child(myId).set({
 			playerId: myId,
@@ -1051,7 +1051,8 @@ angular.module('socialMockup')
 	var tempYourHand = [];
 
 	this.addToVotedCards = function(cardClicked, index) {
-		var myId = JSON.parse(localStorage.player)
+		// var myId = JSON.parse(localStorage.player)
+		var myId = localStorage.player
 		this.playersRef.child(myId).on('value', function(snap){
 			tempYourHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
@@ -1206,7 +1207,7 @@ angular.module('socialMockup')
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0;
-		var n = 60; 
+		var n = 60;
 		currentState = gameStates[count]
 		switch (currentState) {
 
@@ -1219,7 +1220,7 @@ angular.module('socialMockup')
 			if (!$scope.counter){
 				$scope.countDown();
 				}
-				
+
 			}
 			// break;
 	}
@@ -1230,10 +1231,10 @@ angular.module('socialMockup')
 	//$interval(countDown(), 1000)
 
 	$scope.timerRef.on("value", function(snap){
-		$scope.counter = snap.val();	
+		$scope.counter = snap.val();
 	})
 
-	var n = 60; 
+	var n = 60;
 	var mytimeout = null; // the current timeoutID
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
@@ -1325,7 +1326,7 @@ angular.module('socialMockup')
 
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
-	
+
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
 	//var counter = 60;
 	//this.mytimeout = null;
@@ -1341,11 +1342,11 @@ angular.module('socialMockup')
 
 	// 	this.timerRef.on('value', function(snap){
 	// 	console.log(snap)
-	// 	var counter = snap --	
+	// 	var counter = snap --
 	// 	this.timerRef.set(counter);
 	// 	return snap;
 	// })
-		
+
 })
 
 angular.module('socialMockup')
@@ -1353,6 +1354,14 @@ angular.module('socialMockup')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
@@ -1384,14 +1393,6 @@ angular.module('socialMockup')
 	}
 
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
