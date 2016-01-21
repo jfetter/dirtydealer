@@ -75,19 +75,23 @@ angular.module('socialMockup')
 
 	var tempYourHand = [];
 
+	this.addToVotedCards = function(cardClicked, index) {
 		var myId = JSON.parse(localStorage.player)
 		this.playersRef.child(myId).on('value', function(snap){
 			tempYourHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-	this.addToVotedCards = function(cardClicked, index) {
 		var myId = JSON.parse(localStorage.player)
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
-		var playerId = JSON.parse(localStorage.player);
-		this.votingRef.child(playerId).push({
+		this.votingRef.child(myId).set({
 			text: cardClicked
 		});
 		return tempYourHand.cards;
+// <<<<<<< HEAD
+// =======
+		// return this.votingRef;
+// >>>>>>> 0a9646ddae5fb9a50d4eb062ccb40ac140ae2840
 	}
+
 });

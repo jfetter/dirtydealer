@@ -28,8 +28,19 @@
   <div ng-repeat="card in myHand track by $index">
     <span ng-click="addToVotedCards(card, $index)">{{card}}</span>
   </div>
+  <div class="container">
+    <div class="row" >
+      <!-- <h1>waiting for {{ 3 - numPlayers}} players</h1> -->
 
-<div>
+      <h2>VOTES</h2>
+      <div ng-repeat="vote in votes track by $index">
+        <p> {{vote.text}} </p>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
     <button ng-click="startDeck()">Start Deck (working)</button>
     <button ng-click="dealBlackCard()">Deal Black Card (working)</button>
     <button ng-click="startingHand()">Get hand (working)</button>
@@ -40,13 +51,13 @@
     <!-- <button ng-click="killCards()">Kill all cards</button> -->
     <!-- <button ng-click="listPlayers()">List all Players</button> -->
     <!-- <button ng-click="whoAmI()">List Username</button> -->
-</div>
+  </div>
 
 
 
   <div>
     {{counter}}
-    </div>
+  </div>
 
   <!--   all of this will go in our waiting for players state -->
   <div class="row" >
@@ -54,31 +65,31 @@
 
     <h2>PLAYERS</h2>
     <div ng-repeat="player in playerss track by $index">
-      <p> {{playerss}}</p>
+      <p> {{player}}</p>
     </div>
 
   </div>
 
-    <button ng-click="removePlayer()">Quit</button>
+  <button ng-click="removePlayer()">Quit</button>
 
   <!--   end wiating for players stuff  -->
 
 
-    <div class="row" ng-if="game.data.state === 'prevote'">
-
-    </div>
-
-    <div class="row" ng-if="game.data.state === 'vote'">
-
-    </div>
-
-    <div class="row" ng-if="game.data.state === 'postvote'">
-
-    </div>
-
-    <div class="row" ng-if="game.data.state === 'win'">
-
-    </div>
-
+  <div class="row" ng-if="game.data.state === 'prevote'">
 
   </div>
+
+  <div class="row" ng-if="game.data.state === 'vote'">
+
+  </div>
+
+  <div class="row" ng-if="game.data.state === 'postvote'">
+
+  </div>
+
+  <div class="row" ng-if="game.data.state === 'win'">
+
+  </div>
+
+
+</div>

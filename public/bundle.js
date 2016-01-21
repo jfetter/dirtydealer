@@ -1035,21 +1035,25 @@ angular.module('socialMockup')
 
 	var tempYourHand = [];
 
+	this.addToVotedCards = function(cardClicked, index) {
 		var myId = JSON.parse(localStorage.player)
 		this.playersRef.child(myId).on('value', function(snap){
 			tempYourHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-	this.addToVotedCards = function(cardClicked, index) {
 		var myId = JSON.parse(localStorage.player)
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
-		var playerId = JSON.parse(localStorage.player);
-		this.votingRef.child(playerId).push({
+		this.votingRef.child(myId).set({
 			text: cardClicked
 		});
 		return tempYourHand.cards;
+// <<<<<<< HEAD
+// =======
+		// return this.votingRef;
+// >>>>>>> 0a9646ddae5fb9a50d4eb062ccb40ac140ae2840
 	}
+
 });
 
 'use strict';
@@ -1167,7 +1171,9 @@ angular.module('socialMockup')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-	$scope.votingdRef = CardsService.votingRef;
+	var votingRef =  new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/voting");
+	// GameService.gameInstance.child("voting");
+
 	$scope.myHand = [];
 
 	$scope.numPlayers;
@@ -1175,8 +1181,6 @@ angular.module('socialMockup')
 	|              |
 	|  States:     |
 	|______________| */
-
-
 
 
 	var currentState = '';
@@ -1196,11 +1200,7 @@ angular.module('socialMockup')
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
-
 			// break;
-
-
-
 		}
 	}
 
@@ -1231,7 +1231,6 @@ angular.module('socialMockup')
 			});
 		}
 	});
-
 
 
 	/////****ADD AND REMOVE PLAYERS:
@@ -1275,13 +1274,21 @@ angular.module('socialMockup')
 		GameService.addMessage(message);
 	}
 
-
-
 	//VOTING:
+// <<<<<<< HEAD
 	$scope.addToVotedCards = function(cardClicked, index) {
 		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
-	}
-
+// =======
+}
+	$scope.votes = [];
+// 	$scope.addToVotedCards = function(cardClicked) {
+// 		GameService.addToVotedCards(cardClicked);
+// >>>>>>> 0a9646ddae5fb9a50d4eb062ccb40ac140ae2840
+// 	}
+	votingRef.on("value", function(snap) {
+		$scope.votes = snap.val();
+		console.log(snap.val(), "duddbjddjbdjbkdbdk");
+	});
 });
 
 
