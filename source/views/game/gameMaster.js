@@ -7,7 +7,6 @@ angular.module('socialMockup')
 
 
 
-
 	//*******USERAUTH:
 	var cookies = $cookies.get('token');
 	if(cookies){
@@ -43,7 +42,8 @@ angular.module('socialMockup')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-$scope.myHand = [];
+	$scope.votingdRef = CardsService.votingRef;
+	$scope.myHand = [];
 
 	$scope.numPlayers;
 	/* ______________
@@ -70,7 +70,7 @@ $scope.myHand = [];
 			mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
-		$scope.myHand = GameService.pickCards();
+			$scope.myHand = GameService.pickCards();
 
 			// break;
 
@@ -107,11 +107,9 @@ $scope.myHand = [];
 		}
 	});
 
+
+
 	/////****ADD AND REMOVE PLAYERS:
-
-
-
-
 	// create an array to store each player's info
 	// $scope.addPlayer = function(){
 	// 	GameService.addPlayer();
@@ -151,4 +149,12 @@ $scope.myHand = [];
 	$scope.addMessage = function(message) {
 		GameService.addMessage(message);
 	}
+
+
+
+	//VOTING:
+	$scope.addToVotedCards = function(cardClicked) {
+		GameService.addToVotedCards(cardClicked);
+	}
+
 });

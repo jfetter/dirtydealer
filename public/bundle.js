@@ -973,66 +973,82 @@ angular.module('socialMockup')
 	var messageRef = this.messageRef
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
+	this.votingRef = this.gameInstance.child("voting")
 
-			//remove players
+
+	//remove players
 	this.removePlayer = function(){
-    var player = JSON.parse(localStorage.player);
+		var player = JSON.parse(localStorage.player);
 		console.log("player to remove", player);
 		playersRef.child(player).remove();
 		console.log("players before remove", this.playerss)
 		localStorage.removeItem("player");
 		console.log("players after remove", this.playerss)
 
-}
+	}
 
-this.pickCards = function(){
-	var myId = JSON.parse(localStorage.player)
-	var myHand = CardsService.startingHand();
-	//var myHand = ["test3", "test4", "test5", "test6"]
-	this.playersRef.child(myId).set({
-		cards: myHand
-	});
-	console.log("picking a card")
-	return myHand;
-}
+	this.pickCards = function(){
+		var myId = JSON.parse(localStorage.player)
+		var myHand = CardsService.startingHand();
+		//var myHand = ["test3", "test4", "test5", "test6"]
+		this.playersRef.child(myId).set({
+			cards: myHand
+		});
+		console.log("picking a card")
+		return myHand;
+	}
 
-
-
-this.addPlayer = function(){
+	this.addPlayer = function(){
 		var thisPlayer = Date.now();
-    var gamePoints = 0;
-    var cards = ["testA", "testB"];
-    //var cards = CardService.DealWhite();
-    //deal cards function here to populate array
+		var gamePoints = 0;
+		var cards = ["testA", "testB"];
+		//var cards = CardService.DealWhite();
+		//deal cards function here to populate array
 		localStorage.player = thisPlayer;
 		//console.log("this player logged In", localStorage.player)
 		playersRef.child(thisPlayer).set({
-      playerId: thisPlayer,
-      cards: cards,
-      gamePoints: gamePoints
-    });
-	}
-
-  this.updatePlayerAfterVote = function(){
-    // find player in player array
-    if (player.votes > highestVotes){
-    //increment this players points key
-    }
-    // restockHand(n); where n = number of cards to replace in hand
-    console.log("player should have new cards and new point total now")
-  }
-
-	this.addMessage = function(message) {
-		console.log(message);
-    var player = JSON.parse(localStorage.player);
-		this.messages.$add({
-			 text: message,
-			 player: player,
-			 timestamp: Date.now()
+			playerId: thisPlayer,
+			cards: cards,
+			gamePoints: gamePoints
 		});
 	}
 
+	this.updatePlayerAfterVote = function(){
+		// find player in player array
+		if (player.votes > highestVotes){
+			//increment this players points key
+		}
+		// restockHand(n); where n = number of cards to replace in hand
+		console.log("player should have new cards and new point total now")
+	}
+
+	this.addMessage = function(message) {
+		console.log(message);
+		var player = JSON.parse(localStorage.player);
+		this.messages.$add({
+			text: message,
+			player: player,
+			timestamp: Date.now()
+		});
+	}
+
+	this.addToVotedCards = function(cardClicked) {
+		console.log("BEGINNING");
+		var playerId = JSON.parse(localStorage.player);
+		console.log(cardClicked, "this is the clicked card");
+		this.votingRef.child(playerId).set({
+			text: cardClicked
+		});
+	}
 });
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
@@ -1133,7 +1149,6 @@ angular.module('socialMockup')
 
 
 
-
 	//*******USERAUTH:
 	var cookies = $cookies.get('token');
 	if(cookies){
@@ -1169,7 +1184,8 @@ angular.module('socialMockup')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-$scope.myHand = [];
+	$scope.votingdRef = CardsService.votingRef;
+	$scope.myHand = [];
 
 	$scope.numPlayers;
 	/* ______________
@@ -1196,7 +1212,7 @@ $scope.myHand = [];
 			mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
-		$scope.myHand = GameService.pickCards();
+			$scope.myHand = GameService.pickCards();
 
 			// break;
 
@@ -1233,11 +1249,9 @@ $scope.myHand = [];
 		}
 	});
 
+
+
 	/////****ADD AND REMOVE PLAYERS:
-
-
-
-
 	// create an array to store each player's info
 	// $scope.addPlayer = function(){
 	// 	GameService.addPlayer();
@@ -1277,6 +1291,14 @@ $scope.myHand = [];
 	$scope.addMessage = function(message) {
 		GameService.addMessage(message);
 	}
+
+
+
+	//VOTING:
+	$scope.addToVotedCards = function(cardClicked) {
+		GameService.addToVotedCards(cardClicked);
+	}
+
 });
 
 
@@ -1285,14 +1307,6 @@ angular.module('socialMockup')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('socialMockup')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 

@@ -22,7 +22,7 @@
   </form>
 
   <div ng-repeat="card in myHand track by $index">
-    <span>{{card}}</span>
+    <span ng-click="addToVotedCards(card)">{{card}}</span>
   </div>
 
 <div>
