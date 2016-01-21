@@ -21,6 +21,9 @@
     <button type="submit">Add Message</button>
   </form>
 
+  <div ng-repeat="card in myHand track by $index">
+    <span>{{card}}</span>
+  </div>
 
 <div>
     <button ng-click="startDeck()">Start Deck (working)</button>

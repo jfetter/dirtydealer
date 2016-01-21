@@ -33,7 +33,10 @@ this.pickCards = function(){
 		cards: myHand
 	});
 	console.log("picking a card")
+	return myHand;
 }
+
+
 
 this.addPlayer = function(){
 		var thisPlayer = Date.now();
