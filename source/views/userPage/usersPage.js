@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){

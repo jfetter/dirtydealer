@@ -1,27 +1,115 @@
 /* ______________
-  |              |
-  |  Shared:     |
-  |______________| */
+|              |
+|  Messages:   |
+|______________| */
+
+#messageContainer {
+  text-align: center;
+}
+
+#playerMessageName {
+  color: lightblue;
+  font-size: 30px;
+}
+
+#messageSent {
+  color: darkblue;
+}
+
+#addMessageInput {
+  text-align: center;
+}
+
+/* ______________
+|              |
+|  Profile:    |
+|______________| */
+
+#userHeader {
+  text-align: center;
+  font-size: 35px;
+  color: lightblue;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+#mainProfileContainer {
+  margin-right: -50px;
+  text-align: center;
+}
+
+/* ______________
+|              |
+|  Navbar:     |
+|______________| */
+
+a.navbar-brand {
+  font-size: 30px;
+  color: white;
+}
+
+/*.navbar-inverse {
+font-size: 16px
+color: white;
+}*/
+
+
+
+
+
+
+
+
+/* ______________
+|              |
+|  Shared:     |
+|______________| */
 
 h1, p, .navbar, div, button, .modal, li, a {
   font-family: 'Righteous', cursive;
 }
 
-.navbar-brand {
-  font-size: 80px;
-  color: white
-}
-
-.navbar {
-  font-size: 50px
-  color: white
-}
-
 #backgroundGif {
-  z-index: -1;
-  position: relative;
+  z-index: -9999;
+  background-size: cover;
+  position: absolute;
+  display: block;
+  width: 1000px;
+  height: 568px;
+  margin-left: 140px;
+}
+
+/* ______________
+|              |
+|  LoginPage:  |
+|______________| */
+
+#loginHolder {
+  z-index: 5000;
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+}
+#loginPageContainer {
+  width: 100%;
   height: 100%;
 }
+
+#loginTitle {
+  text-align: center;
+}
+
+#login {
+  text-align: center;
+}
+
+
+
+
+
+
+
+
 
 #userImage {
   max-height: 50vh;
@@ -58,12 +146,7 @@ h1, p, .navbar, div, button, .modal, li, a {
   border: 5px, solid-red;
 }
 
-#userHeader {
-  text-align: center;
-  font-size: 35px;
-  color: lightblue;
-  font-weight: bold;
-}
+
 
 #profileHeader {
   font-size: 15px;
@@ -177,7 +260,4 @@ input[readonly] {
 #userList-unFavoriteButton{
   margin-top: 6vh;
   margin-right: 10px;
-}
-.userList-username{
-  "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
 }

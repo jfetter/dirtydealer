@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('socialMockup', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
+var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
   API_URL: 'http://localhost:3000'
@@ -76,7 +76,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
 
 'use strict';
 
-var app = angular.module('socialMockup');
+var app = angular.module('cardsAgainstHumanity');
 
 app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 	this.register = function(user){
@@ -111,7 +111,6 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
 })
-
 
 
 var blackCards = [
@@ -942,44 +941,33 @@ var whiteCards = [
 
 "use strict";
 
-angular.module("socialMockup")
+angular.module("cardsAgainstHumanity")
 
 .directive('gameTimer', function() {
   return {
     templateUrl: "game/timer.html",
     // controller: "gameMasterCtrl",
-    // scope: {
-    //   counter: '@counter
   };
 })
 
-// .directive('dealCards', function() {
-//   return {
-//     templateUrl: "game/cards.html",
-//     controller: "dealingCardsCtrl"
-//   };
-// })
-
 'use strict';
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
-
-
-		var cookies = $cookies.get('token');
+	var cookies = $cookies.get('token');
 
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
-	this.messageRef = this.gameInstance.child("messages")
+	this.messageRef = this.gameInstance.child("messages");
 	var messageRef = this.messageRef
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
-	this.votingRef = this.gameInstance.child("voting")
+	this.votingRef = this.gameInstance.child("voting");
 
 
 	//remove players
@@ -1051,16 +1039,22 @@ angular.module('socialMockup')
 		console.log("player should have new cards and new point total now")
 	}
 
-	this.addMessage = function(message) {
-		console.log(message);
-		var player = JSON.parse(localStorage.player);
+	this.addMessage = function(message, player) {
+		if(!message) return;
+
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies);
+		console.log(message, "MESSAGE I TYPE WHOO");
+
+		var myId = localStorage.player;
+		var thisPlayer = token._id;
+
 		this.messages.$add({
 			text: message,
-			player: player,
+			username: token.username,
 			timestamp: Date.now()
 		});
 	}
-
 	var tempYourHand = [];
 	var subSpaceHand = [];
 	this.addToVotedCards = function(cardClicked, index, sent) {
@@ -1104,7 +1098,7 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
@@ -1179,14 +1173,15 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
 
-
-
-	//*******USERAUTH:
+	/* ______________
+	|              |
+	|  User Auth:  |
+	|______________| */
 	var cookies = $cookies.get('token');
 	if(cookies){
 		$scope.userInfo = (jwtHelper.decodeToken(cookies))
@@ -1203,6 +1198,10 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
+	/* ______________
+	|              |
+	| Card Dealing:|
+	|______________| */
 	$scope.startDeck = function(){
 		CardsService.startDeck();
 	}
@@ -1216,6 +1215,11 @@ angular.module('socialMockup')
 		CardsService.draw(n);
 	}
 
+
+	/* ______________
+	|              |
+	| Firebase:    |
+	|______________| */
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	$scope.playerss = GameService.playerss
@@ -1228,12 +1232,12 @@ angular.module('socialMockup')
 	$scope.myHand = [];
 
 	$scope.numPlayers;
+
+
 	/* ______________
 	|              |
 	|  States:     |
 	|______________| */
-
-
 	var currentState = '';
 
 	if($scope.isLoggedIn){
@@ -1254,8 +1258,6 @@ angular.module('socialMockup')
 		switch (currentState) {
 
 			case 'prevote':
-			//need an '&&' no white card has been selected?
-			//mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
@@ -1265,19 +1267,22 @@ angular.module('socialMockup')
 
 		}
 		// break;
+		}
+
 	}
 
 
-
-	//********TIMER:
-	//$interval(countDown(), 1000)
+	/* ______________
+	|              |
+	| Timer:       |
+	|______________| */
 
 	$scope.timerRef.on("value", function(snap){
 		$scope.counter = snap.val();
 	})
 
 	var n = 60;
-	var mytimeout = null; // the current timeoutID
+	var mytimeout = null;
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
 		console.log("COUNTER ", n)
@@ -1290,7 +1295,6 @@ angular.module('socialMockup')
 		TimerService.countDown(n);
 		mytimeout = $timeout($scope.countDown, 1000);
 	};
-
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
@@ -1305,18 +1309,17 @@ angular.module('socialMockup')
 		}
 	});
 
+	/* ______________
+	|              |
+	| Players:     |
+	|______________|
+	*/	// Create array to store each player's info.
 
-	/////****ADD AND REMOVE PLAYERS:
-	// create an array to store each player's info
-	// $scope.addPlayer = function(){
-	// 	GameService.addPlayer();
-	// }
 	if (!localStorage.thisPlayer){
 		GameService.addPlayer();
 	}
 
-
-	//add player to waiting room when they click join
+	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			console.log("current Players", $scope.playerss)
@@ -1328,7 +1331,7 @@ angular.module('socialMockup')
 		});
 	});
 
-	//update number of players when a player quits
+	//Update number of players when a player quits.
 	playersRef.on("child_removed", function() {
 		$timeout(function() {
 			console.log("PLAYER QUIT", playersRef)
@@ -1341,10 +1344,15 @@ angular.module('socialMockup')
 		$state.go("userPage");
 	}
 
-	// *******MESSAGES
+
+	/* ______________
+	|              |
+	| Messages:    |
+	|______________| */
 	$scope.messages = GameService.messages;
 	$scope.addMessage = function(message) {
 		GameService.addMessage(message);
+		// $scope.newMessageText = "";
 	}
 	$scope.voteCard = function(card){
 		GameService.voteCard(card);
@@ -1353,14 +1361,21 @@ angular.module('socialMockup')
 	}
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
-		// console.log("I AM ", $scope.user.username)
-		console.log("TOKEN MASTEr ", token)
+		console.log("TOKEN MASTER ", token)
 	}
+
 
 	$scope.addToVotedCards = function(cardClicked, index, sent) {
 		// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
 		GameService.addToVotedCards(cardClicked, index, sent);
 		$scope.sent = !$scope.sent
+
+
+	/* ______________
+	|              |
+	| Votes:       |
+	|______________| */
+
 	}
 	$scope.votes = [];
 	votingRef.on("value", function(snap) {
@@ -1370,11 +1385,11 @@ angular.module('socialMockup')
 });
 
 'use strict';
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
-	
+
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
 	//var counter = 60;
 	//this.mytimeout = null;
@@ -1390,14 +1405,14 @@ angular.module('socialMockup')
 
 	// 	this.timerRef.on('value', function(snap){
 	// 	console.log(snap)
-	// 	var counter = snap --	
+	// 	var counter = snap --
 	// 	this.timerRef.set(counter);
 	// 	return snap;
 	// })
-		
+
 })
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
@@ -1405,7 +1420,7 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 .controller('homeCtrl', function($scope){
 	console.log('homeCtrl');
 
@@ -1413,7 +1428,38 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){
@@ -1446,38 +1492,7 @@ angular.module('socialMockup')
 
 'use strict';
 
-angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
-
-'use strict';
-
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){

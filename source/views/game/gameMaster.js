@@ -1,13 +1,14 @@
 'use strict';
 
-angular.module('socialMockup')
+angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
 
-
-
-	//*******USERAUTH:
+	/* ______________
+	|              |
+	|  User Auth:  |
+	|______________| */
 	var cookies = $cookies.get('token');
 	if(cookies){
 		$scope.userInfo = (jwtHelper.decodeToken(cookies))
@@ -24,6 +25,10 @@ angular.module('socialMockup')
 		} else {return true}
 	}
 
+	/* ______________
+	|              |
+	| Card Dealing:|
+	|______________| */
 	$scope.startDeck = function(){
 		CardsService.startDeck();
 	}
@@ -37,6 +42,11 @@ angular.module('socialMockup')
 		CardsService.draw(n);
 	}
 
+
+	/* ______________
+	|              |
+	| Firebase:    |
+	|______________| */
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	$scope.playerss = GameService.playerss
@@ -49,12 +59,12 @@ angular.module('socialMockup')
 	$scope.myHand = [];
 
 	$scope.numPlayers;
+
+
 	/* ______________
 	|              |
 	|  States:     |
 	|______________| */
-
-
 	var currentState = '';
 
 	if($scope.isLoggedIn){
@@ -75,8 +85,6 @@ angular.module('socialMockup')
 		switch (currentState) {
 
 			case 'prevote':
-			//need an '&&' no white card has been selected?
-			//mytimeout = $timeout($scope.onTimeout, 1000);
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
@@ -86,19 +94,22 @@ angular.module('socialMockup')
 
 		}
 		// break;
+		}
+
 	}
 
 
-
-	//********TIMER:
-	//$interval(countDown(), 1000)
+	/* ______________
+	|              |
+	| Timer:       |
+	|______________| */
 
 	$scope.timerRef.on("value", function(snap){
 		$scope.counter = snap.val();
 	})
 
 	var n = 60;
-	var mytimeout = null; // the current timeoutID
+	var mytimeout = null;
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
 		console.log("COUNTER ", n)
@@ -111,7 +122,6 @@ angular.module('socialMockup')
 		TimerService.countDown(n);
 		mytimeout = $timeout($scope.countDown, 1000);
 	};
-
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
@@ -126,18 +136,17 @@ angular.module('socialMockup')
 		}
 	});
 
+	/* ______________
+	|              |
+	| Players:     |
+	|______________|
+	*/	// Create array to store each player's info.
 
-	/////****ADD AND REMOVE PLAYERS:
-	// create an array to store each player's info
-	// $scope.addPlayer = function(){
-	// 	GameService.addPlayer();
-	// }
 	if (!localStorage.thisPlayer){
 		GameService.addPlayer();
 	}
 
-
-	//add player to waiting room when they click join
+	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			console.log("current Players", $scope.playerss)
@@ -149,7 +158,7 @@ angular.module('socialMockup')
 		});
 	});
 
-	//update number of players when a player quits
+	//Update number of players when a player quits.
 	playersRef.on("child_removed", function() {
 		$timeout(function() {
 			console.log("PLAYER QUIT", playersRef)
@@ -162,10 +171,15 @@ angular.module('socialMockup')
 		$state.go("userPage");
 	}
 
-	// *******MESSAGES
+
+	/* ______________
+	|              |
+	| Messages:    |
+	|______________| */
 	$scope.messages = GameService.messages;
 	$scope.addMessage = function(message) {
 		GameService.addMessage(message);
+		// $scope.newMessageText = "";
 	}
 	$scope.voteCard = function(card){
 		GameService.voteCard(card);
@@ -174,14 +188,21 @@ angular.module('socialMockup')
 	}
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
-		// console.log("I AM ", $scope.user.username)
-		console.log("TOKEN MASTEr ", token)
+		console.log("TOKEN MASTER ", token)
 	}
+
 
 	$scope.addToVotedCards = function(cardClicked, index, sent) {
 		// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
 		GameService.addToVotedCards(cardClicked, index, sent);
 		$scope.sent = !$scope.sent
+
+
+	/* ______________
+	|              |
+	| Votes:       |
+	|______________| */
+
 	}
 	$scope.votes = [];
 	votingRef.on("value", function(snap) {
