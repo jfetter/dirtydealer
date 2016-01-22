@@ -1,5 +1,8 @@
-<div ng-if="isLoggedIn">
-  <h1>Firebase</h1>
+<div class="container" ng-if="isLoggedIn">
+  <div ng-hide="{{ 3 - playerss.length}} === true" class="col-sm-8">
+    <h1>waiting for {{ 3 - playerss.length}} players</h1>
+    <br>
+  </div>
   <!-- <div deal-Cards></div> -->
   <!-- anything typed in here is magically saved to our Firebase database! -->
   <!-- <input type="text" ng-model="data.text"/> -->
@@ -83,9 +86,12 @@
 <div class="row" >
   <!-- <h1>waiting for {{ 3 - numPlayers}} players</h1> -->
 
-  <h2>PLAYERS</h2>
-  <div ng-repeat="player in playerss track by $index">
-    <p> {{player}}</p>
+  <h2>LEADERBOARD</h2>
+
+  <div class="row" ng-repeat="player in playerss track by $index">
+    <div class="col-sm-12">
+      <p> {{player.username}} / {{player.points}}</p>
+    </div>
   </div>
 
 </div>
