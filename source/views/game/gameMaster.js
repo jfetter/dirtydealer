@@ -178,8 +178,10 @@ angular.module('socialMockup')
 		console.log("TOKEN MASTEr ", token)
 	}
 
-	$scope.addToVotedCards = function(cardClicked, index) {
-		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
+	$scope.addToVotedCards = function(cardClicked, index, sent) {
+		// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
+		GameService.addToVotedCards(cardClicked, index, sent);
+		$scope.sent = !$scope.sent
 	}
 	$scope.votes = [];
 	votingRef.on("value", function(snap) {

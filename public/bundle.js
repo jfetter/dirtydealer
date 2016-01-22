@@ -1062,15 +1062,26 @@ angular.module('socialMockup')
 	}
 
 	var tempYourHand = [];
-
-	this.addToVotedCards = function(cardClicked, index) {
+	var subSpaceHand = [];
+	this.addToVotedCards = function(cardClicked, index, sent) {
 		// var myId = JSON.parse(localStorage.player)
+
+		if(sent){
+			var myId = localStorage.player
+			var tempYourHand = subSpaceHand;
+			this.playersRef.child(myId).set(subSpaceHand)
+			this.votingRef.child(myId).remove({
+				text: cardClicked,
+			});
+			tempYourHand.cards.splice(index, 1);
+			return tempYourHand.cards;
+		} else {
 		var myId = localStorage.player
 		this.playersRef.child(myId).on('value', function(snap){
 			tempYourHand = snap.val()
+			subSpaceHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-		// var myId = JSON.parse(localStorage.player)
 		var myId = localStorage.player
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
@@ -1078,6 +1089,8 @@ angular.module('socialMockup')
 			text: cardClicked,
 		});
 		return tempYourHand.cards;
+		}
+
 	}
 	this.voteCard = function(card){
 		var myId = localStorage.player
@@ -1123,12 +1136,12 @@ angular.module('socialMockup')
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
 		var takenCards = tempBlackCard[rando];
 		console.log("TAKEN", takenCards);
-		this.gameInstance.child("scenarioCard").set(takenCards)
-		// this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
+		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
 		tempBlackCard.splice(rando, 1);
 		this.gameInstance.child('blackCards').set(tempBlackCard);
-		return this.gameInstance.child("scenarioCard");
+		// return this.gameInstance.child("scenarioCard");
 		// return this.scenarioCard;
+		return this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
 		// return takenCards;
 	}
 	var tempWhiteCard = [];
@@ -1149,7 +1162,7 @@ angular.module('socialMockup')
 			//this.gameInstance.child("exampleHand").push(takenCards)
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
-			return fullHand;
+		return fullHand;
 	}
 	this.draw = function(n){
 		for(var i=0; i<n; i++){
@@ -1344,8 +1357,10 @@ angular.module('socialMockup')
 		console.log("TOKEN MASTEr ", token)
 	}
 
-	$scope.addToVotedCards = function(cardClicked, index) {
-		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
+	$scope.addToVotedCards = function(cardClicked, index, sent) {
+		// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
+		GameService.addToVotedCards(cardClicked, index, sent);
+		$scope.sent = !$scope.sent
 	}
 	$scope.votes = [];
 	votingRef.on("value", function(snap) {
@@ -1399,37 +1414,6 @@ angular.module('socialMockup')
 'use strict';
 
 angular.module('socialMockup')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
-
-'use strict';
-
-angular.module('socialMockup')
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){
@@ -1458,6 +1442,37 @@ angular.module('socialMockup')
 			console.log(err);
 		});
 	}
+});
+
+'use strict';
+
+angular.module('socialMockup')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
 });
 
 'use strict';
