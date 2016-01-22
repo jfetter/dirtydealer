@@ -31,6 +31,7 @@ angular.module('cardsAgainstHumanity')
 		}
 		gameStateRef.set(next);
 		})
+
 	}
 
 
