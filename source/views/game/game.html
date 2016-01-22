@@ -1,4 +1,4 @@
-<div class="container" ng-if="isLoggedIn">
+<div class="container col-xs-12" ng-if="isLoggedIn" id="gameBoard">
 
   <div class="row" id="waitingDiv">
     <div ng-hide="{{ 3 - playerss.length}} === true" class="col-sm-8">
@@ -11,12 +11,23 @@
     {{counter}}
   </div>
 
+
+  <!-- /* ______________
+  |              |
+  | Black Card:  |
+  |______________| */ -->
+  <div class="row">
+  <div class="blackVote container col-sm-3 col-md-3" id="blackCardDiv">
+    <h1>Black Card</h1>
+    <div class="blackCard"> {{blackCard.text}} <br> Pick: {{blackCard.pick}}</div>
+  </div>
+
+
   <!-- /* ______________
   |              |
   |   Messages:  |
   |______________| */ -->
-  <div class="row">
-    <div class="container col-sm-2 col-md-3" id="messageDiv">
+    <div class="container col-sm-3 col-md-3" id="messageDiv">
       <div id="addMessageInput">
         <h1>Chat Zone</h1>
         <form ng-submit="addMessage(newMessageText)">
@@ -42,42 +53,30 @@
 
   <!-- /* ______________
   |              |
-  | Leaderboard: |
-  |______________| */ -->
-  <div class="container col-sm-2 col-md-3" id="leaderBoardDiv">
-    <h2>Leaderboard</h2>
-    <div class="row" ng-repeat="player in playerss track by $index">
-      <div class="col-sm-12">
-        <p> {{player.username}} / {{player.points}}</p>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- /* ______________
-  |              |
-  | Black Card:  |
-  |______________| */ -->
-  <div class="blackVote container col-sm-2 col-md-3" id="blackCardDiv">
-    <h1>Black Card</h1>
-    <div class="blackCard"> {{blackCard.text}} <br> Pick: {{blackCard.pick}}</div>
-  </div>
-
-
-
-  <!-- /* ______________
-  |              |
   |   Votes:     |
   |______________| */ -->
 
-  <div class="blackVote container col-sm-2 col-md-3" id="votesDiv">
-    <h1>Votes</h1>
-    <div ng-if="!voted" ng-repeat="vote in votes track by $index">
-      <p class="whiteCard" ng-click="voteCard(vote)"> {{vote.text}} </p>
+  <div class="blackVote container col-sm-3 col-md-3" id="responseDiv">
+    <h1>Response</h1>
+    <div ng-if="!voted" ng-repeat="response in responses track by $index">
+      <p class="whiteCard" ng-click="voteCard(response)"> {{response.text}} </p>
     </div>
 
   </div>
 
+</div>
+<!-- /* ______________
+|              |
+| Leaderboard: |
+|______________| */ -->
+
+<div class="container col-sm-3 col-md-3" id="leaderBoardDiv">
+  <h2>Leaderboard</h2>
+  <div class="row" ng-repeat="player in playerss track by $index">
+    <div class="col-sm-12">
+      <p> {{player.username}} / {{player.points}}</p>
+    </div>
+  </div>
 </div>
 
 
@@ -97,8 +96,6 @@
 </div>
 
 
-
-<div>
   <button ng-click="startDeck()">Start Deck (working)</button>
   <button ng-click="dealBlackCard()">Deal Black Card (working)</button>
   <button ng-click="startingHand()">Get hand (working)</button>
@@ -107,11 +104,11 @@
 </div>
 
 
+<button ng-click="removePlayer()">Quit Game</button>
 
-<button ng-click="removePlayer()">Quit</button>
+<div>
 
-
-<div class="row" ng-if="game.data.state === 'prevote'">
+<!-- <div class="row" ng-if="game.data.state === 'prevote'">
 
 </div>
 
@@ -127,6 +124,4 @@
 
 
 
-</div>
-
-</div>
+</div> -->
