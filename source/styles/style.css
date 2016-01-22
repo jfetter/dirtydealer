@@ -79,6 +79,9 @@ h1, p, .navbar, div, button, .modal, li, a {
   margin-left: 140px;
 }
 
+html {
+  background-color: black;
+}
 /* ______________
 |              |
 |  LoginPage:  |
@@ -93,6 +96,7 @@ h1, p, .navbar, div, button, .modal, li, a {
 #loginPageContainer {
   width: 100%;
   height: 100%;
+  background-color: transparent;
 }
 
 #loginTitle {
