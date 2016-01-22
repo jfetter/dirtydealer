@@ -1242,12 +1242,23 @@ angular.module('cardsAgainstHumanity')
 		var token = jwtHelper.decodeToken(cookies)
 	}
 
+	var gameStates = ['prevote', 'vote', 'postvote'];
+	var currentState; 
+//connect with firebase game states
+	var gameStateRef = GameService.gameStateRef;
+	gameStateRef.on('value', function(snap){
+		currentState = gameStates[snap.val()];
+		console.log("!!!!!game state ref!!!!!", currentState)
+		})
+
+	var gameWon = false; // link this to a node on firebase...
+
 	var gameState = function() {
 		CardsService.startDeck();
-		var gameStates = ['prevote', 'vote', 'postvote'];
-		var count = 0;
 		var n = 60;
-		currentState = gameStates[count]
+
+		if (gameWon === false){
+
 		switch (currentState) {
 
 			case 'prevote':
@@ -1258,8 +1269,27 @@ angular.module('cardsAgainstHumanity')
 			if (!$scope.counter){
 				$scope.countDown();
 			}
+			break;
+
+			case 'vote':
+			// if (!$scope.counter){
+			// 	$scope.countDown();
+			// }
+			console.log("!!!! VOTE !!!!")
+			break;
+
+			case 'postvote':
+			// if (!$scope.counter){
+			// 	$scope.countDown();
+			// }
+			console.log("!!!! POSTVOTE !!!!")
+			//check if game won
+			break;
 		}
+	} else {
+		console.log("execute game won sequence")
 	}
+}
 
 
 	/* ______________
@@ -1275,7 +1305,7 @@ angular.module('cardsAgainstHumanity')
 	var mytimeout = null;
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
-		console.log("COUNTER ", n)
+		//console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
@@ -1290,7 +1320,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
 			GameService.advanceGameState();
-			console.log("GAME STATE IS:")
+			gameState();
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
