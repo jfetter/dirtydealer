@@ -39,6 +39,10 @@ angular.module('cardsAgainstHumanity')
 		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
 		tempBlackCard.splice(rando, 1);
 		this.gameInstance.child('blackCards').set(tempBlackCard);
+		// return this.gameInstance.child("scenarioCard");
+		// return this.scenarioCard;
+		return this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
+		// return takenCards;
 	}
 	var tempWhiteCard = [];
 	this.whiteCardRef.on('value', function(snap) {
@@ -58,7 +62,7 @@ angular.module('cardsAgainstHumanity')
 			//this.gameInstance.child("exampleHand").push(takenCards)
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
-			return fullHand;
+		return fullHand;
 	}
 	this.draw = function(n){
 		for(var i=0; i<n; i++){

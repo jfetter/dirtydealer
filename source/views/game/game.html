@@ -29,13 +29,27 @@
   <div ng-repeat="voteCard in voteCards track by $index">
   <span>{{voteCard}}</span>
 </div> -->
-<h1>Your cards</h1>
-<div ng-repeat="card in myHand track by $index">
-  <span ng-click="addToVotedCards(card, $index)">{{card}}</span>
+
+<div class="blackVote">
+  <h3>Scenario</h3>
+  <div class="blackCard"> {{blackCard.text}} <br> Pick: {{blackCard.pick}}</div>
 </div>
-<div class="container">
+
+<div class="blackVote">
+  <h2>VOTES</h2>
+  <div ng-if="!voted" ng-repeat="vote in votes track by $index">
+    <p class="whiteCard" ng-click="voteCard(vote)"> {{vote.text}} </p>
+  </div>
+
+</div>
+
+<h2>Your cards</h2>
+<div ng-repeat="card in myHand track by $index">
+  <div ng-click="addToVotedCards(card, $index, sent)" class="whiteCard"
+  >{{card}}</div>
+</div>
+<!-- <div class="container">
   <div class="row" >
-    <!-- <h1>waiting for {{ 3 - numPlayers}} players</h1> -->
 
     <h2>VOTES</h2>
     <div ng-repeat="vote in votes track by $index">
@@ -43,7 +57,7 @@
     </div>
 
   </div>
-</div>
+</div> -->
 
 <div>
   <button ng-click="startDeck()">Start Deck (working)</button>
@@ -95,7 +109,6 @@
 
 <div class="row" ng-if="game.data.state === 'win'">
 
-</div>
 
 
 </div>

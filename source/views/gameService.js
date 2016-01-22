@@ -121,22 +121,42 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 	var tempYourHand = [];
-
-	this.addToVotedCards = function(cardClicked, index) {
+	var subSpaceHand = [];
+	this.addToVotedCards = function(cardClicked, index, sent) {
 		// var myId = JSON.parse(localStorage.player)
+
+		if(sent){
+			var myId = localStorage.player
+			var tempYourHand = subSpaceHand;
+			this.playersRef.child(myId).set(subSpaceHand)
+			this.votingRef.child(myId).remove({
+				text: cardClicked,
+			});
+			tempYourHand.cards.splice(index, 1);
+			return tempYourHand.cards;
+		} else {
 		var myId = localStorage.player
 		this.playersRef.child(myId).on('value', function(snap){
 			tempYourHand = snap.val()
+			subSpaceHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-		// var myId = JSON.parse(localStorage.player)
 		var myId = localStorage.player
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
 		this.votingRef.child(myId).set({
-			text: cardClicked
+			text: cardClicked,
 		});
 		return tempYourHand.cards;
-	}
+		}
 
+	}
+	this.voteCard = function(card){
+		var myId = localStorage.player
+		console.log("You're trying to vote for:", card.text)
+		var wop = card.text.replace('.','')
+		this.votingRef.child(wop).push({
+			points: myId
+		});
+	}
 });

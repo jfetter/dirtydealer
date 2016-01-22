@@ -73,53 +73,62 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	var gameStates = ['prevote', 'vote', 'postvote'];
-	var currentState; 
-//connect with firebase game states
+	var currentState;
+	//connect with firebase game states
 	var gameStateRef = GameService.gameStateRef;
 	gameStateRef.on('value', function(snap){
 		currentState = gameStates[snap.val()];
 		console.log("!!!!!game state ref!!!!!", currentState)
-		})
+	})
 
 	var gameWon = false; // link this to a node on firebase...
 
 	var gameState = function() {
 		CardsService.startDeck();
+
+		$scope.blackCard = 	CardsService.dealBlackCard();
+		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
+		//send a deck of black cards and white to Firebase
+		// console.log("in game state function")
+		// var gameStates = ['prevote', 'vote', 'postvote'];
+		// var count = 0;
 		var n = 60;
 
 		if (gameWon === false){
 
-		switch (currentState) {
+			switch (currentState) {
 
-			case 'prevote':
-			currentState = 'prevote';
-			console.log('CURRENT STATE IS PREVOTE');
-			$scope.myHand = GameService.pickCards();
-			//GameService.advanceGameState();
-			if (!$scope.counter){
-				$scope.countDown();
+				case 'prevote':
+				currentState = 'prevote';
+				console.log('CURRENT STATE IS PREVOTE');
+				$scope.myHand = GameService.pickCards();
+				//GameService.advanceGameState();
+				if (!$scope.counter){
+					$scope.countDown();
+				}
+				break;
+
+				case 'vote':
+				// if (!$scope.counter){
+				// 	$scope.countDown();
+				// }
+				console.log("!!!! VOTE !!!!")
+				break;
+
+				case 'postvote':
+				// if (!$scope.counter){
+				// 	$scope.countDown();
+				// }
+				console.log("!!!! POSTVOTE !!!!")
+				//check if game won
+				break;
 			}
-			break;
+		} else {
+			console.log("execute game won sequence")
 
-			case 'vote':
-			// if (!$scope.counter){
-			// 	$scope.countDown();
-			// }
-			console.log("!!!! VOTE !!!!")
-			break;
-
-			case 'postvote':
-			// if (!$scope.counter){
-			// 	$scope.countDown();
-			// }
-			console.log("!!!! POSTVOTE !!!!")
-			//check if game won
-			break;
 		}
-	} else {
-		console.log("execute game won sequence")
+		// break;
 	}
-}
 
 
 	/* ______________
@@ -136,6 +145,7 @@ angular.module('cardsAgainstHumanity')
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
 		//console.log("COUNTER ", n)
+		console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
@@ -206,7 +216,11 @@ angular.module('cardsAgainstHumanity')
 		GameService.addMessage(message);
 		// $scope.newMessageText = "";
 	}
-
+	$scope.voteCard = function(card){
+		GameService.voteCard(card);
+		console.log("YOU voted for:", card)
+		$scope.voted = true;
+	}
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
 		console.log("TOKEN MASTER ", token)
@@ -220,10 +234,16 @@ angular.module('cardsAgainstHumanity')
 
 	$scope.addToVotedCards = function(cardClicked, index) {
 		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
-	}
-	$scope.votes = [];
-	votingRef.on("value", function(snap) {
-		$scope.votes = snap.val();
-		console.log(snap.val(), "duddbjddjbdjbkdbdk");
-	});
+
+		$scope.addToVotedCards = function(cardClicked, index, sent) {
+			// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
+			GameService.addToVotedCards(cardClicked, index, sent);
+			$scope.sent = !$scope.sent
+		}
+		$scope.votes = [];
+		votingRef.on("value", function(snap) {
+			$scope.votes = snap.val();
+			console.log(snap.val(), "duddbjddjbdjbkdbdk");
+		});
+	};
 });
