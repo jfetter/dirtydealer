@@ -1079,11 +1079,15 @@ angular.module('cardsAgainstHumanity')
 	this.addToResponseCards = function(cardClicked, index) {
 
 		var myId = localStorage.player
-		this.playersRef.child(myId).push({tempHand: cardClicked})
+		var tempHand = [];
+		this.playersRef.child(myId).update({tempHand: cardClicked})
 
 		console.log(cardClicked, "BEGINNNING");
 		this.playersRef.child(myId).on('value', function(snap) {
 			console.log(snap.val(), "IN SNAP.VAL");
+			var snapshotHand = snap.val();
+			var yourHand = snapshotHand.cards;
+			console.log(yourHand, "AT THE BOTTOM");
 		})
 	}
 
@@ -1512,14 +1516,6 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -1547,6 +1543,14 @@ angular.module('cardsAgainstHumanity')
 	}
 
 });
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 

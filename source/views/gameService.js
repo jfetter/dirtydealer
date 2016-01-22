@@ -127,11 +127,15 @@ angular.module('cardsAgainstHumanity')
 	this.addToResponseCards = function(cardClicked, index) {
 
 		var myId = localStorage.player
-		this.playersRef.child(myId).push({tempHand: cardClicked})
+		var tempHand = [];
+		this.playersRef.child(myId).update({tempHand: cardClicked})
 
 		console.log(cardClicked, "BEGINNNING");
 		this.playersRef.child(myId).on('value', function(snap) {
 			console.log(snap.val(), "IN SNAP.VAL");
+			var snapshotHand = snap.val();
+			var yourHand = snapshotHand.cards;
+			console.log(yourHand, "AT THE BOTTOM");
 		})
 	}
 
