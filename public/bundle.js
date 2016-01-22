@@ -1074,7 +1074,7 @@ angular.module('cardsAgainstHumanity')
 	}
 	var tempYourHand = [];
 	var subSpaceHand = [];
-	this.addToVotedCards = function(cardClicked, index, sent) {
+	this.addToResponseCards = function(cardClicked, index, sent) {
 		// var myId = JSON.parse(localStorage.player)
 
 		if(sent){
@@ -1101,9 +1101,8 @@ angular.module('cardsAgainstHumanity')
 		});
 		return tempYourHand.cards;
 		}
-
 	}
-
+	
 	this.voteCard = function(card){
 		var myId = localStorage.player
 		console.log("You're trying to vote for:", card.text)
@@ -1113,6 +1112,14 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 });
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
@@ -1429,8 +1436,8 @@ angular.module('cardsAgainstHumanity')
 
 
 
-		$scope.addToVotedCards = function(cardClicked, index, sent) {
-			GameService.addToVotedCards(cardClicked, index, sent);
+		$scope.addToResponseCards = function(cardClicked, index, sent) {
+			GameService.addToResponseCards(cardClicked, index, sent);
 			$scope.sent = !$scope.sent
 		}
 		$scope.responses = [];
@@ -1497,14 +1504,6 @@ angular.module('cardsAgainstHumanity')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
