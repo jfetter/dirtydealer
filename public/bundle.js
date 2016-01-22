@@ -1010,7 +1010,7 @@ angular.module('cardsAgainstHumanity')
 		var myHand = CardsService.startingHand();
 		var tempYourHand = [];
 		var gamePoints = 0;
-
+		console.log("MY ID", myId)
 		//var myHand = ["test3", "test4", "test5", "test6"]
 		this.playersRef.child(myId).set({
 			playerId: myId,
@@ -1094,9 +1094,12 @@ angular.module('cardsAgainstHumanity')
 			subSpaceHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-		this.votingRef.child(myId).remove({
-			text: cardClicked,
+		this.votingRef.child(myId).set({
+			text: null,
 		});
+		// this.votingRef.child(myId).remove({
+		// 	text: cardClicked,
+		// });
 		}
 		return tempYourHand.cards;
 
@@ -1140,22 +1143,19 @@ angular.module('cardsAgainstHumanity')
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
 		console.log("Black", tempBlackCard)
-		//console.log("BLength", tempBlackCard.length)
 	});
 
 	this.dealBlackCard = function(){
 		this.gameInstance.child("scenarioCard").set(null);
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
-		var takenCards = tempBlackCard[rando];
-		console.log("TAKEN", takenCards);
-		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
+		var takenCard = tempBlackCard[rando];
+		console.log("TAKEN", takenCard);
 		tempBlackCard.splice(rando, 1);
+		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCard)
 		this.gameInstance.child('blackCards').set(tempBlackCard);
-		// return this.gameInstance.child("scenarioCard");
-		// return this.scenarioCard;
-		return this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
-		// return takenCards;
+		return takenCard;
 	}
+
 	var tempWhiteCard = [];
 	this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val();
@@ -1227,7 +1227,10 @@ angular.module('cardsAgainstHumanity')
 		CardsService.startDeck();
 	}
 	$scope.dealBlackCard = function(){
-		CardsService.dealBlackCard();
+		// $scope.blackCard = CardsService.dealBlackCard();
+		// $scope.blackCard = $scope.scenarioCardRef
+		console.log("BLACK CARD NOW", $scope.blackCard);
+
 	}
 	$scope.startingHand = function(){
 		CardsService.startingHand();
@@ -1249,6 +1252,8 @@ angular.module('cardsAgainstHumanity')
 	$scope.blackCardRef = CardsService.blackCardRef;
 	$scope.timerRef = TimerService.timerRef;
 
+	$scope.scenarioCardRef = CardsService.dealBlackCard;
+
 	$scope.myHand = [];
 
 	$scope.numPlayers;
@@ -1258,7 +1263,7 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	|  States:     |
 	|______________| */
-	$scope.currentState = '';
+	var currentState = '';
 
 	if($scope.isLoggedIn){
 		var cookies = $cookies.get('token');
@@ -1298,6 +1303,7 @@ angular.module('cardsAgainstHumanity')
 
 				console.log('CURRENT STATE IS PREVOTE');
 				$scope.blackCard = 	CardsService.dealBlackCard();
+				console.log("SCOOŒp", $scope.blackCard)
 				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
 				if (!$scope.counter){
@@ -1398,7 +1404,6 @@ angular.module('cardsAgainstHumanity')
 				currentState = 1;
 				CardsService.startDeck();
 				$scope.myHand = GameService.pickCards();
-
 			}
 		});
 	});
@@ -1438,9 +1443,6 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-	$scope.addToVotedCards = function(cardClicked, index) {
-		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
-
 		$scope.addToVotedCards = function(cardClicked, index, sent) {
 			GameService.addToVotedCards(cardClicked, index, sent);
 			$scope.sent = !$scope.sent
@@ -1454,7 +1456,6 @@ angular.module('cardsAgainstHumanity')
 				gameState = 2;
 			}
 		});
-	};
 });
 
 'use strict';

@@ -58,7 +58,7 @@ angular.module('cardsAgainstHumanity')
 		var myHand = CardsService.startingHand();
 		var tempYourHand = [];
 		var gamePoints = 0;
-
+		console.log("MY ID", myId)
 		//var myHand = ["test3", "test4", "test5", "test6"]
 		this.playersRef.child(myId).set({
 			playerId: myId,
@@ -142,9 +142,12 @@ angular.module('cardsAgainstHumanity')
 			subSpaceHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-		this.votingRef.child(myId).remove({
-			text: cardClicked,
+		this.votingRef.child(myId).set({
+			text: null,
 		});
+		// this.votingRef.child(myId).remove({
+		// 	text: cardClicked,
+		// });
 		}
 		return tempYourHand.cards;
 

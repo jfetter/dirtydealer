@@ -26,22 +26,19 @@ angular.module('cardsAgainstHumanity')
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
 		console.log("Black", tempBlackCard)
-		//console.log("BLength", tempBlackCard.length)
 	});
 
 	this.dealBlackCard = function(){
 		this.gameInstance.child("scenarioCard").set(null);
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
-		var takenCards = tempBlackCard[rando];
-		console.log("TAKEN", takenCards);
-		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
+		var takenCard = tempBlackCard[rando];
+		console.log("TAKEN", takenCard);
 		tempBlackCard.splice(rando, 1);
+		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCard)
 		this.gameInstance.child('blackCards').set(tempBlackCard);
-		// return this.gameInstance.child("scenarioCard");
-		// return this.scenarioCard;
-		return this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCards)
-		// return takenCards;
+		return takenCard;
 	}
+
 	var tempWhiteCard = [];
 	this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val();
