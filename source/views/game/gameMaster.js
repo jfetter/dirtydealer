@@ -112,8 +112,8 @@ angular.module('cardsAgainstHumanity')
 				break;
 
 				case 'vote':
-					$scope.countDown();
 				console.log("!!!! VOTE !!!!")
+					$scope.countDown();
 				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
@@ -146,7 +146,7 @@ angular.module('cardsAgainstHumanity')
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
 		
-		console.log("COUNTER ", n)
+		//console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
@@ -161,6 +161,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
 			n = 60;
+			mytimeout = null;
 			//advance game to next state
 			//$scope.timerRef.remove();
 			GameService.advanceGameState();
