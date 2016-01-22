@@ -967,7 +967,7 @@ angular.module('cardsAgainstHumanity')
 	var messageRef = this.messageRef
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
-	this.votingRef = this.gameInstance.child("voting");
+	this.responseRef = this.gameInstance.child("response");
 
 
 	///Add game state to firebase
@@ -1081,7 +1081,7 @@ angular.module('cardsAgainstHumanity')
 			var myId = localStorage.player
 			var tempYourHand = subSpaceHand;
 			this.playersRef.child(myId).set(subSpaceHand)
-			this.votingRef.child(myId).remove({
+			this.responseRef.child(myId).remove({
 				text: cardClicked,
 			});
 			tempYourHand.cards.splice(index, 1);
@@ -1096,7 +1096,7 @@ angular.module('cardsAgainstHumanity')
 		var myId = localStorage.player
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
-		this.votingRef.child(myId).set({
+		this.responseRef.child(myId).set({
 			text: cardClicked,
 		});
 		return tempYourHand.cards;
@@ -1108,7 +1108,7 @@ angular.module('cardsAgainstHumanity')
 		var myId = localStorage.player
 		console.log("You're trying to vote for:", card.text)
 		var wop = card.text.replace('.','')
-		this.votingRef.child(wop).push({
+		this.responseRef.child(wop).push({
 			points: myId
 		});
 	}
@@ -1245,7 +1245,7 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
-	var votingRef = GameService.gameInstance.child("voting");
+	var responseRef = GameService.gameInstance.child("response");
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
@@ -1424,18 +1424,19 @@ angular.module('cardsAgainstHumanity')
 
 	/* ______________
 	|              |
-	| Votes:       |
+	| Responses:   |
 	|______________| */
 
-	$scope.addToVotedCards = function(cardClicked, index) {
-		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
+
 
 		$scope.addToVotedCards = function(cardClicked, index, sent) {
 			GameService.addToVotedCards(cardClicked, index, sent);
 			$scope.sent = !$scope.sent
 		}
 		$scope.responses = [];
-		votingRef.on("value", function(snap) {
+
+		///watch firebase voting ref
+		responseRef.on("value", function(snap) {
 			$scope.responses = snap.val();
 			console.log(snap.val(), "OUTSIDE THE IF");
 			if ($scope.responses.length === $scope.playerss.length) {
@@ -1443,7 +1444,24 @@ angular.module('cardsAgainstHumanity')
 				gameState = 2;
 			}
 		});
-	};
+
+
+	/* ______________
+	|              |
+	| Tally votes: |
+	|______________| */
+
+		///watch firebase voting ref
+		// responseRef.on("value", function(snap) {
+		// 	$scope.responses = snap.val();
+		// 	console.log(snap.val(), "OUTSIDE THE IF");
+		// 	if ($scope.responses.length === $scope.playerss.length) {
+		// 		console.log(snap.val(), "INSIDE");
+		// 		gameState = 2;
+		// 	}
+		// });
+
+
 });
 
 'use strict';
