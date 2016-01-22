@@ -95,7 +95,7 @@ angular.module('cardsAgainstHumanity')
 			currentState = 'prevote';
 			console.log('CURRENT STATE IS PREVOTE');
 			$scope.myHand = GameService.pickCards();
-			GameService.advanceGameState();
+			//GameService.advanceGameState();
 			if (!$scope.counter){
 				$scope.countDown();
 			}
@@ -149,14 +149,16 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
+			//advance game to next state
 			GameService.advanceGameState();
 			gameState();
+
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
-				text: "Time is up.",
+				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: "Ok.",
+				confirmButtonText: currentState,
 			});
 		}
 	});
@@ -174,7 +176,8 @@ angular.module('cardsAgainstHumanity')
 	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
-			if ($scope.playerss.length >= 3) {
+			if ($scope.playerss.length >= 3 ) {
+				currentState = 'prevote';
 				gameState();
 			}
 		});
