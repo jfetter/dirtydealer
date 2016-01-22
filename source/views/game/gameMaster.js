@@ -49,7 +49,7 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
-	var votingRef = GameService.gameInstance.child("voting");
+	var responseRef = GameService.gameInstance.child("response");
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
@@ -228,18 +228,19 @@ angular.module('cardsAgainstHumanity')
 
 	/* ______________
 	|              |
-	| Votes:       |
+	| Responses:   |
 	|______________| */
 
-	$scope.addToVotedCards = function(cardClicked, index) {
-		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
+
 
 		$scope.addToVotedCards = function(cardClicked, index, sent) {
 			GameService.addToVotedCards(cardClicked, index, sent);
 			$scope.sent = !$scope.sent
 		}
 		$scope.responses = [];
-		votingRef.on("value", function(snap) {
+
+		///watch firebase voting ref
+		responseRef.on("value", function(snap) {
 			$scope.responses = snap.val();
 			console.log(snap.val(), "OUTSIDE THE IF");
 			if ($scope.responses.length === $scope.playerss.length) {
@@ -247,5 +248,22 @@ angular.module('cardsAgainstHumanity')
 				gameState = 2;
 			}
 		});
-	};
+
+
+	/* ______________
+	|              |
+	| Tally votes: |
+	|______________| */
+
+		///watch firebase voting ref
+		// responseRef.on("value", function(snap) {
+		// 	$scope.responses = snap.val();
+		// 	console.log(snap.val(), "OUTSIDE THE IF");
+		// 	if ($scope.responses.length === $scope.playerss.length) {
+		// 		console.log(snap.val(), "INSIDE");
+		// 		gameState = 2;
+		// 	}
+		// });
+
+
 });

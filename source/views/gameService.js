@@ -15,7 +15,7 @@ angular.module('cardsAgainstHumanity')
 	var messageRef = this.messageRef
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
-	this.votingRef = this.gameInstance.child("voting");
+	this.responseRef = this.gameInstance.child("response");
 
 
 	///Add game state to firebase
@@ -129,7 +129,7 @@ angular.module('cardsAgainstHumanity')
 			var myId = localStorage.player
 			var tempYourHand = subSpaceHand;
 			this.playersRef.child(myId).set(subSpaceHand)
-			this.votingRef.child(myId).remove({
+			this.responseRef.child(myId).remove({
 				text: cardClicked,
 			});
 			tempYourHand.cards.splice(index, 1);
@@ -144,7 +144,7 @@ angular.module('cardsAgainstHumanity')
 		var myId = localStorage.player
 		tempYourHand.cards.splice(index, 1);
 		this.playersRef.child(myId).set(tempYourHand)
-		this.votingRef.child(myId).set({
+		this.responseRef.child(myId).set({
 			text: cardClicked,
 		});
 		return tempYourHand.cards;
@@ -156,7 +156,7 @@ angular.module('cardsAgainstHumanity')
 		var myId = localStorage.player
 		console.log("You're trying to vote for:", card.text)
 		var wop = card.text.replace('.','')
-		this.votingRef.child(wop).push({
+		this.responseRef.child(wop).push({
 			points: myId
 		});
 	}
