@@ -1,61 +1,62 @@
-<div class="container" id="mainProfileContainer">
+<div class="container col-xs-12" id="mainProfileContainer">
 
-	<div class="row">
-		<div ng-if="isLoggedIn" class="col-sm-4 col-xs-12" id="userHeader">
-			<h1>User: {{user.username}}</h1>
-		</div>
+	<div class="row"  id="userHeader">>
+		<div ng-if="isLoggedIn" class="col-sm-4 col-xs-12"
+		<h1>User: {{user.username}}</h1>
+	</div>
+</div>
 
-		<div class="row">
-			<div class="col-md-12" id="profile">
+<div class="row">
+	<div class="col-md-12" id="profile">
 
-				<div class="col-sm-3 col-xs-12 thumbnail">
-					<div class="row">
-						<div id="imageHolder">
-							<div>
-								<img class="img-rounded col-xs-6 col-sm-12"
-								src={{profileImageSrc}} id="userImage"></img>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div ng-show="isOwnPage" >
-							<div class="input-group">
-								<span class="input-group-btn">
-									<button class="btn btn-primary btn-file">
-										Browse Files<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
-									</button>
-								</span>
-								<input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
-							</div>
-							<button class="btn btn-primary"ng-disabled="!user.uploadedImage" ng-click="uploadImage(user.uploadedImage)">Upload</button>
-						</div>
+		<div class="col-sm-3 col-xs-12 thumbnail">
+			<div class="row">
+				<div id="imageHolder">
+					<div>
+						<img class="img-rounded col-xs-6 col-sm-12"
+						src={{profileImageSrc}} id="userImage"></img>
 					</div>
 				</div>
-
-				<div class="col-sm-4 col-xs-12 thumbnail" >
-					<div ng-if="isOwnPage" id="profile">
-						<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
-						<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
-						<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
-						<div class="row">
-							<label ng-if="isEditing" class="col-xs-4" for="username" id="profileHeader">New Username:</label>
-							<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.username" value="{{user.username}}" />
-						</div>
+			</div>
+			<div class="row">
+				<div ng-show="isOwnPage" >
+					<div class="input-group">
+						<span class="input-group-btn">
+							<button class="btn btn-primary btn-file">
+								Browse Files<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+							</button>
+						</span>
+						<input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
 					</div>
-					<div id="profileDetails" class="col-xs-12">
-						<h2>Profile Details</h2>
-						<br>
-						<h2 ng-if="!isEditing" id="profileDetails">Username:    {{user.username}}</h2>
-					</div>
+					<button class="btn btn-primary"ng-disabled="!user.uploadedImage" ng-click="uploadImage(user.uploadedImage)">Upload</button>
 				</div>
-
-				<div class="col-sm-3 col-xs-12 thumbnail">
-					<div ng-show="isOwnPage" >
-						<h3>LeaderBoard</h3>
-					</div>
-				</div>
-
 			</div>
 		</div>
+
+		<div class="col-sm-4 col-xs-12 thumbnail" >
+			<div ng-if="isOwnPage" id="profile">
+				<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
+				<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
+				<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
+				<div class="row">
+					<label ng-if="isEditing" class="col-xs-4" for="username" id="profileHeader">New Username:</label>
+					<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.username" value="{{user.username}}" />
+				</div>
+			</div>
+			<div id="profileDetails" class="col-xs-12">
+				<h2>Profile Details</h2>
+				<br>
+				<h2 ng-if="!isEditing" id="profileDetails">Username:    {{user.username}}</h2>
+			</div>
+		</div>
+
+		<div class="col-sm-3 col-xs-12 thumbnail">
+			<div ng-show="isOwnPage" >
+				<h3>LeaderBoard</h3>
+			</div>
+		</div>
+
 	</div>
+</div>
+</div>
 </div>

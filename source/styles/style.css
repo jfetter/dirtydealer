@@ -30,7 +30,9 @@
   font-size: 35px;
   color: lightblue;
   font-weight: bold;
-  margin: 0 auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background-color: black;
 }
 
 #mainProfileContainer {
