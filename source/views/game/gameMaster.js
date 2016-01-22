@@ -65,7 +65,7 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	|  States:     |
 	|______________| */
-	var currentState = '';
+	$scope.currentState = '';
 
 	if($scope.isLoggedIn){
 		var cookies = $cookies.get('token');
@@ -73,12 +73,14 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	var gameStates = ['prevote', 'vote', 'postvote'];
-	var currentState;
+	$scope.currentState;
+	
+
 	//connect with firebase game states
 	var gameStateRef = GameService.gameStateRef;
 	gameStateRef.on('value', function(snap){
-		currentState = gameStates[snap.val()];
-		console.log("!!!!!game state ref!!!!!", currentState)
+		$scope.currentState = gameStates[snap.val()];
+		console.log("!!!!!game state ref!!!!!", $scope.currentState)
 	})
 
 	var gameWon = false; // link this to a node on firebase...
@@ -96,36 +98,35 @@ angular.module('cardsAgainstHumanity')
 
 		if (gameWon === false){
 
-			switch (currentState) {
+			switch ($scope.currentState) {
 
 				case 'prevote':
-				currentState = 'prevote';
+				$scope.currentState = 'prevote';
 				console.log('CURRENT STATE IS PREVOTE');
 				$scope.myHand = GameService.pickCards();
 				//GameService.advanceGameState();
+				//ng-hide all the cards submitted for vote
 				if (!$scope.counter){
 					$scope.countDown();
 				}
 				break;
 
 				case 'vote':
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
+					$scope.countDown();
 				console.log("!!!! VOTE !!!!")
+				// ng-show="currentState === vote"
+				// ng-show all the cards that are submitted for voting
+				// ng-disable clickable cards from your deck
 				break;
 
 				case 'postvote':
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
 				console.log("!!!! POSTVOTE !!!!")
-				//check if game won
+				//check if game won returns true...
 				break;
 			}
 		} else {
 			console.log("execute game won sequence")
-
+			return;
 		}
 		// break;
 	}
@@ -144,7 +145,7 @@ angular.module('cardsAgainstHumanity')
 	var mytimeout = null;
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
-		//console.log("COUNTER ", n)
+		
 		console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
@@ -160,15 +161,15 @@ angular.module('cardsAgainstHumanity')
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
 			//advance game to next state
+			$scope.timerRef.remove();
 			GameService.advanceGameState();
-			// gameState();
-
+			gameState();
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
 				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: currentState,
+				confirmButtonText: $scope.currentState,
 			});
 		}
 	});
@@ -186,8 +187,9 @@ angular.module('cardsAgainstHumanity')
 	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
+			//&& $scope.currentState === undefined
 			if ($scope.playerss.length >= 3 ) {
-				currentState = 'prevote';
+				$scope.currentState = 'prevote';
 				gameState();
 			}
 		});
@@ -247,3 +249,4 @@ angular.module('cardsAgainstHumanity')
 		});
 	};
 });
+
