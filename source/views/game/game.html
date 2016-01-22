@@ -1,33 +1,12 @@
-<div class="container" ng-if="isLoggedIn">
-  <div ng-hide="{{ 3 - playerss.length}} === true" class="col-sm-8">
-    <h1>waiting for {{ 3 - playerss.length}} players</h1>
-    <br>
-  </div>
-  <!-- <div deal-Cards></div> -->
-  <!-- anything typed in here is magically saved to our Firebase database! -->
-  <!-- <input type="text" ng-model="data.text"/> -->
-  <!-- all changes from our Firebase database magically appear here! -->
-  <!-- <h1>You said: {{ data.text }}</h1> -->
+<div class="container col-xs-12" ng-if="isLoggedIn" id="gameBoard">
 
-  <!-- //***Firebase Tutorials.  -->
-  <div class="container col-sm-3 col-md-4">
-    <!-- push a new message onto the array -->
-    <div id="addMessageInput">
-      <form ng-submit="addMessage(newMessageText)">
-        <input ng-model="newMessageText" type="text" />
-        <button type="submit">Add Message</button>
-      </form>
-    </div>
-    <div id="messageContainer">
-      <h1>MESSAGE BOARD</h1>
-      <div ng-repeat="message in messages.slice().reverse() track by $index">
-        <p id="messageSent">{{message.player}}</p>
-        <p id="playerMessageName">{{message.username}}</p>
-        <!-- <p id="playerMessageName">{{message.timestamp}}</p> -->
-        <input ng-model="message.text" ng-change="messages.$save(message)" />
-      </div>
+  <div class="row" id="waitingDiv">
+    <div ng-hide="{{ 3 - playerss.length}} === true" class="col-sm-8">
+      <h1>Waiting for {{ 3 - playerss.length}} players!</h1>
+      <br>
     </div>
   </div>
+<<<<<<< HEAD
   <!-- <h5>Voting time</h5>
   <div ng-repeat="voteCard in voteCards track by $index">
   <span>{{voteCard}}</span>
@@ -36,62 +15,120 @@
   <h3>Scenario</h3>
   <div class="blackCard"> {{blackCard.text}} <br> Pick: {{blackCard.pick}}</div>
 </div>
+=======
+>>>>>>> 24de46e52a717cdef9c09f79137929505eff4bc8
 
-<div class="blackVote">
-  <h2>VOTES</h2>
-  <div ng-if="!voted" ng-repeat="vote in votes track by $index">
-    <p class="whiteCard" ng-click="voteCard(vote)"> {{vote.text}} </p>
+  <div class="row" id="counter">
+    {{counter}}
   </div>
 
-</div>
 
+<<<<<<< HEAD
 <h2>Your cards</h2>
 <div ng-repeat="card in myHand track by $index">
   <div ng-click="addToVotedCards(card, $index, sent)" class="whiteCard"
   >{{card}}</div>
 </div>
 
+=======
+  <!-- /* ______________
+  |              |
+  | Black Card:  |
+  |______________| */ -->
+  <div class="row">
+  <div class="blackVote container col-sm-3 col-md-3" id="blackCardDiv">
+    <h1>Black Card</h1>
+    <div class="blackCard"> {{blackCard.text}} <br> Pick: {{blackCard.pick}}</div>
+  </div>
 
-<div>
-  <button ng-click="startDeck()">Start Deck (working)</button>
-  <button ng-click="dealBlackCard()">Deal Black Card (working)</button>
-  <button ng-click="startingHand()">Get hand (working)</button>
-  <button ng-click="draw()">Draw a card(working)</button>
-  <button ng-click="sayName()">Get user's namec</button>
-  <!-- <button ng-click="howManyCards()">Count cards</button> -->
-  <!-- <button ng-click="takeASingleCard()">Take 1 from deck</button> -->
-  <!-- <button ng-click="startingBand()">Random card chosen</button> -->
-  <!-- <button ng-click="killCards()">Kill all cards</button> -->
-  <!-- <button ng-click="listPlayers()">List all Players</button> -->
-  <!-- <button ng-click="whoAmI()">List Username</button> -->
+
+  <!-- /* ______________
+  |              |
+  |   Messages:  |
+  |______________| */ -->
+    <div class="container col-sm-3 col-md-3" id="messageDiv">
+      <div id="addMessageInput">
+        <h1>Chat Zone</h1>
+        <form ng-submit="addMessage(newMessageText)">
+          <input ng-model="newMessageText" type="text" />
+          <button type="submit">Post Comment</button>
+        </form>
+      </div>
+      <div id="messageContainer">
+        <div ng-repeat="message in messages.slice().reverse() track by $index">
+          <p id="messageSent">{{message.player}}</p>
+          <p id="playerMessageName">{{message.username}}</p>
+          <!-- <p id="playerMessageName">{{message.timestamp}}</p> -->
+          <input ng-model="message.text" ng-change="messages.$save(message)" />
+        </div>
+      </div>
+    </div>
+>>>>>>> 24de46e52a717cdef9c09f79137929505eff4bc8
+
+    <!-- <h5>Voting time</h5>
+    <div ng-repeat="voteCard in voteCards track by $index">
+    <span>{{voteCard}}</span>
+  </div> -->
+
+
+  <!-- /* ______________
+  |              |
+  |   Votes:     |
+  |______________| */ -->
+
+  <div class="blackVote container col-sm-3 col-md-3" id="responseDiv">
+    <h1>Response</h1>
+    <div ng-if="!voted" ng-repeat="response in responses track by $index">
+      <p class="whiteCard" ng-click="voteCard(response)"> {{response.text}} </p>
+    </div>
+
+  </div>
+
 </div>
+<!-- /* ______________
+|              |
+| Leaderboard: |
+|______________| */ -->
 
-
-
-<div>
-  {{counter}}
-</div>
-
-<!--   all of this will go in our waiting for players state -->
-<div class="row" >
-  <!-- <h1>waiting for {{ 3 - numPlayers}} players</h1> -->
-
-  <h2>LEADERBOARD</h2>
-
+<div class="container col-sm-3 col-md-3" id="leaderBoardDiv">
+  <h2>Leaderboard</h2>
   <div class="row" ng-repeat="player in playerss track by $index">
     <div class="col-sm-12">
       <p> {{player.username}} / {{player.points}}</p>
     </div>
   </div>
+</div>
+
+
+<!-- /* ______________
+|              |
+|   White Deck:|
+|______________| */ -->
+
+<div class="container" id="whiteCardDiv">
+  <h2>Your Deck of Whites</h2>
+  <div ng-repeat="card in myHand track by $index">
+    <div ng-click="addToVotedCards(card, $index, sent)" class="whiteCard"
+    >{{card}}</div>
+  </div>
+</div>
 
 </div>
 
-<button ng-click="removePlayer()">Quit</button>
 
-<!--   end wiating for players stuff  -->
+  <button ng-click="startDeck()">Start Deck (working)</button>
+  <button ng-click="dealBlackCard()">Deal Black Card (working)</button>
+  <button ng-click="startingHand()">Get hand (working)</button>
+  <button ng-click="draw()">Draw a card(working)</button>
+  <button ng-click="sayName()">Get user's namec</button>
+</div>
 
 
-<div class="row" ng-if="game.data.state === 'prevote'">
+<button ng-click="removePlayer()">Quit Game</button>
+
+<div>
+
+<!-- <div class="row" ng-if="game.data.state === 'prevote'">
 
 </div>
 
@@ -107,5 +144,9 @@
 
 
 
+<<<<<<< HEAD
 
 </div>
+=======
+</div> -->
+>>>>>>> 24de46e52a717cdef9c09f79137929505eff4bc8

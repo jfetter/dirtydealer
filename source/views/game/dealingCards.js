@@ -7,10 +7,7 @@ angular.module('cardsAgainstHumanity')
 
 	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
-	//var whiteCardRef = this.whiteCardRef;
 	this.blackCardRef = this.gameInstance.child("blackCards")
-	//var blackCardRef = this.blackCardRef;
-
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
 	this.exampleHand = this.gameInstance.child("exampleHand")
 
@@ -18,11 +15,11 @@ angular.module('cardsAgainstHumanity')
 	this.startDeck = function(){
 		//initialize game state to -1 on fb so when it advances first time it will go to 0
 		this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
-		this.gameStateRef.set(0);
+		this.gameStateRef.set(1);
 
 		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set({array: whiteCards})
-		this.gameInstance.child('blackCards').set(blackCards)
+		this.gameInstance.child('whiteCards').set({array: whiteCards});
+		this.gameInstance.child('blackCards').set(blackCards);
 	}
 
 	var tempBlackCard = [];
@@ -31,6 +28,7 @@ angular.module('cardsAgainstHumanity')
 		console.log("Black", tempBlackCard)
 		//console.log("BLength", tempBlackCard.length)
 	});
+
 	this.dealBlackCard = function(){
 		this.gameInstance.child("scenarioCard").set(null);
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
@@ -49,6 +47,8 @@ angular.module('cardsAgainstHumanity')
 		tempWhiteCard = snap.val();
 		console.log("BASE", tempWhiteCard)
 	});
+
+
 	this.startingHand = function(){
 		var fullHand = [];
 		for(var i = 0; i<10; i++){
@@ -64,6 +64,7 @@ angular.module('cardsAgainstHumanity')
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
 		return fullHand;
 	}
+
 	this.draw = function(n){
 		for(var i=0; i<n; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);

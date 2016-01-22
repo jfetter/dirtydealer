@@ -49,12 +49,11 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
+	var votingRef = GameService.gameInstance.child("voting");
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	$scope.timerRef = TimerService.timerRef;
-	var votingRef =  new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/voting");
-	// GameService.gameInstance.child("voting");
 
 	$scope.myHand = [];
 
@@ -72,22 +71,19 @@ angular.module('cardsAgainstHumanity')
 		var token = jwtHelper.decodeToken(cookies)
 	}
 
-	var gameStates = ['prevote', 'vote', 'postvote'];
-	$scope.currentState;
 
-
-	//connect with firebase game states
 	var gameStateRef = GameService.gameStateRef;
-	gameStateRef.on('value', function(snap){
-		$scope.currentState = gameStates[snap.val()];
-		console.log("!!!!!game state ref!!!!!", $scope.currentState)
+	//connect with firebase game states
+	gameStateRef.on('value', function(snap) {
+		currentState = snap.val();
+		gameState();
+		console.log("!!!!!game state ref!!!!!", currentState)
 	})
+
 
 	var gameWon = false; // link this to a node on firebase...
 
 	var gameState = function() {
-		CardsService.startDeck();
-		$scope.blackCard = 	CardsService.dealBlackCard();
 		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
@@ -102,10 +98,12 @@ angular.module('cardsAgainstHumanity')
 
 			switch ($scope.currentState) {
 
-				case 'prevote':
-				$scope.currentState = 'prevote';
+
+				case 1:
+				currentState = 1;
+
 				console.log('CURRENT STATE IS PREVOTE');
-				$scope.myHand = GameService.pickCards();
+				$scope.blackCard = 	CardsService.dealBlackCard();
 				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
 				if (!$scope.counter){
@@ -113,15 +111,24 @@ angular.module('cardsAgainstHumanity')
 				}
 				break;
 
-				case 'vote':
-					$scope.countDown();
+
+				case 2:
+				// if (!$scope.counter){
+				// 	$scope.countDown();
+				// }
+
 				console.log("!!!! VOTE !!!!")
 				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
 				break;
 
-				case 'postvote':
+
+				case 3:
+				// if (!$scope.counter){
+				// 	$scope.countDown();
+				// }
+
 				console.log("!!!! POSTVOTE !!!!")
 				//check if game won returns true...
 				break;
@@ -194,8 +201,10 @@ angular.module('cardsAgainstHumanity')
 		$timeout(function() {
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length >= 3 ) {
-				$scope.currentState = 'prevote';
-				gameState();
+				currentState = 1;
+				CardsService.startDeck();
+				$scope.myHand = GameService.pickCards();
+
 			}
 		});
 	});
@@ -223,6 +232,7 @@ angular.module('cardsAgainstHumanity')
 		GameService.addMessage(message);
 		// $scope.newMessageText = "";
 	}
+
 	$scope.voteCard = function(card){
 		GameService.voteCard(card);
 		console.log("YOU voted for:", card)
@@ -238,14 +248,17 @@ angular.module('cardsAgainstHumanity')
 		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
 
 		$scope.addToVotedCards = function(cardClicked, index, sent) {
-			// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
 			GameService.addToVotedCards(cardClicked, index, sent);
 			$scope.sent = !$scope.sent
 		}
-		$scope.votes = [];
+		$scope.responses = [];
 		votingRef.on("value", function(snap) {
-			$scope.votes = snap.val();
-			console.log(snap.val(), "duddbjddjbdjbkdbdk");
+			$scope.responses = snap.val();
+			console.log(snap.val(), "OUTSIDE THE IF");
+			if ($scope.responses.length === $scope.playerss.length) {
+				console.log(snap.val(), "INSIDE");
+				gameState = 2;
+			}
 		});
 	};
 });
