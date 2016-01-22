@@ -77,7 +77,7 @@ angular.module('cardsAgainstHumanity')
 	
 
 	//connect with firebase game states
-	var gameStateRef = GameService.gameStateRef;
+	var gameStateRef = GameService.gameStateRef.child('current');
 	gameStateRef.on('value', function(snap){
 		$scope.currentState = gameStates[snap.val()];
 		console.log("!!!!!game state ref!!!!!", $scope.currentState)
@@ -160,8 +160,9 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
+			n = 60;
 			//advance game to next state
-			$scope.timerRef.remove();
+			//$scope.timerRef.remove();
 			GameService.advanceGameState();
 			gameState();
 			swal({

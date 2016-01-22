@@ -24,12 +24,12 @@ angular.module('cardsAgainstHumanity')
 
 	this.advanceGameState = function(){
 		var next = "sad clown";
-		gameStateRef.once('value', function(snap){
+		gameStateRef.child('current').once('value', function(snap){
 		next = snap.val() + 1; 
-		if ( next > 2){
+		if ( next > 3){
 			next = 0;
 		}
-		gameStateRef.set(next);
+		gameStateRef.child('current').set(next);
 		})
 
 	}

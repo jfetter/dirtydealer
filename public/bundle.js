@@ -976,12 +976,12 @@ angular.module('cardsAgainstHumanity')
 
 	this.advanceGameState = function(){
 		var next = "sad clown";
-		gameStateRef.once('value', function(snap){
+		gameStateRef.child('current').once('value', function(snap){
 		next = snap.val() + 1; 
-		if ( next > 2){
+		if ( next > 3){
 			next = 0;
 		}
-		gameStateRef.set(next);
+		gameStateRef.child('current').set(next);
 		})
 
 	}
@@ -1117,6 +1117,14 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
@@ -1134,7 +1142,7 @@ angular.module('cardsAgainstHumanity')
 	this.startDeck = function(){
 		//initialize game state to -1 on fb so when it advances first time it will go to 0
 		this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
-		this.gameStateRef.set(0);
+		this.gameStateRef.child('current').set(0);
 
 		console.log("IN START DECK")
 		this.gameInstance.child('whiteCards').set({array: whiteCards})
@@ -1272,7 +1280,7 @@ angular.module('cardsAgainstHumanity')
 	
 
 	//connect with firebase game states
-	var gameStateRef = GameService.gameStateRef;
+	var gameStateRef = GameService.gameStateRef.child('current');
 	gameStateRef.on('value', function(snap){
 		$scope.currentState = gameStates[snap.val()];
 		console.log("!!!!!game state ref!!!!!", $scope.currentState)
@@ -1355,8 +1363,9 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
+			n = 60;
 			//advance game to next state
-			$scope.timerRef.remove();
+			//$scope.timerRef.remove();
 			GameService.advanceGameState();
 			gameState();
 			swal({
@@ -1483,10 +1492,33 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
 
-})
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
 
 'use strict';
 
@@ -1595,35 +1627,4 @@ angular.module('cardsAgainstHumanity')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
 });
