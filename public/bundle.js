@@ -974,10 +974,11 @@ angular.module('cardsAgainstHumanity')
 	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
-	this.advanceGameState = function(){
+	this.advanceGameState = function(childSnahpshot){
 		var next = "sad clown";
-		gameStateRef.child('current').once('value', function(snap){
-		next = snap.val() + 1; 
+		gameStateRef.once('value', function(snap){
+		next = snap.val() 
+		next = next.current + 1; 
 		if ( next > 3){
 			next = 0;
 		}
@@ -1113,14 +1114,6 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
@@ -1488,6 +1481,14 @@ angular.module('cardsAgainstHumanity')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
