@@ -122,7 +122,7 @@ angular.module('cardsAgainstHumanity')
 	}
 	var tempYourHand = [];
 	var subSpaceHand = [];
-	this.addToVotedCards = function(cardClicked, index, sent) {
+	this.addToResponseCards = function(cardClicked, index, sent) {
 		// var myId = JSON.parse(localStorage.player)
 
 		if(sent){
@@ -149,9 +149,8 @@ angular.module('cardsAgainstHumanity')
 		});
 		return tempYourHand.cards;
 		}
-
 	}
-
+	
 	this.voteCard = function(card){
 		var myId = localStorage.player
 		console.log("You're trying to vote for:", card.text)

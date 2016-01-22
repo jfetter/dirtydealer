@@ -233,8 +233,8 @@ angular.module('cardsAgainstHumanity')
 
 
 
-		$scope.addToVotedCards = function(cardClicked, index, sent) {
-			GameService.addToVotedCards(cardClicked, index, sent);
+		$scope.addToResponseCards = function(cardClicked, index, sent) {
+			GameService.addToResponseCards(cardClicked, index, sent);
 			$scope.sent = !$scope.sent
 		}
 		$scope.responses = [];
