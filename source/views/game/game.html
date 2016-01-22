@@ -29,11 +29,11 @@
   <div ng-repeat="voteCard in voteCards track by $index">
   <span>{{voteCard}}</span>
 </div> -->
-<<<<<<< HEAD
 <div class="blackVote">
   <h3>Scenario</h3>
   <div class="blackCard"> {{blackCard.text}} <br> Pick: {{blackCard.pick}}</div>
 </div>
+
 <div class="blackVote">
   <h2>VOTES</h2>
   <div ng-if="!voted" ng-repeat="vote in votes track by $index">
@@ -41,30 +41,13 @@
   </div>
 
 </div>
+
 <h2>Your cards</h2>
 <div ng-repeat="card in myHand track by $index">
   <div ng-click="addToVotedCards(card, $index, sent)" class="whiteCard"
   >{{card}}</div>
-=======
-<h1>Your cards</h1>
-<div ng-repeat="card in myHand track by $index">
-  <span ng-click="addToVotedCards(card, $index)">{{card}}</span>
->>>>>>> 6a974c531682edb37869840dbf4f9b7126bd1e17
 </div>
-<div class="container">
-  <div class="row" >
-    <!-- <h1>waiting for {{ 3 - numPlayers}} players</h1> -->
 
-<<<<<<< HEAD
-=======
-    <h2>VOTES</h2>
-    <div ng-repeat="vote in votes track by $index">
-      <p> {{vote.text}} </p>
-    </div>
->>>>>>> 6a974c531682edb37869840dbf4f9b7126bd1e17
-
-  </div>
-</div>
 
 <div>
   <button ng-click="startDeck()">Start Deck (working)</button>
@@ -103,7 +86,6 @@
 
 
 <div class="row" ng-if="game.data.state === 'prevote'">
-<<<<<<< HEAD
 
 </div>
 
@@ -117,22 +99,7 @@
 
 <div class="row" ng-if="game.data.state === 'win'">
 
-=======
 
-</div>
-
-<div class="row" ng-if="game.data.state === 'vote'">
-
-</div>
-
-<div class="row" ng-if="game.data.state === 'postvote'">
-
-</div>
-
-<div class="row" ng-if="game.data.state === 'win'">
-
->>>>>>> 6a974c531682edb37869840dbf4f9b7126bd1e17
-</div>
 
 
 </div>

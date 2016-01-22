@@ -72,30 +72,65 @@ angular.module('cardsAgainstHumanity')
 		var token = jwtHelper.decodeToken(cookies)
 	}
 
+	var gameStates = ['prevote', 'vote', 'postvote'];
+	var currentState;
+	//connect with firebase game states
+	var gameStateRef = GameService.gameStateRef;
+	gameStateRef.on('value', function(snap){
+		currentState = gameStates[snap.val()];
+		console.log("!!!!!game state ref!!!!!", currentState)
+	})
+
+	var gameWon = false; // link this to a node on firebase...
+
 	var gameState = function() {
 		CardsService.startDeck();
 		$scope.blackCard = 	CardsService.dealBlackCard();
-		console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
+		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
 		//send a deck of black cards and white to Firebase
 		console.log("in game state function")
 		var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0;
+		// console.log("in game state function")
+		// var gameStates = ['prevote', 'vote', 'postvote'];
+		// var count = 0;
 		var n = 60;
-		currentState = gameStates[count]
-		switch (currentState) {
 
-			case 'prevote':
-			currentState = 'prevote';
-			console.log('CURRENT STATE IS PREVOTE');
-			$scope.myHand = GameService.pickCards();
-			if (!$scope.counter){
-				$scope.countDown();
+		if (gameWon === false){
+
+			switch (currentState) {
+
+				case 'prevote':
+				currentState = 'prevote';
+				console.log('CURRENT STATE IS PREVOTE');
+				$scope.myHand = GameService.pickCards();
+				//GameService.advanceGameState();
+				if (!$scope.counter){
+					$scope.countDown();
+				}
+				break;
+
+				case 'vote':
+				// if (!$scope.counter){
+				// 	$scope.countDown();
+				// }
+				console.log("!!!! VOTE !!!!")
+				break;
+
+				case 'postvote':
+				// if (!$scope.counter){
+				// 	$scope.countDown();
+				// }
+				console.log("!!!! POSTVOTE !!!!")
+				//check if game won
+				break;
 			}
+
+		} else {
+			console.log("execute game won sequence")
 
 		}
 		// break;
-		}
-
 	}
 
 
@@ -112,6 +147,7 @@ angular.module('cardsAgainstHumanity')
 	var mytimeout = null;
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
+		//console.log("COUNTER ", n)
 		console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
@@ -126,12 +162,16 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
+			//advance game to next state
+			// GameService.advanceGameState();
+			// gameState();
+
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
-				text: "Time is up.",
+				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: "Ok.",
+				confirmButtonText: currentState,
 			});
 		}
 	});
@@ -149,10 +189,8 @@ angular.module('cardsAgainstHumanity')
 	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
-			console.log("current Players", $scope.playerss)
-			console.log("player Joined", $scope.playerss)
-			if ($scope.playerss.length >= 3) {
-				console.log("WE FUCKING KNOW ITS THREE MAN");
+			if ($scope.playerss.length >= 3 ) {
+				currentState = 'prevote';
 				gameState();
 			}
 		});
@@ -192,21 +230,18 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-	$scope.addToVotedCards = function(cardClicked, index, sent) {
-		// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
-		GameService.addToVotedCards(cardClicked, index, sent);
-		$scope.sent = !$scope.sent
+	$scope.addToVotedCards = function(cardClicked, index) {
+		$scope.myHand	= GameService.addToVotedCards(cardClicked, index);
 
-
-	/* ______________
-	|              |
-	| Votes:       |
-	|______________| */
-
-	}
-	$scope.votes = [];
-	votingRef.on("value", function(snap) {
-		$scope.votes = snap.val();
-		console.log(snap.val(), "duddbjddjbdjbkdbdk");
-	});
+		$scope.addToVotedCards = function(cardClicked, index, sent) {
+			// $scope.myHand	= GameService.addToVotedCards(cardClicked, index, sent);
+			GameService.addToVotedCards(cardClicked, index, sent);
+			$scope.sent = !$scope.sent
+		}
+		$scope.votes = [];
+		votingRef.on("value", function(snap) {
+			$scope.votes = snap.val();
+			console.log(snap.val(), "duddbjddjbdjbkdbdk");
+		});
+	};
 });

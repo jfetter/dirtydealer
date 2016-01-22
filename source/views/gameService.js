@@ -18,6 +18,23 @@ angular.module('cardsAgainstHumanity')
 	this.votingRef = this.gameInstance.child("voting");
 
 
+	///add game state to firebase
+	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+	var gameStateRef = this.gameStateRef;
+
+	this.advanceGameState = function(){
+		var next = "sad clown";
+		gameStateRef.once('value', function(snap){
+		next = snap.val() + 1;
+		if ( next > 2){
+			next = 0;
+		}
+		gameStateRef.set(next);
+		})
+	}
+
+
+
 	//remove players
 	this.removePlayer = function(){
 		// var player = JSON.parse(localStorage.player);
@@ -124,14 +141,11 @@ angular.module('cardsAgainstHumanity')
 			subSpaceHand = snap.val()
 			console.log("YO HAND!", tempYourHand)
 		})
-		var myId = localStorage.player
-		tempYourHand.cards.splice(index, 1);
-		this.playersRef.child(myId).set(tempYourHand)
-		this.votingRef.child(myId).set({
+		this.votingRef.child(myId).remove({
 			text: cardClicked,
 		});
-		return tempYourHand.cards;
 		}
+		return tempYourHand.cards;
 
 	}
 	this.voteCard = function(card){

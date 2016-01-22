@@ -16,6 +16,10 @@ angular.module('cardsAgainstHumanity')
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
+		//initialize game state to -1 on fb so when it advances first time it will go to 0
+		this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+		this.gameStateRef.set(0);
+
 		console.log("IN START DECK")
 		this.gameInstance.child('whiteCards').set({array: whiteCards})
 		this.gameInstance.child('blackCards').set(blackCards)
