@@ -87,14 +87,14 @@ angular.module('cardsAgainstHumanity')
 
 	var gameState = function() {
 		CardsService.startDeck();
-
+		console.log("TOP OF GAME STATE FUNCTION")
 		$scope.blackCard = 	CardsService.dealBlackCard();
 		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
 		//send a deck of black cards and white to Firebase
 		// console.log("in game state function")
 		// var gameStates = ['prevote', 'vote', 'postvote'];
 		// var count = 0;
-		var n = 60;
+		
 
 		if (gameWon === false){
 
@@ -121,6 +121,7 @@ angular.module('cardsAgainstHumanity')
 
 				case 'postvote':
 				console.log("!!!! POSTVOTE !!!!")
+				$scope.countDown();
 				//check if game won returns true...
 				break;
 			}
@@ -148,6 +149,7 @@ angular.module('cardsAgainstHumanity')
 		
 		//console.log("COUNTER ", n)
 		if(n ===  0) {
+			console.log("N IS ZERO!!!!!!!!!!!")
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
 			return;
