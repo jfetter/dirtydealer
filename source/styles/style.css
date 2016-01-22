@@ -136,10 +136,81 @@ h1, p, .navbar, div, button, .modal, li, a {
   margin-left: 140px;
 }
 
+/* ______________
+|                |
+|  Messages:     |
+|________________| */
 
+#messageDiv {
+  margin-right: auto;
+  margin-bottom: 20px;
+  text-align: center;
+}
 
+/* ______________
+|                |
+|  LeaderBoard:  |
+|________________| */
 
+#leaderBoardDiv {
+  margin-right: auto;
+  margin-bottom: 20px;
+  text-align: center;
+}
 
+/* ______________
+|                |
+|  Waiting:      |
+|________________| */
+
+#waitingDiv {
+  margin-left: auto;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* ______________
+|                |
+|  Black Card:   |
+|________________| */
+
+#blackCardDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* ______________
+|                |
+|  Votes:        |
+|________________| */
+
+#votesDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+/* ______________
+|                |
+|  White Deck:   |
+|________________| */
+
+#whiteCardDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#counter {
+  text-align: center;
+  font-size: 40px;
+}
 
 
 
