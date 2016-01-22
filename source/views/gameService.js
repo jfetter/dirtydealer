@@ -18,6 +18,23 @@ angular.module('cardsAgainstHumanity')
 	this.votingRef = this.gameInstance.child("voting");
 
 
+	///add game state to firebase
+	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+	var gameStateRef = this.gameStateRef;
+
+	this.advanceGameState = function(){
+		var next = "sad clown";
+		gameStateRef.once('value', function(snap){
+		next = snap.val() + 1; 
+		if ( next > 2){
+			next = 0;
+		}
+		gameStateRef.set(next);
+		})
+	}
+
+
+
 	//remove players
 	this.removePlayer = function(){
 		// var player = JSON.parse(localStorage.player);
