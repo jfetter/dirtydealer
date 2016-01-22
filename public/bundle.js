@@ -1355,7 +1355,7 @@ angular.module('cardsAgainstHumanity')
 		if(remaining === 0) {
 			//advance game to next state
 			GameService.advanceGameState();
-			gameState();
+			// gameState();
 
 			swal({
 				type: "error",
@@ -1479,6 +1479,37 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 .controller('homeCtrl', function($scope){
 	console.log('homeCtrl');
 
@@ -1515,37 +1546,6 @@ angular.module('cardsAgainstHumanity')
 			console.log(err);
 		});
 	}
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
 });
 
 'use strict';

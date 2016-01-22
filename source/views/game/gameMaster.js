@@ -161,7 +161,7 @@ angular.module('cardsAgainstHumanity')
 		if(remaining === 0) {
 			//advance game to next state
 			GameService.advanceGameState();
-			gameState();
+			// gameState();
 
 			swal({
 				type: "error",
