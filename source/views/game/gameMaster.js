@@ -88,30 +88,26 @@ angular.module('cardsAgainstHumanity')
 
 
 	var gameState = function(thisState) {
-		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
-		//send a deck of black cards and white to Firebase
-		//console.log("in game state function")
-		//var gameStates = ['prevote', 'vote', 'postvote'];
-		var count = 0;
-		// console.log("in game state function")
-		// var gameStates = ['prevote', 'vote', 'postvote'];
-		// var count = 0;
-		var n = 60;
-
-
 			switch (thisState) {
 
 				case 1:
-				  $scope.countDown();
+				if ($scope.counter === 60){
+				  TimerService.countDown();
+				}else if ($scope.counter === 0){
+						// auto select a card to go to responses
+					}
 				//}
 				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
 				break;
 
-
 				case 2:
 					console.log("STATE 2 VOTE !!!!!")
-					$scope.countDown();
+					if($scope.counter === 60){
+						TimerService.countDown();
+					} else if ($scope.counter === 0){
+						// auto select a card to vote for
+					}
 				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
@@ -150,21 +146,6 @@ angular.module('cardsAgainstHumanity')
 		$scope.counter = snap.val();
 	})
 
-	var n = 60;
-	var mytimeout = null;
-	// Actual timer method, counts down every second, stops on zero.
-	$scope.countDown = function() {
-
-		if(n ===  0) {
-			$scope.$broadcast('timer-stopped', 0);
-			$timeout.cancel(mytimeout);
-			return;
-		}
-		n--;
-		TimerService.countDown(n);
-		mytimeout = $timeout($scope.countDown, 1000);
-	};
-
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
@@ -173,8 +154,10 @@ angular.module('cardsAgainstHumanity')
 				title: "Uh-Oh!",
 				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: 'GET GOIN!',
+				confirmButtonText: 'GET GOIN ! ',
 			});
+			remaining = false;
+			$scope.counter = 60;
 		}
 	});
 
@@ -195,6 +178,7 @@ angular.module('cardsAgainstHumanity')
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
+				$scope.counter = 60;
 				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				return;
@@ -215,30 +199,6 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-	/* ______________
-	|              |
-	| Messages:    |
-	|______________| */
-	$scope.messages = GameService.messages;
-	$scope.addMessage = function(message) {
-		GameService.addMessage(message);
-		// $scope.newMessageText = "";
-	}
-
-	$scope.voteCard = function(card){
-		GameService.voteCard(card);
-		console.log("YOU voted for:", card)
-		//$scope.voted = true;
-	}
-
-	$scope.sayName = function(){
-		var token = jwtHelper.decodeToken(cookies)
-		console.log("TOKEN MASTER ", token)
-	}
-
-	$scope.addToResponseCards = function(cardClicked, index) {
-		GameService.addToResponseCards(cardClicked, index);
-	}
 
 
 	/* ______________
@@ -320,6 +280,9 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 	thisGame.child('winner').on('value', function(snap){
+		//need to set up play again / quit options
+		//quit redirects to profile page view and play again does
+		// location.reload();
 		var winner = snap.val().username
 		swal({
 				type: "error",
@@ -330,11 +293,32 @@ angular.module('cardsAgainstHumanity')
 			});
 	})
 
+
+
 	/* ______________
 	|              |
-	| UPDATE MONGO |
+	| Messages:    |
 	|______________| */
+	$scope.messages = GameService.messages;
+	$scope.addMessage = function(message) {
+		GameService.addMessage(message);
+		// $scope.newMessageText = "";
+	}
 
+	$scope.voteCard = function(card){
+		GameService.voteCard(card);
+		console.log("YOU voted for:", card)
+		//$scope.voted = true;
+	}
+
+	$scope.sayName = function(){
+		var token = jwtHelper.decodeToken(cookies)
+		console.log("TOKEN MASTER ", token)
+	}
+
+	$scope.addToResponseCards = function(cardClicked, index) {
+		GameService.addToResponseCards(cardClicked, index);
+	}
 
 
 });

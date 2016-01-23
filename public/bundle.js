@@ -1032,33 +1032,14 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 
-	this.updatePlayerAfterVote = function(){
-		// find player in player array
-		if (player.votes > highestVotes){
-			//increment this players points key
-		}
-		// restockHand(n); where n = number of cards to replace in hand
-		console.log("player should have new cards and new point total now")
-	}
-
-	this.addMessage = function(message, player) {
-		if(!message) return;
-
-		var cookies = $cookies.get('token');
-		var token = jwtHelper.decodeToken(cookies);
-		console.log(message, "MESSAGE I TYPE WHOO");
-
-		var myId = localStorage.player;
-		var thisPlayer = token._id;
-
-		this.messages.$add({
-			text: message,
-			username: token.username,
-			timestamp: Date.now()
-		});
-	}
 
 
+	/* ______________
+	|              |
+	| cards        |
+	|______________| */
+
+	//submit response card (game state 1)
 	this.addToResponseCards = function(cardClicked, index) {
 			var myInfo = this.identifyPlayer()
 			var myId = myInfo._id
@@ -1079,7 +1060,7 @@ angular.module('cardsAgainstHumanity')
 			return tempHand
 	}
 
-
+	//vote for a card (game state 2)
 	this.voteCard = function(card){
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
@@ -1088,6 +1069,22 @@ angular.module('cardsAgainstHumanity')
 		this.votes.$add(player);
 	}
 
+	//deal a new white card for the player (game state 3)
+		this.updatePlayerAfterVote = function(){
+		// find player in player array
+		if (player.votes > highestVotes){
+			//increment this players points key
+		}
+		// restockHand(n); where n = number of cards to replace in hand
+		console.log("player should have new cards and new point total now")
+	}
+
+	/* ______________
+	|              |
+	| win points   |
+	|______________| */
+
+	// if you won the round add a point to your score (game state 2)
 	this.addWinPoint = function(player){
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
@@ -1108,13 +1105,57 @@ angular.module('cardsAgainstHumanity')
 				if (myNewPoints >= 10){
 					console.log('we have a winner')
 					this.gameInstance.child('winner').set(player);
+					updateMongoWins(player, myId);
 				}
 				playersRef.child(player).update({gamePoints: myNewPoints})
 				console.log(player, 'got a win point');
+						// this code is not tested and not finished !!!!!
 				gameStateRef.set(3)
 	}
 	return;
 }
+
+		/* ______________
+	|              |
+	| update MONGO |
+	|______________| */
+
+		function updateMongoWins(winner, me){
+			console.log("set up route etc to add win point to mongo")
+			var winner = snap.val();
+			if (winner = myInfo._id){
+				//$http.put("/dirtyWin", {id: winner})
+				//.then(function (res){
+					// console.log(res);
+					//}, function(err){
+				//console.log(err)
+				//})
+			}
+		}
+
+
+
+		/* ______________
+	|              |
+	| messages     |
+	|______________| */
+
+	this.addMessage = function(message, player) {
+		if(!message) return;
+
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies);
+		console.log(message, "MESSAGE I TYPE WHOO");
+
+		var myId = localStorage.player;
+		var thisPlayer = token._id;
+
+		this.messages.$add({
+			text: message,
+			username: token.username,
+			timestamp: Date.now()
+		});
+	}
 
 });
 
@@ -1283,30 +1324,26 @@ angular.module('cardsAgainstHumanity')
 
 
 	var gameState = function(thisState) {
-		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
-		//send a deck of black cards and white to Firebase
-		//console.log("in game state function")
-		//var gameStates = ['prevote', 'vote', 'postvote'];
-		var count = 0;
-		// console.log("in game state function")
-		// var gameStates = ['prevote', 'vote', 'postvote'];
-		// var count = 0;
-		var n = 60;
-
-
 			switch (thisState) {
 
 				case 1:
-				  $scope.countDown();
+				if ($scope.counter === 60){
+				  TimerService.countDown();
+				}else if ($scope.counter === 0){
+						// auto select a card to go to responses
+					}
 				//}
 				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
 				break;
 
-
 				case 2:
 					console.log("STATE 2 VOTE !!!!!")
-					$scope.countDown();
+					if($scope.counter === 60){
+						TimerService.countDown();
+					} else if ($scope.counter === 0){
+						// auto select a card to vote for
+					}
 				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
@@ -1345,21 +1382,6 @@ angular.module('cardsAgainstHumanity')
 		$scope.counter = snap.val();
 	})
 
-	var n = 60;
-	var mytimeout = null;
-	// Actual timer method, counts down every second, stops on zero.
-	$scope.countDown = function() {
-
-		if(n ===  0) {
-			$scope.$broadcast('timer-stopped', 0);
-			$timeout.cancel(mytimeout);
-			return;
-		}
-		n--;
-		TimerService.countDown(n);
-		mytimeout = $timeout($scope.countDown, 1000);
-	};
-
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
@@ -1368,8 +1390,10 @@ angular.module('cardsAgainstHumanity')
 				title: "Uh-Oh!",
 				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: 'GET GOIN!',
+				confirmButtonText: 'GET GOIN ! ',
 			});
+			remaining = false;
+			$scope.counter = 60;
 		}
 	});
 
@@ -1390,6 +1414,7 @@ angular.module('cardsAgainstHumanity')
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
+				$scope.counter = 60;
 				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				return;
@@ -1410,30 +1435,6 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-	/* ______________
-	|              |
-	| Messages:    |
-	|______________| */
-	$scope.messages = GameService.messages;
-	$scope.addMessage = function(message) {
-		GameService.addMessage(message);
-		// $scope.newMessageText = "";
-	}
-
-	$scope.voteCard = function(card){
-		GameService.voteCard(card);
-		console.log("YOU voted for:", card)
-		//$scope.voted = true;
-	}
-
-	$scope.sayName = function(){
-		var token = jwtHelper.decodeToken(cookies)
-		console.log("TOKEN MASTER ", token)
-	}
-
-	$scope.addToResponseCards = function(cardClicked, index) {
-		GameService.addToResponseCards(cardClicked, index);
-	}
 
 
 	/* ______________
@@ -1515,6 +1516,9 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 	thisGame.child('winner').on('value', function(snap){
+		//need to set up play again / quit options
+		//quit redirects to profile page view and play again does
+		// location.reload();
 		var winner = snap.val().username
 		swal({
 				type: "error",
@@ -1525,11 +1529,32 @@ angular.module('cardsAgainstHumanity')
 			});
 	})
 
+
+
 	/* ______________
 	|              |
-	| UPDATE MONGO |
+	| Messages:    |
 	|______________| */
+	$scope.messages = GameService.messages;
+	$scope.addMessage = function(message) {
+		GameService.addMessage(message);
+		// $scope.newMessageText = "";
+	}
 
+	$scope.voteCard = function(card){
+		GameService.voteCard(card);
+		console.log("YOU voted for:", card)
+		//$scope.voted = true;
+	}
+
+	$scope.sayName = function(){
+		var token = jwtHelper.decodeToken(cookies)
+		console.log("TOKEN MASTER ", token)
+	}
+
+	$scope.addToResponseCards = function(cardClicked, index) {
+		GameService.addToResponseCards(cardClicked, index);
+	}
 
 
 });
@@ -1541,11 +1566,26 @@ angular.module('cardsAgainstHumanity')
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
+	var timerRef = this.timerRef; 
+	var counter = 61;
+	var mytimeout = null;
 
-	this.countDown = function(counter){
-		//console.log("REMAINING SECONDS", counter)
-		this.timerRef.set(counter);
-	};
+		var countDown = function(){
+			console.log("IN COUNTDOWN FUnCTION", counter)
+			if(counter ===  0) {
+			$rootScope.$broadcast('timer-stopped', 0);
+			$timeout.cancel(mytimeout);
+			return;
+		}
+		counter--;
+		timerRef.set(counter);
+		mytimeout = $timeout(countDown, 1000);
+		}
+
+	this.countDown = function(){
+		countDown();
+		};
+
 })
 
 angular.module('cardsAgainstHumanity')

@@ -80,33 +80,14 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 
-	this.updatePlayerAfterVote = function(){
-		// find player in player array
-		if (player.votes > highestVotes){
-			//increment this players points key
-		}
-		// restockHand(n); where n = number of cards to replace in hand
-		console.log("player should have new cards and new point total now")
-	}
-
-	this.addMessage = function(message, player) {
-		if(!message) return;
-
-		var cookies = $cookies.get('token');
-		var token = jwtHelper.decodeToken(cookies);
-		console.log(message, "MESSAGE I TYPE WHOO");
-
-		var myId = localStorage.player;
-		var thisPlayer = token._id;
-
-		this.messages.$add({
-			text: message,
-			username: token.username,
-			timestamp: Date.now()
-		});
-	}
 
 
+	/* ______________
+	|              |
+	| cards        |
+	|______________| */
+
+	//submit response card (game state 1)
 	this.addToResponseCards = function(cardClicked, index) {
 			var myInfo = this.identifyPlayer()
 			var myId = myInfo._id
@@ -127,7 +108,7 @@ angular.module('cardsAgainstHumanity')
 			return tempHand
 	}
 
-
+	//vote for a card (game state 2)
 	this.voteCard = function(card){
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
@@ -136,6 +117,22 @@ angular.module('cardsAgainstHumanity')
 		this.votes.$add(player);
 	}
 
+	//deal a new white card for the player (game state 3)
+		this.updatePlayerAfterVote = function(){
+		// find player in player array
+		if (player.votes > highestVotes){
+			//increment this players points key
+		}
+		// restockHand(n); where n = number of cards to replace in hand
+		console.log("player should have new cards and new point total now")
+	}
+
+	/* ______________
+	|              |
+	| win points   |
+	|______________| */
+
+	// if you won the round add a point to your score (game state 2)
 	this.addWinPoint = function(player){
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
@@ -156,12 +153,56 @@ angular.module('cardsAgainstHumanity')
 				if (myNewPoints >= 10){
 					console.log('we have a winner')
 					this.gameInstance.child('winner').set(player);
+					updateMongoWins(player, myId);
 				}
 				playersRef.child(player).update({gamePoints: myNewPoints})
 				console.log(player, 'got a win point');
+						// this code is not tested and not finished !!!!!
 				gameStateRef.set(3)
 	}
 	return;
 }
+
+		/* ______________
+	|              |
+	| update MONGO |
+	|______________| */
+
+		function updateMongoWins(winner, me){
+			console.log("set up route etc to add win point to mongo")
+			var winner = snap.val();
+			if (winner = myInfo._id){
+				//$http.put("/dirtyWin", {id: winner})
+				//.then(function (res){
+					// console.log(res);
+					//}, function(err){
+				//console.log(err)
+				//})
+			}
+		}
+
+
+
+		/* ______________
+	|              |
+	| messages     |
+	|______________| */
+
+	this.addMessage = function(message, player) {
+		if(!message) return;
+
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies);
+		console.log(message, "MESSAGE I TYPE WHOO");
+
+		var myId = localStorage.player;
+		var thisPlayer = token._id;
+
+		this.messages.$add({
+			text: message,
+			username: token.username,
+			timestamp: Date.now()
+		});
+	}
 
 });
