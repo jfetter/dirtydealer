@@ -1470,11 +1470,21 @@ angular.module('cardsAgainstHumanity')
 
 	votesRef.on("value", function(snap) {
 		var votes = snap.val();
-		var numResponses = snap.numChildren();
-		console.log(snap.val(), "OUTSIDE THE IF");
-		if (numResponses === $scope.playerss.length) {
-			console.log(snap.val(), "INSIDE");
-			gameStateRef.set(2);
+		//var votesLength = votes.numChildren();
+		console.log(votes, "VOTES OUTSIDE THE IF IN VOTES");
+		//console.log(votesLength, "VOTES CHILDREN")
+		if (votes === $scope.playerss.length) {
+			var votesCast = {};
+			votes.forEach(function(player){
+				console.log(votesCast, "*.*. VOTES CAST *,*,");
+				
+				if (!votesCast.player){
+					votesCast.player = 1;
+				} else {
+					votesCast.player ++;
+				}
+			})
+			//gameStateRef.set(2);
 		}
 	});
 
