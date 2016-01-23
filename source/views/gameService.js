@@ -143,13 +143,17 @@ angular.module('cardsAgainstHumanity')
 		//only add points once per player
 		if (player === myId){
 			var myPoints;
-			//console.log(myRef.child('gamePoints').val())
-			myRef.child('gamePoints').on('value', function(snap) {
+			myRef.on('value', function(snap) {
 				myPoints = snap.val().gamePoints;
 			})
-			//this.myRef.child(gamePoints).set(0)
-				var myNewPoints = myPoints ++;
-				if (myNewPoints === 1){
+				var myNewPoints = myPoints + 1;
+
+				//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
+				myRef.update({temp: "temp"});
+				myRef.child('temp').remove();
+
+				myRef.child('gamePoints').set(myNewPoints)
+				if (myNewPoints >= 10){
 					console.log('we have a winner')
 					this.gameInstance.child('winner').set(player);
 				}
@@ -159,7 +163,5 @@ angular.module('cardsAgainstHumanity')
 	}
 	return;
 }
-
-
 
 });

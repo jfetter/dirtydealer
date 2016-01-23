@@ -119,8 +119,8 @@ angular.module('cardsAgainstHumanity')
 
 				case 3:
 				console.log("!!!! POSTVOTE !!!!")
-				//responseRef.remove();
 				votesRef.remove();
+				responseRef.remove();
 				//replenish used white card
 				gameStateRef.set(1)
 
@@ -135,6 +135,7 @@ angular.module('cardsAgainstHumanity')
 	gameStateRef.on('value', function(snap) {
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
+		$scope.currentState = thisState;
 		gameState(thisState);
 	})
 
