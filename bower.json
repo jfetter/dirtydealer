@@ -31,7 +31,7 @@
     "angular-sweetalert": "latest",
     "firebase": "~2.3.2",
     "angularfire": "~1.1.3",
-    "bootswatch": "~3.3.6+1"
+    "bootswatch": "~3.3.6"
   },
   "resolutions": {
     "angular": "1.4.8"
