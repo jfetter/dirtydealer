@@ -5,6 +5,7 @@ angular.module('cardsAgainstHumanity')
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
 
+
 	/* ______________
 	|              |
 	|  User Auth:  |
@@ -36,7 +37,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.dealBlackCard = function(){
 		// $scope.blackCard = CardsService.dealBlackCard();
 		// $scope.blackCard = $scope.scenarioCardRef
-		console.log("BLACK CARD NOW", $scope.blackCard);
+
 
 	}
 	$scope.startingHand = function(){
@@ -61,7 +62,7 @@ angular.module('cardsAgainstHumanity')
 
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
-	$scope.blackCard = scenarioCardRef
+	// $scope.blackCard = scenarioCardRef
 	$scope.myHand = [];
 
 	$scope.numPlayers;
@@ -84,7 +85,7 @@ angular.module('cardsAgainstHumanity')
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
 		currentState = snap.val();
-		gameState();
+				gameState();
 		console.log("!!!!!game state ref!!!!!", currentState)
 	})
 
@@ -112,8 +113,11 @@ angular.module('cardsAgainstHumanity')
 				currentState = 1;
 
 				console.log('CURRENT STATE IS PREVOTE');
-				$scope.blackCard = 	CardsService.dealBlackCard();
-				console.log("SCOOŒp", $scope.blackCard)
+				// CardsService.dealBlackCard();
+				console.log("IM REPLACING", GameService.gameInstance.child("scenarioCard"))
+				if(!GameService.gameInstance.child("scenarioCard")){
+					CardsService.dealBlackCard();
+				}
 				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
 				if (!$scope.counter){
@@ -213,6 +217,7 @@ angular.module('cardsAgainstHumanity')
 			if ($scope.playerss.length >= 3 ) {
 				currentState = 1;
 				CardsService.startDeck();
+				// CardsService.dealBlackCard();
 				$scope.myHand = GameService.pickCards();
 			}
 		});
