@@ -17,8 +17,9 @@ angular.module('cardsAgainstHumanity')
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
 	var responseRef = this.responseRef	
-	this.votesRef = this.gameInstance.child("votes");
-	var votesRef = this.votesRef
+	this.voteRef = this.gameInstance.child("votes");
+	var voteRef = this.voteRef
+	this.votes = $firebaseArray(voteRef);
 
 
 	///Add game state to firebase
@@ -131,39 +132,13 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-
-	// var myId = JSON.parse(localStorage.player)
-
-	// 	this.playersRef.child(myId).on('value', function(snap){
-	// 		tempYourHand = snap.val()
-	// 		subSpaceHand = snap.val()
-	// 		console.log("YO HAND!", tempYourHand)
-	// 	})
-	// 	var myId = localStorage.player
-	// 	tempYourHand.cards.splice(index, 1);
-	// 	this.playersRef.child(myId).set(tempYourHand)
-	// 	this.responseRef.child(myId).set({
-	// 		text: cardClicked,
-	// 	});
-	//
-	// 	if(sent){
-	// 		var myId = localStorage.player;
-	// 		// var tempYourHand = subSpaceHand;
-	// 		// this.playersRef.child(myId).set(subSpaceHand)
-	// 		this.responseRef.child(myId).remove({
-	// 			text: cardClicked,
-	// 		});
-	// 		// tempYourHand.cards.splice(index, 1);
-	// 		// return tempYourHand.cards;
-	// 	}
-	// 	return tempYourHand.cards;
-
 	this.voteCard = function(card){
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
-		console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
-		//votesRef.child()
-
-
+		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
+		var player = card.player;
+		this.votes.$add(player);
 	}
+
+
 });

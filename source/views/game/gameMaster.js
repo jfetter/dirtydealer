@@ -65,6 +65,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
+	var votesRef = GameService.gameInstance.child("votes");
 	// $scope.blackCard = scenarioCardRef
 	
 	$scope.myHand = [];
@@ -258,7 +259,7 @@ angular.module('cardsAgainstHumanity')
 		//$scope.voted = true;
 	}
 
-	
+
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
 		console.log("TOKEN MASTER ", token)
@@ -270,7 +271,12 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-	///watch firebase voting ref
+	/* ______________
+	|              |
+	| Responses:   |
+	|______________| */
+
+
 
 	responseRef.on("value", function(snap) {
 		$scope.responses = snap.val();
@@ -284,5 +290,26 @@ angular.module('cardsAgainstHumanity')
 	scenarioCardRef.on("value", function(snap) {
 		$scope.blackCard = snap.val();
 	});
+
+	/* ______________
+	|              |
+	| Votes:   		 |
+	|______________| */
+
+	votesRef.on("value", function(snap) {
+		var votes = snap.val();
+		var numResponses = snap.numChildren();
+		console.log(snap.val(), "OUTSIDE THE IF");
+		if (numResponses === $scope.playerss.length) {
+			console.log(snap.val(), "INSIDE");
+			gameStateRef.set(2);
+		}
+	});
+
+		this.tallyVotes = function(){
+			console.log("TALLY H@!")
+		
+	}
+
 
 });
