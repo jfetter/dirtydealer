@@ -52,13 +52,13 @@ angular.module('cardsAgainstHumanity')
 		var cookies = $cookies.get('token');
 
 		var token = jwtHelper.decodeToken(cookies)
-
-		var myId = localStorage.player
+		var myId = token._id
+		console.log(token._id, "IS IN THE HIZOUSE");
 		var myHand = CardsService.startingHand();
 		this.playersRef.child(myId).update({
 			cards: myHand
 		});
-		return myHand;
+		//return myHand;
 	}
 
 	this.addPlayer = function(){

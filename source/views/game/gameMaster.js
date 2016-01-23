@@ -111,13 +111,7 @@ angular.module('cardsAgainstHumanity')
 
 
 				case 1:
-
-				console.log('CURRENT STATE IS PREVOTE');
-				// CardsService.dealBlackCard();
-				console.log("IM REPLACING", GameService.gameInstance.child("scenarioCard"))
-				//if(!GameService.gameInstance.child("scenarioCard")){
 					console.log("IFFY IFFY LALALA")
-					CardsService.dealBlackCard();
 					GameService.pickCards();
 				//}
 				//GameService.advanceGameState();
@@ -161,10 +155,12 @@ angular.module('cardsAgainstHumanity')
 
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
+		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
-				gameState(thisState);
-		console.log("!!!!!game state ref!!!!!", currentState)
+			gameState(thisState);
 	})
+
+
 
 	/* ______________
 	|              |
@@ -226,9 +222,8 @@ angular.module('cardsAgainstHumanity')
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length >= 3 ) {
 				CardsService.startDeck();
-				gameState(1);
-				// CardsService.dealBlackCard();
-
+				CardsService.dealBlackCard();
+				gameStateRef.set(1);
 			}
 		});
 	});

@@ -1004,13 +1004,13 @@ angular.module('cardsAgainstHumanity')
 		var cookies = $cookies.get('token');
 
 		var token = jwtHelper.decodeToken(cookies)
-
-		var myId = localStorage.player
+		var myId = token._id
+		console.log(token._id, "IS IN THE HIZOUSE");
 		var myHand = CardsService.startingHand();
 		this.playersRef.child(myId).update({
 			cards: myHand
 		});
-		return myHand;
+		//return myHand;
 	}
 
 	this.addPlayer = function(){
@@ -1138,9 +1138,6 @@ angular.module('cardsAgainstHumanity')
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
-		//initialize game state to -1 on fb so when it advances first time it will go to 0
-		this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
-		this.gameStateRef.set(1);
 
 		console.log("IN START DECK")
 		this.gameInstance.child('whiteCards').set({array: whiteCards});
@@ -1176,14 +1173,15 @@ angular.module('cardsAgainstHumanity')
 		for(var i = 0; i<10; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
 			var takenCards = tempWhiteCard.array[rando];
-			console.log("Rando", rando)
-			console.log("Taken cards", takenCards)
+			//console.log("Rando", rando)
+		//	console.log("Taken cards", takenCards)
 			tempWhiteCard.array.splice(rando, 1);
-			console.log("Cards left", tempWhiteCard.array.length)
+			//console.log("Cards left", tempWhiteCard.array.length)
 			fullHand.push(takenCards);
 			//this.gameInstance.child("exampleHand").push(takenCards)
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
+		console.log('MY FULL HAND IS', fullHand)
 		return fullHand;
 	}
 
@@ -1313,13 +1311,7 @@ angular.module('cardsAgainstHumanity')
 
 
 				case 1:
-
-				console.log('CURRENT STATE IS PREVOTE');
-				// CardsService.dealBlackCard();
-				console.log("IM REPLACING", GameService.gameInstance.child("scenarioCard"))
-				//if(!GameService.gameInstance.child("scenarioCard")){
 					console.log("IFFY IFFY LALALA")
-					CardsService.dealBlackCard();
 					GameService.pickCards();
 				//}
 				//GameService.advanceGameState();
@@ -1363,10 +1355,12 @@ angular.module('cardsAgainstHumanity')
 
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
+		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
-				gameState(thisState);
-		console.log("!!!!!game state ref!!!!!", currentState)
+			gameState(thisState);
 	})
+
+
 
 	/* ______________
 	|              |
@@ -1428,9 +1422,8 @@ angular.module('cardsAgainstHumanity')
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length >= 3 ) {
 				CardsService.startDeck();
-				gameState(1);
-				// CardsService.dealBlackCard();
-
+				CardsService.dealBlackCard();
+				gameStateRef.set(1);
 			}
 		});
 	});

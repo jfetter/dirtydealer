@@ -13,9 +13,6 @@ angular.module('cardsAgainstHumanity')
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
-		//initialize game state to -1 on fb so when it advances first time it will go to 0
-		this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
-		this.gameStateRef.set(1);
 
 		console.log("IN START DECK")
 		this.gameInstance.child('whiteCards').set({array: whiteCards});
@@ -51,14 +48,15 @@ angular.module('cardsAgainstHumanity')
 		for(var i = 0; i<10; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
 			var takenCards = tempWhiteCard.array[rando];
-			console.log("Rando", rando)
-			console.log("Taken cards", takenCards)
+			//console.log("Rando", rando)
+		//	console.log("Taken cards", takenCards)
 			tempWhiteCard.array.splice(rando, 1);
-			console.log("Cards left", tempWhiteCard.array.length)
+			//console.log("Cards left", tempWhiteCard.array.length)
 			fullHand.push(takenCards);
 			//this.gameInstance.child("exampleHand").push(takenCards)
 		}
 		this.gameInstance.child('whiteCards').set(tempWhiteCard)
+		console.log('MY FULL HAND IS', fullHand)
 		return fullHand;
 	}
 
