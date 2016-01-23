@@ -71,6 +71,7 @@ angular.module('cardsAgainstHumanity')
 
 	myRef.child('cards').on('value', function(snap){
 		$scope.myHand = snap.val();
+		console.log("MY SCOPE CARDS ARE", $scope.myHand);
 	});
 
 	$scope.numPlayers;

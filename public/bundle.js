@@ -1000,12 +1000,16 @@ angular.module('cardsAgainstHumanity')
 		console.log("players after remove", this.playerss)
 	}
 
-	this.pickCards = function(){
+	this.identifyPlayer = function(){
 		var cookies = $cookies.get('token');
+		var myInfo = jwtHelper.decodeToken(cookies)
+		return myInfo;
+	}
 
-		var token = jwtHelper.decodeToken(cookies)
-		var myId = token._id
-		console.log(token._id, "IS IN THE HIZOUSE");
+	this.pickCards = function(){
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		console.log(myId, "IS IN THE HIZOUSE");
 		var myHand = CardsService.startingHand();
 		this.playersRef.child(myId).update({
 			cards: myHand
@@ -1014,26 +1018,16 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.addPlayer = function(){
-		var cookies = $cookies.get('token');
-
-		var token = jwtHelper.decodeToken(cookies)
-
-		// var thisPlayer = token.username;
-		var thisPlayer = token._id;
-		// var thisPlayer = Date.now();
+		//initialize test 'children'
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id;
 		var gamePoints = 0;
 		var cards = ["testA", "testB"];
-		//var cards = CardService.DealWhite();
-		//deal cards function here to populate array
 
-		localStorage.player = thisPlayer;
-
-		// token.username = thisPlayer;
-
-		//console.log("this player logged In", localStorage.player)
-		playersRef.child(thisPlayer).set({
-			playerId: thisPlayer,
-			username: token.username,
+		//set player data in firebase
+		playersRef.child(myId).set({
+			playerId: myInfo._id,
+			username: myInfo.username,
 			cards: cards,
 			gamePoints: gamePoints
 		});
@@ -1067,7 +1061,8 @@ angular.module('cardsAgainstHumanity')
 
 
 	this.addToResponseCards = function(cardClicked, index) {
-			var myId = localStorage.player;
+			var myInfo = this.identifyPlayer()
+			var myId = myInfo._id
 			var tempHand;
 			console.log(cardClicked, "BEGINNNING");
 			this.playersRef.child(myId).on('value', function(snap) {
@@ -1271,6 +1266,7 @@ angular.module('cardsAgainstHumanity')
 
 	myRef.child('cards').on('value', function(snap){
 		$scope.myHand = snap.val();
+		console.log("MY SCOPE CARDS ARE", $scope.myHand);
 	});
 
 	$scope.numPlayers;
