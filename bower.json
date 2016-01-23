@@ -9,7 +9,7 @@
   ],
   "license": "ISC",
   "moduleType": [],
-  "resolutions":{"angular" : "1.4.9"},
+  "resolutions":{"angular" : "1.4.8"},
   "homepage": "",
   "ignore": [
     "**/.*",
