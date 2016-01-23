@@ -54,6 +54,7 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| Firebase:    |
 	|______________| */
+	var thisGame = GameService.gameInstance
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	var responseRef = GameService.gameInstance.child("response");
@@ -91,11 +92,6 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-
-
-
-	var gameWon = false; // link this to a node on firebase...
-
 	var gameState = function(thisState) {
 		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
 		//send a deck of black cards and white to Firebase
@@ -107,7 +103,6 @@ angular.module('cardsAgainstHumanity')
 		// var count = 0;
 		var n = 60;
 
-		if (gameWon === false){
 
 			switch (thisState) {
 
@@ -137,21 +132,20 @@ angular.module('cardsAgainstHumanity')
 
 
 				case 3:
+				console.log("!!!! POSTVOTE !!!!")
+				this.responseRef.remove();
+				this.votesRef.remove();
 				// if (!$scope.counter){
 				// 	$scope.countDown();
 				// }
 
-				console.log("!!!! POSTVOTE !!!!")
+				gameStateRef.set(1)
 				//check if game won returns true...
 				break;
 			}
 
-		} else {
-			console.log("execute game won sequence")
-			return;
-		}
-		// break;
-	}
+		} 
+
 
 
 	//connect with firebase game states
@@ -298,28 +292,68 @@ angular.module('cardsAgainstHumanity')
 
 	votesRef.on("value", function(snap) {
 		var votes = snap.val();
-		//var votesLength = votes.numChildren();
-		console.log(votes, "VOTES OUTSIDE THE IF IN VOTES");
+		var votesLength = snap.numChildren();
+		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
 		//console.log(votesLength, "VOTES CHILDREN")
-		if (votes === $scope.playerss.length) {
+		if (votesLength === $scope.playerss.length) {
 			var votesCast = {};
-			votes.forEach(function(player){
-				console.log(votesCast, "*.*. VOTES CAST *,*,");
-				
-				if (!votesCast.player){
-					votesCast.player = 1;
+				for(var player in votes){
+					player = votes[player];
+				if (!votesCast[player]){
+					votesCast[player] = 1;
 				} else {
-					votesCast.player ++;
+					votesCast[player] ++;
 				}
-			})
+				console.log(votesCast, "*.*. VOTES CAST *,*,");
+			}
+				var winner = [];
+				var prev = 0;
+				for (var player in votesCast){
+					if (votesCast[player] >= prev){
+						winner.push(player);
+						prev = votesCast[player];
+					}
+				}
+				winner.forEach(function(player){
+					console.log(player, "GETS A POINT !")
+					GameService.addWinPoint(player);
+					playersRef.child(player).on('value', function(snap){
+						var thisPlayer = snap.val()
+						swal({
+							type: "error",
+							title: "this round goes to",
+							text: thisPlayer.username,
+							showConfirmButton: true,
+							confirmButtonText: "sweet!",
+						});
+					})
+				})
 			//gameStateRef.set(2);
 		}
 	});
 
-		this.tallyVotes = function(){
-			console.log("TALLY H@!")
-		
-	}
+
+	/* ______________
+	|              |
+	| Winner!			 |
+	|______________| */
+
+	thisGame.child('winner').on('value', function(snap){
+		var winner = snap.val().child('username')
+		swal({
+				type: "error",
+				title: "And the winner is...",
+				text: winner,
+				showConfirmButton: true,
+				confirmButtonText: "sweet!",
+			});
+	})
+
+	/* ______________
+	|              |
+	| UPDATE MONGO |
+	|______________| */
+
 
 
 });

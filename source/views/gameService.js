@@ -72,7 +72,6 @@ angular.module('cardsAgainstHumanity')
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
-		var gamePoints = 0;
 		var cards = ["testA", "testB"];
 
 		//set player data in firebase
@@ -80,7 +79,7 @@ angular.module('cardsAgainstHumanity')
 			playerId: myInfo._id,
 			username: myInfo.username,
 			cards: cards,
-			gamePoints: gamePoints
+			gamePoints: 0
 		});
 	}
 
@@ -139,6 +138,29 @@ angular.module('cardsAgainstHumanity')
 		var player = card.player;
 		this.votes.$add(player);
 	}
+
+	this.addWinPoint = function(player){
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		
+		//only add points once per player
+		if (player === myId){
+			var myPoints;
+			this.playersRef.child(player).on('value', function(snap) {
+				myPoints = snap.val().points;
+			})
+				var myNewPoints = myPoints ++;
+				if (myNewPoints >= 10){
+					console.log('we have a winner')
+					this.gameInstance.child('winner').set(player);
+				}
+				playersRef.child(player).update({points: myNewPoints})
+				console.log(player, 'got a win point');
+				gameStateRef.set(3)
+	}
+	return;
+}
+
 
 
 });
