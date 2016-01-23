@@ -70,11 +70,13 @@
 | Leaderboard: |
 |______________| */ -->
 
+
+<!-- MAKE THIS A TABLE -->
 <div class="container col-sm-3 col-md-3" id="leaderBoardDiv">
   <h2>Leaderboard</h2>
   <div class="row" ng-repeat="player in playerss track by $index">
     <div class="col-sm-12">
-      <p> {{player.username}} / {{player.points}}</p>
+      <p> player: {{player.username}} HAS points: {{player.gamePoints}}</p>
     </div>
   </div>
 </div>
@@ -93,35 +95,12 @@
   </div>
 </div>
 
+ <button ng-click="removePlayer()">Quit Game</button>
 </div>
 
 
-  <button ng-click="startDeck()">Start Deck (working)</button>
-  <button ng-click="dealBlackCard()">Deal Black Card (working)</button>
-  <button ng-click="startingHand()">Get hand (working)</button>
-  <button ng-click="draw()">Draw a card(working)</button>
-  <button ng-click="sayName()">Get user's namec</button>
-</div>
-
-
-<button ng-click="removePlayer()">Quit Game</button>
-
-<div>
-
-<!-- <div class="row" ng-if="game.data.state === 'prevote'">
-
-</div>
-
-<div class="row" ng-if="game.data.state === 'vote'">
-
-</div>
-
-<div class="row" ng-if="game.data.state === 'postvote'">
-
-</div>
-
-<div class="row" ng-if="game.data.state === 'win'">
 
 
 
-</div> -->
+
+

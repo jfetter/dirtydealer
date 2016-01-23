@@ -21,7 +21,6 @@ angular.module('cardsAgainstHumanity')
 	var voteRef = this.voteRef
 	this.votes = $firebaseArray(voteRef);
 
-
 	///Add game state to firebase
 	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
@@ -42,13 +41,11 @@ angular.module('cardsAgainstHumanity')
 
 	//remove players
 	this.removePlayer = function(){
-		// var player = JSON.parse(localStorage.player);
-		var player = localStorage.player;
-		console.log("player to remove", player);
-		playersRef.child(player).remove();
-		console.log("players before remove", this.playerss)
-		localStorage.removeItem("player");
-		console.log("players after remove", this.playerss)
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+
+		playersRef.child(myId).remove();
+		console.log("PLAYER QUIT", myId)
 	}
 
 	this.identifyPlayer = function(){
@@ -142,19 +139,21 @@ angular.module('cardsAgainstHumanity')
 	this.addWinPoint = function(player){
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
-		
+		var myRef = playersRef.child(myId);
 		//only add points once per player
 		if (player === myId){
 			var myPoints;
-			this.playersRef.child(player).on('value', function(snap) {
-				myPoints = snap.val().points;
+			//console.log(myRef.child('gamePoints').val())
+			myRef.child('gamePoints').on('value', function(snap) {
+				myPoints = snap.val().gamePoints;
 			})
+			//this.myRef.child(gamePoints).set(0)
 				var myNewPoints = myPoints ++;
-				if (myNewPoints >= 10){
+				if (myNewPoints === 1){
 					console.log('we have a winner')
 					this.gameInstance.child('winner').set(player);
 				}
-				playersRef.child(player).update({points: myNewPoints})
+				playersRef.child(player).update({gamePoints: myNewPoints})
 				console.log(player, 'got a win point');
 				gameStateRef.set(3)
 	}

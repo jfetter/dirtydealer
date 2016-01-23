@@ -4,7 +4,7 @@ angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
-	var currentState = '';
+	// var currentState = '';
 
 	/* ______________
 	|              |
@@ -33,21 +33,20 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| Card Dealing:|
 	|______________| */
-	$scope.startDeck = function(){
-		CardsService.startDeck();
-	}
-	$scope.dealBlackCard = function(){
-		// $scope.blackCard = CardsService.dealBlackCard();
-		// $scope.blackCard = $scope.scenarioCardRef
+	// $scope.startDeck = function(){
+	// 	CardsService.startDeck();
+	// }
+	// $scope.dealBlackCard = function(){
+	// 	// $scope.blackCard = CardsService.dealBlackCard();
+	// 	// $scope.blackCard = $scope.scenarioCardRef
 
-
-	}
-	$scope.startingHand = function(){
-		CardsService.startingHand();
-	}
-	$scope.draw = function(n){
-		CardsService.draw(n);
-	}
+	// }
+	// $scope.startingHand = function(){
+	// 	CardsService.startingHand();
+	// }
+	// $scope.draw = function(n){
+	// 	CardsService.draw(n);
+	// }
 
 
 	/* ______________
@@ -73,12 +72,8 @@ angular.module('cardsAgainstHumanity')
 
 	myRef.child('cards').on('value', function(snap){
 		$scope.myHand = snap.val();
-		console.log("MY SCOPE CARDS ARE", $scope.myHand);
+		//console.log("MY SCOPE CARDS ARE", $scope.myHand);
 	});
-
-	$scope.numPlayers;
-
-
 
 	/* ______________
 	|              |
@@ -106,41 +101,29 @@ angular.module('cardsAgainstHumanity')
 
 			switch (thisState) {
 
-
 				case 1:
-					console.log("IFFY IFFY LALALA")
-					GameService.pickCards();
+				  $scope.countDown();
 				//}
 				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
 				break;
 
 
 				case 2:
-				console.log("STATE 2")
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
-				console.log("!!!! VOTE !!!!")
+					console.log("STATE 2 VOTE !!!!!")
+					$scope.countDown();
 				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
 				break;
 
-
 				case 3:
 				console.log("!!!! POSTVOTE !!!!")
-				this.responseRef.remove();
-				this.votesRef.remove();
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
-
+				//responseRef.remove();
+				votesRef.remove();
+				//replenish used white card
 				gameStateRef.set(1)
-				//check if game won returns true...
+
 				break;
 			}
 
@@ -152,7 +135,7 @@ angular.module('cardsAgainstHumanity')
 	gameStateRef.on('value', function(snap) {
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
-			gameState(thisState);
+		gameState(thisState);
 	})
 
 
@@ -171,7 +154,6 @@ angular.module('cardsAgainstHumanity')
 	// Actual timer method, counts down every second, stops on zero.
 	$scope.countDown = function() {
 
-		console.log("COUNTER ", n)
 		if(n ===  0) {
 			$scope.$broadcast('timer-stopped', 0);
 			$timeout.cancel(mytimeout);
@@ -185,18 +167,12 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
-			//advance game to next state
-			// GameService.advanceGameState();
-			// gameState();
-			$scope.timerRef.remove();
-			GameService.advanceGameState();
-			gameState();
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
 				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: currentState,
+				confirmButtonText: 'GET GOIN!',
 			});
 		}
 	});
@@ -207,28 +183,29 @@ angular.module('cardsAgainstHumanity')
 	|______________|
 	*/	// Create array to store each player's info.
 
-	if (!localStorage.thisPlayer){
-		GameService.addPlayer();
-	}
+///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
+	GameService.addPlayer();
 
 	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length >= 3 ) {
+			if ($scope.playerss.length === 3 && $scope.playerss.length > 0 ) {
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
+				GameService.pickCards();
 				gameStateRef.set(1);
+			} else if ($scope.playerss.length < 3){
+				return;
+			} else {
+				///launch new game
 			}
 		});
 	});
 
 	//Update number of players when a player quits.
-	playersRef.on("child_removed", function() {
-		$timeout(function() {
-			console.log("PLAYER QUIT", playersRef)
-			$scope.numPlayers = $scope.playerss.length
-		});
+	playersRef.on("child_removed", function(snap) {
+		console.log("PLAYER QUIT", snap.val())
 	});
 
 	$scope.removePlayer = function(){
@@ -253,12 +230,10 @@ angular.module('cardsAgainstHumanity')
 		//$scope.voted = true;
 	}
 
-
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
 		console.log("TOKEN MASTER ", token)
 	}
-
 
 	$scope.addToResponseCards = function(cardClicked, index) {
 		GameService.addToResponseCards(cardClicked, index);
@@ -270,13 +245,11 @@ angular.module('cardsAgainstHumanity')
 	| Responses:   |
 	|______________| */
 
-
-
 	responseRef.on("value", function(snap) {
 		$scope.responses = snap.val();
 		var numResponses = snap.numChildren();
 		console.log(snap.val(), "OUTSIDE THE IF");
-		if (numResponses === $scope.playerss.length) {
+		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
 			gameStateRef.set(2);
 		}
@@ -295,7 +268,7 @@ angular.module('cardsAgainstHumanity')
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
 		//console.log(votesLength, "VOTES CHILDREN")
-		if (votesLength === $scope.playerss.length) {
+		if (votesLength === $scope.playerss.length && votesLength > 0) {
 			var votesCast = {};
 				for(var player in votes){
 					player = votes[player];
@@ -310,27 +283,34 @@ angular.module('cardsAgainstHumanity')
 				var prev = 0;
 				for (var player in votesCast){
 					if (votesCast[player] >= prev){
-						winner.push(player);
+						var person = {}
+						person.player = player;
+						person.points = votesCast[player];
+						winner.pop();
+						winner.push(person);
 						prev = votesCast[player];
 					}
 				}
-				winner.forEach(function(player){
+					console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
+					
+					winner.forEach(function(player){
+					var player = player.player;
 					console.log(player, "GETS A POINT !")
 					GameService.addWinPoint(player);
-					playersRef.child(player).on('value', function(snap){
-						var thisPlayer = snap.val()
-						swal({
-							type: "error",
-							title: "this round goes to",
-							text: thisPlayer.username,
-							showConfirmButton: true,
-							confirmButtonText: "sweet!",
-						});
-					})
+					// playersRef.child(player).on('value', function(snap){
+					// 	var thisPlayer = snap.val()
+					// 	swal({
+					// 		type: "error",
+					// 		title: "this round goes to",
+					// 		text: thisPlayer.username,
+					// 		showConfirmButton: true,
+					// 		confirmButtonText: "sweet!",
+					// 	});
+					//})
 				})
-			//gameStateRef.set(2);
 		}
 	});
+
 
 
 	/* ______________
@@ -339,7 +319,7 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 	thisGame.child('winner').on('value', function(snap){
-		var winner = snap.val().child('username')
+		var winner = snap.val().username
 		swal({
 				type: "error",
 				title: "And the winner is...",
