@@ -255,8 +255,10 @@ angular.module('cardsAgainstHumanity')
 	$scope.voteCard = function(card){
 		GameService.voteCard(card);
 		console.log("YOU voted for:", card)
-		$scope.voted = true;
+		//$scope.voted = true;
 	}
+
+	
 	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
 		console.log("TOKEN MASTER ", token)

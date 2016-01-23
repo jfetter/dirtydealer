@@ -53,13 +53,13 @@
 
   <!-- /* ______________
   |              |
-  |   Votes:     |
+  |   Responses  |
   |______________| */ -->
 
   <div class="blackVote container col-sm-3 col-md-3" id="responseDiv">
     <h1>Response</h1>
     <div ng-if="!voted" ng-repeat="response in responses track by $index">
-      <p class="whiteCard" ng-click="voteCard(response)"> {{response}} </p>
+      <p class="whiteCard" ng-click="voteCard(response)"> {{response.text}} </p>
     </div>
 
   </div>
