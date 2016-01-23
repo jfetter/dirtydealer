@@ -29,25 +29,11 @@ angular.module('cardsAgainstHumanity')
 		} else {return true}
 	}
 
-	/* ______________
-	|              |
-	| Card Dealing:|
-	|______________| */
-	// $scope.startDeck = function(){
-	// 	CardsService.startDeck();
-	// }
-	// $scope.dealBlackCard = function(){
-	// 	// $scope.blackCard = CardsService.dealBlackCard();
-	// 	// $scope.blackCard = $scope.scenarioCardRef
 
-	// }
-	// $scope.startingHand = function(){
-	// 	CardsService.startingHand();
-	// }
-	// $scope.draw = function(n){
-	// 	CardsService.draw(n);
-	// }
-
+	if($scope.isLoggedIn){
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies)
+	}
 
 	/* ______________
 	|              |
@@ -67,13 +53,6 @@ angular.module('cardsAgainstHumanity')
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
 	// $scope.blackCard = scenarioCardRef
-	
-	$scope.myHand = [];
-
-	myRef.child('cards').on('value', function(snap){
-		$scope.myHand = snap.val();
-		//console.log("MY SCOPE CARDS ARE", $scope.myHand);
-	});
 
 	/* ______________
 	|              |
@@ -81,23 +60,17 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 
-	if($scope.isLoggedIn){
-		var cookies = $cookies.get('token');
-		var token = jwtHelper.decodeToken(cookies)
-	}
-
-
 	var gameState = function(thisState) {
+
 			switch (thisState) {
 
 				case 1:
 				if ($scope.counter === 60){
 				  TimerService.countDown();
-				}else if ($scope.counter === 0){
+				}else if (!$scope.haveSubmitted){
 						// auto select a card to go to responses
 					}
 				//}
-				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
 				break;
 
@@ -105,10 +78,9 @@ angular.module('cardsAgainstHumanity')
 					console.log("STATE 2 VOTE !!!!!")
 					if($scope.counter === 60){
 						TimerService.countDown();
-					} else if ($scope.counter === 0){
+					} else if (!$scope.haveVoted){
 						// auto select a card to vote for
 					}
-				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
 				break;
@@ -198,8 +170,23 @@ angular.module('cardsAgainstHumanity')
 		$state.go("userPage");
 	}
 
+	/* ______________
+	|              |
+	| cards        |
+	|______________| */
+// maybe need to play around with child_added/ child_removed
+// to prevent re-deals?
 
+	$scope.myHand = [];
 
+	myRef.child('cards').on('value', function(snap){
+		$scope.myHand = snap.val();
+		//console.log("MY SCOPE CARDS ARE", $scope.myHand);
+	});
+
+	scenarioCardRef.on("value", function(snap) {
+		$scope.blackCard = snap.val();
+	});
 
 	/* ______________
 	|              |
@@ -212,11 +199,9 @@ angular.module('cardsAgainstHumanity')
 		console.log(snap.val(), "OUTSIDE THE IF");
 		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
+			$scope.haveSubmitted = true;
 			gameStateRef.set(2);
 		}
-	});
-	scenarioCardRef.on("value", function(snap) {
-		$scope.blackCard = snap.val();
 	});
 
 	/* ______________
@@ -225,6 +210,7 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 	votesRef.on("value", function(snap) {
+		$scope.haveVoted = true;
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
