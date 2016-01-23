@@ -3,7 +3,7 @@
 var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
-  API_URL: '/'
+  API_URL: 'https://dry-dawn-94066.herokuapp.com'
 });
 
 
