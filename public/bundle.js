@@ -1005,18 +1005,11 @@ angular.module('cardsAgainstHumanity')
 
 		var token = jwtHelper.decodeToken(cookies)
 
-
-		// var myId = JSON.parse(localStorage.player)
 		var myId = localStorage.player
 		var myHand = CardsService.startingHand();
-		var tempYourHand = [];
-		var gamePoints = 0;
-		console.log("MY ID", myId)
-		//var myHand = ["test3", "test4", "test5", "test6"]
 		this.playersRef.child(myId).update({
 			cards: myHand
 		});
-		console.log("picking a card")
 		return myHand;
 	}
 
@@ -1213,15 +1206,17 @@ angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
-
+	var currentState = '';
 
 	/* ______________
 	|              |
 	|  User Auth:  |
 	|______________| */
+	var myId	= ''
 	var cookies = $cookies.get('token');
 	if(cookies){
 		$scope.userInfo = (jwtHelper.decodeToken(cookies))
+		myId = $scope.userInfo._id;
 	}
 
 	UserService.isAuthed(cookies)
@@ -1268,11 +1263,17 @@ angular.module('cardsAgainstHumanity')
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	$scope.timerRef = TimerService.timerRef;
-
+	var myRef = playersRef.child(myId); 
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
+	var gameStateRef = GameService.gameStateRef;
 	// $scope.blackCard = scenarioCardRef
+	
 	$scope.myHand = [];
+
+	myRef.child('cards').on('value', function(snap){
+		$scope.myHand = snap.val();
+	});
 
 	$scope.numPlayers;
 
@@ -1282,7 +1283,7 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	|  States:     |
 	|______________| */
-	var currentState = '';
+
 
 	if($scope.isLoggedIn){
 		var cookies = $cookies.get('token');
@@ -1290,23 +1291,16 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-	var gameStateRef = GameService.gameStateRef;
-	//connect with firebase game states
-	gameStateRef.on('value', function(snap) {
-		currentState = snap.val();
-				gameState();
-		console.log("!!!!!game state ref!!!!!", currentState)
-	})
 
 
 
 	var gameWon = false; // link this to a node on firebase...
 
-	var gameState = function() {
+	var gameState = function(thisState) {
 		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
 		//send a deck of black cards and white to Firebase
-		console.log("in game state function")
-		var gameStates = ['prevote', 'vote', 'postvote'];
+		//console.log("in game state function")
+		//var gameStates = ['prevote', 'vote', 'postvote'];
 		var count = 0;
 		// console.log("in game state function")
 		// var gameStates = ['prevote', 'vote', 'postvote'];
@@ -1315,27 +1309,29 @@ angular.module('cardsAgainstHumanity')
 
 		if (gameWon === false){
 
-			switch ($scope.currentState) {
+			switch (thisState) {
 
 
 				case 1:
-				currentState = 1;
 
 				console.log('CURRENT STATE IS PREVOTE');
 				// CardsService.dealBlackCard();
 				console.log("IM REPLACING", GameService.gameInstance.child("scenarioCard"))
-				if(!GameService.gameInstance.child("scenarioCard")){
+				//if(!GameService.gameInstance.child("scenarioCard")){
+					console.log("IFFY IFFY LALALA")
 					CardsService.dealBlackCard();
-				}
+					GameService.pickCards();
+				//}
 				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
-				if (!$scope.counter){
-					$scope.countDown();
-				}
+				// if (!$scope.counter){
+				// 	$scope.countDown();
+				// }
 				break;
 
 
 				case 2:
+				console.log("STATE 2")
 				// if (!$scope.counter){
 				// 	$scope.countDown();
 				// }
@@ -1364,6 +1360,13 @@ angular.module('cardsAgainstHumanity')
 		// break;
 	}
 
+
+	//connect with firebase game states
+	gameStateRef.on('value', function(snap) {
+		var thisState = snap.val();
+				gameState(thisState);
+		console.log("!!!!!game state ref!!!!!", currentState)
+	})
 
 	/* ______________
 	|              |
@@ -1404,7 +1407,7 @@ angular.module('cardsAgainstHumanity')
 				title: "Uh-Oh!",
 				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: $scope.currentState,
+				confirmButtonText: currentState,
 			});
 		}
 	});
@@ -1424,10 +1427,10 @@ angular.module('cardsAgainstHumanity')
 		$timeout(function() {
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length >= 3 ) {
-				currentState = 1;
 				CardsService.startDeck();
+				gameState(1);
 				// CardsService.dealBlackCard();
-				$scope.myHand = GameService.pickCards();
+
 			}
 		});
 	});
@@ -1468,7 +1471,7 @@ angular.module('cardsAgainstHumanity')
 
 
 	$scope.addToResponseCards = function(cardClicked, index) {
-		$scope.myHand = GameService.addToResponseCards(cardClicked, index);
+		GameService.addToResponseCards(cardClicked, index);
 	}
 
 
@@ -1476,10 +1479,11 @@ angular.module('cardsAgainstHumanity')
 
 	responseRef.on("value", function(snap) {
 		$scope.responses = snap.val();
+		var numResponses = snap.numChildren();
 		console.log(snap.val(), "OUTSIDE THE IF");
-		if ($scope.responses.length === $scope.playerss.length) {
+		if (numResponses === $scope.playerss.length) {
 			console.log(snap.val(), "INSIDE");
-			gameState = 2;
+			currentState = 2;
 		}
 	});
 	scenarioCardRef.on("value", function(snap) {

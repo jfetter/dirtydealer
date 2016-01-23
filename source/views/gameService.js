@@ -53,18 +53,11 @@ angular.module('cardsAgainstHumanity')
 
 		var token = jwtHelper.decodeToken(cookies)
 
-
-		// var myId = JSON.parse(localStorage.player)
 		var myId = localStorage.player
 		var myHand = CardsService.startingHand();
-		var tempYourHand = [];
-		var gamePoints = 0;
-		console.log("MY ID", myId)
-		//var myHand = ["test3", "test4", "test5", "test6"]
 		this.playersRef.child(myId).update({
 			cards: myHand
 		});
-		console.log("picking a card")
 		return myHand;
 	}
 
