@@ -128,7 +128,6 @@ angular.module('cardsAgainstHumanity')
 				// if (!$scope.counter){
 				// 	$scope.countDown();
 				// }
-
 				console.log("!!!! VOTE !!!!")
 				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
@@ -277,7 +276,7 @@ angular.module('cardsAgainstHumanity')
 		console.log(snap.val(), "OUTSIDE THE IF");
 		if (numResponses === $scope.playerss.length) {
 			console.log(snap.val(), "INSIDE");
-			currentState = 2;
+			gameStateRef.set(2);
 		}
 	});
 	scenarioCardRef.on("value", function(snap) {

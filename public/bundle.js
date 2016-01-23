@@ -1121,6 +1121,14 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
@@ -1323,7 +1331,6 @@ angular.module('cardsAgainstHumanity')
 				// if (!$scope.counter){
 				// 	$scope.countDown();
 				// }
-
 				console.log("!!!! VOTE !!!!")
 				// ng-show="currentState === vote"
 				// ng-show all the cards that are submitted for voting
@@ -1472,7 +1479,7 @@ angular.module('cardsAgainstHumanity')
 		console.log(snap.val(), "OUTSIDE THE IF");
 		if (numResponses === $scope.playerss.length) {
 			console.log(snap.val(), "INSIDE");
-			currentState = 2;
+			gameStateRef.set(2);
 		}
 	});
 	scenarioCardRef.on("value", function(snap) {
@@ -1518,14 +1525,6 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -1552,39 +1551,6 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
 });
 
 'use strict';
@@ -1661,4 +1627,37 @@ angular.module('cardsAgainstHumanity')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
 });
