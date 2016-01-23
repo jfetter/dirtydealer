@@ -11,6 +11,7 @@ var addsrc = require('gulp-add-src');
 gulp.task('default', ['build', 'watch'])
 
 gulp.task('watch', function() {
+	// var stream = gulp.src(paths.sitesass + '/**/*.scss')
 	gulp.watch('source/**/*', ['build']);
 });
 
