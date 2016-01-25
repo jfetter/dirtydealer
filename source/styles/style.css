@@ -203,9 +203,15 @@ h1, p, .navbar, div, button, .modal, li, a {
 |  GameBoard:    |
 |________________| */
 #gameBoard {
-  background-color: #2FFFB6;
+  background-color: #7CFFCD;
+  border: 15px solid black;
 }
 
+#quitGameButton {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* ______________
 |                |
@@ -217,6 +223,8 @@ h1, p, .navbar, div, button, .modal, li, a {
   margin-right: auto;
   margin-bottom: 20px;
   text-align: center;
+  border: 3px solid black;
+  padding-bottom: 15px;
 }
 
 #playerMessageName {
@@ -235,6 +243,7 @@ h1, p, .navbar, div, button, .modal, li, a {
   margin-bottom: 20px;
   margin-top: 20px;
   text-align: center;
+  border: 3px solid black;
 }
 
 /* ______________
@@ -307,8 +316,8 @@ h1, p, .navbar, div, button, .modal, li, a {
 .whiteCard{
   color: black;
   border: 1px solid black;
-  height: 200px;
-  width: 150px;
+  height: 150px;
+  width: 100px;
   display: inline-block;
   float: left;
   text-align: center;

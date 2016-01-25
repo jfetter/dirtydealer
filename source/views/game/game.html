@@ -1,8 +1,8 @@
 <div class="container col-xs-12" ng-if="isLoggedIn" id="gameBoard">
 
   <div class="row" id="waitingDiv">
-    <div ng-hide="{{ 3 - playerss.length}} === true" class="col-sm-12">
-      <h1>Waiting for {{ 3 - playerss.length}} players!</h1>
+    <div ng-hide="{{ 3 - playerss.length}} === 0" class="col-sm-12">
+      <h1>Waiting for {{ 3 - playerss.length }} players!</h1>
       <br>
     </div>
   </div>
@@ -75,8 +75,17 @@
   <div class="container col-sm-3 col-md-3" id="leaderBoardDiv">
     <h1>Scoreboard</h1>
     <div class="row" ng-repeat="player in playerss track by $index">
-      <div class="col-sm-12">
+      <div class="col-sm-6">
+        <div class="row">
+          <h4>PLAYER</h4>
+        </div>
         <p> {{player.username}} / {{player.points}}</p>
+      </div>
+      <div class="col-sm-6">
+        <div class="row">
+          <h4>POINTS</h4>
+        </div>
+        <!-- <p> {{player.username}} / {{player.points}}</p> -->
       </div>
     </div>
   </div>
@@ -104,10 +113,10 @@
 <button ng-click="startingHand()">Get hand (working)</button>
 <button ng-click="draw()">Draw a card(working)</button>
 <button ng-click="sayName()">Get user's namec</button>
-</div> --> -->
+</div> -->
 
 
-<button ng-click="removePlayer()">Quit Game</button>
+<button ng-click="removePlayer()" class="btn btn-info" id="quitGameButton">Quit Game</button>
 
 <!-- <div> -->
 
