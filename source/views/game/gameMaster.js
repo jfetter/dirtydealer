@@ -94,7 +94,7 @@ angular.module('cardsAgainstHumanity')
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
 				responseRef.remove();
-				//replenish used white card
+				$scope.addToResponseCards();
 				gameStateRef.set(1)
 
 				break;
