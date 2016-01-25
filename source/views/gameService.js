@@ -21,7 +21,6 @@ angular.module('cardsAgainstHumanity')
 	var voteRef = this.voteRef
 	this.votes = $firebaseArray(voteRef);
 
-
 	///Add game state to firebase
 	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
@@ -42,13 +41,11 @@ angular.module('cardsAgainstHumanity')
 
 	//remove players
 	this.removePlayer = function(){
-		// var player = JSON.parse(localStorage.player);
-		var player = localStorage.player;
-		console.log("player to remove", player);
-		playersRef.child(player).remove();
-		console.log("players before remove", this.playerss)
-		localStorage.removeItem("player");
-		console.log("players after remove", this.playerss)
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+
+		playersRef.child(myId).remove();
+		console.log("PLAYER QUIT", myId)
 	}
 
 	this.identifyPlayer = function(){
@@ -72,7 +69,6 @@ angular.module('cardsAgainstHumanity')
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
-		var gamePoints = 0;
 		var cards = ["testA", "testB"];
 
 		//set player data in firebase
@@ -80,37 +76,18 @@ angular.module('cardsAgainstHumanity')
 			playerId: myInfo._id,
 			username: myInfo.username,
 			cards: cards,
-			gamePoints: gamePoints
-		});
-	}
-
-	this.updatePlayerAfterVote = function(){
-		// find player in player array
-		if (player.votes > highestVotes){
-			//increment this players points key
-		}
-		// restockHand(n); where n = number of cards to replace in hand
-		console.log("player should have new cards and new point total now")
-	}
-
-	this.addMessage = function(message, player) {
-		if(!message) return;
-
-		var cookies = $cookies.get('token');
-		var token = jwtHelper.decodeToken(cookies);
-		console.log(message, "MESSAGE I TYPE WHOO");
-
-		var myId = localStorage.player;
-		var thisPlayer = token._id;
-
-		this.messages.$add({
-			text: message,
-			username: token.username,
-			timestamp: Date.now()
+			gamePoints: 0
 		});
 	}
 
 
+
+	/* ______________
+	|              |
+	| cards        |
+	|______________| */
+
+	//submit response card (game state 1)
 	this.addToResponseCards = function(cardClicked, index) {
 			var myInfo = this.identifyPlayer()
 			var myId = myInfo._id
@@ -131,7 +108,7 @@ angular.module('cardsAgainstHumanity')
 			return tempHand
 	}
 
-
+	//vote for a card (game state 2)
 	this.voteCard = function(card){
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
@@ -140,5 +117,92 @@ angular.module('cardsAgainstHumanity')
 		this.votes.$add(player);
 	}
 
+	//deal a new white card for the player (game state 3)
+		this.updatePlayerAfterVote = function(){
+		// find player in player array
+		if (player.votes > highestVotes){
+			//increment this players points key
+		}
+		// restockHand(n); where n = number of cards to replace in hand
+		console.log("player should have new cards and new point total now")
+	}
+
+	/* ______________
+	|              |
+	| win points   |
+	|______________| */
+
+	// if you won the round add a point to your score (game state 2)
+	this.addWinPoint = function(player){
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		var myRef = playersRef.child(myId);
+		//only add points once per player
+		if (player === myId){
+			var myPoints;
+			myRef.on('value', function(snap) {
+				myPoints = snap.val().gamePoints;
+			})
+				var myNewPoints = myPoints + 1;
+
+				//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
+				myRef.update({temp: "temp"});
+				myRef.child('temp').remove();
+
+				myRef.child('gamePoints').set(myNewPoints)
+				if (myNewPoints >= 10){
+					console.log('we have a winner')
+					this.gameInstance.child('winner').set(player);
+					updateMongoWins(player, myId);
+				}
+				playersRef.child(player).update({gamePoints: myNewPoints})
+				console.log(player, 'got a win point');
+						// this code is not tested and not finished !!!!!
+				gameStateRef.set(3)
+	}
+	return;
+}
+
+		/* ______________
+	|              |
+	| update MONGO |
+	|______________| */
+
+		function updateMongoWins(winner, me){
+			console.log("set up route etc to add win point to mongo")
+			var winner = snap.val();
+			if (winner = myInfo._id){
+				//$http.put("/dirtyWin", {id: winner})
+				//.then(function (res){
+					// console.log(res);
+					//}, function(err){
+				//console.log(err)
+				//})
+			}
+		}
+
+
+
+		/* ______________
+	|              |
+	| messages     |
+	|______________| */
+
+	this.addMessage = function(message, player) {
+		if(!message) return;
+
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies);
+		console.log(message, "MESSAGE I TYPE WHOO");
+
+		var myId = localStorage.player;
+		var thisPlayer = token._id;
+
+		this.messages.$add({
+			text: message,
+			username: token.username,
+			timestamp: Date.now()
+		});
+	}
 
 });

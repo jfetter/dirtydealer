@@ -20,9 +20,9 @@
     <div class="blackVote container col-sm-3 col-md-3" id="blackCardDiv">
       <h1>Black Card</h1>
       <div class="blackCard"> {{blackCard.text}}
-         <!-- <br>
-         Pick: {{blackCard.pick}} -->
-       </div>
+        <!-- <br>
+        Pick: {{blackCard.pick}} -->
+      </div>
     </div>
 
 
@@ -72,47 +72,38 @@
   | Leaderboard: |
   |______________| */ -->
 
+  <!-- MAKE THIS A TABLE -->
   <div class="container col-sm-3 col-md-3" id="leaderBoardDiv">
-    <h1>Scoreboard</h1>
+    <h2>Scoreboard</h2>
     <div class="row" ng-repeat="player in playerss track by $index">
-      <div class="col-sm-6">
-        <div class="row">
-          <h4>PLAYER</h4>
-        </div>
-        <p> {{player.username}} / {{player.points}}</p>
+      <div class="col-sm-12">
+        <p> player: {{player.username}} HAS points: {{player.gamePoints}}</p>
       </div>
-      <div class="col-sm-6">
-        <div class="row">
-          <h4>POINTS</h4>
-        </div>
-        <!-- <p> {{player.username}} / {{player.points}}</p> -->
-      </div>
+    </div>
+
+  </div>
+
+  <!-- /* ______________
+  |              |
+  |   White Deck:|
+  |______________| */ -->
+
+  <div class="container" id="whiteCardDiv">
+    <h2>Your Deck of Whites</h2>
+    <div ng-repeat="card in myHand track by $index">
+      <div ng-click="addToResponseCards(card, $index)" class="whiteCard"
+      >{{card}}</div>
     </div>
   </div>
 
-</div>
-
-<!-- /* ______________
-|              |
-|   White Deck:|
-|______________| */ -->
-
-<div class="container" id="whiteCardDiv">
-  <h2>Your Deck of Whites</h2>
-  <div ng-repeat="card in myHand track by $index">
-    <div ng-click="addToResponseCards(card, $index)" class="whiteCard"
-    >{{card}}</div>
-  </div>
-</div>
-
-<!-- </div>
+  <!-- </div>
 
 
-<button ng-click="startDeck()">Start Deck (working)</button>
-<button ng-click="dealBlackCard()">Deal Black Card (working)</button>
-<button ng-click="startingHand()">Get hand (working)</button>
-<button ng-click="draw()">Draw a card(working)</button>
-<button ng-click="sayName()">Get user's namec</button>
+  <button ng-click="startDeck()">Start Deck (working)</button>
+  <button ng-click="dealBlackCard()">Deal Black Card (working)</button>
+  <button ng-click="startingHand()">Get hand (working)</button>
+  <button ng-click="draw()">Draw a card(working)</button>
+  <button ng-click="sayName()">Get user's namec</button>
 </div> -->
 
 
@@ -131,9 +122,5 @@
 <div class="row" ng-if="game.data.state === 'postvote'">
 
 </div>
-
-<div class="row" ng-if="game.data.state === 'win'">
-
-
-
-</div> -->
+<button ng-click="removePlayer()">Quit Game</button>
+</div>

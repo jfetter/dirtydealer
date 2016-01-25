@@ -5,23 +5,24 @@ angular.module('cardsAgainstHumanity')
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
-	//var counter = 60;
-	//this.mytimeout = null;
+	var timerRef = this.timerRef; 
+	var counter = 61;
+	var mytimeout = null;
 
+		var countDown = function(){
+			console.log("IN COUNTDOWN FUnCTION", counter)
+			if(counter ===  0) {
+			$rootScope.$broadcast('timer-stopped', 0);
+			$timeout.cancel(mytimeout);
+			return;
+		}
+		counter--;
+		timerRef.set(counter);
+		mytimeout = $timeout(countDown, 1000);
+		}
 
-	this.countDown = function(counter){
-		console.log("REMAINING SECONDS", counter)
-		this.timerRef.set(counter);
-	};
-
-
-
-
-	// 	this.timerRef.on('value', function(snap){
-	// 	console.log(snap)
-	// 	var counter = snap --
-	// 	this.timerRef.set(counter);
-	// 	return snap;
-	// })
+	this.countDown = function(){
+		countDown();
+		};
 
 })
