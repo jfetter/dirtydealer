@@ -61,11 +61,11 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   })
 
   $scope.logout = function(){
+    GameService.removePlayer();
     $cookies.remove('token');
     if (localStorage.playing){localStorage.removeItem('player')}
     $state.go('login')
     $scope.isLoggedIn = false;
-    GameService.removePlayer();
   }
   $scope.goHome = function(){
     var username = $scope.userInfo.username
@@ -350,14 +350,14 @@ pick: 1
 text: "What's my anti-drug?",
 pick: 1
 },
-{
-text: "And the Academy Award for _ goes to _.",
-pick: 2
-},
-{
-text: "For my next trick, I will pull _ out of _.",
-pick: 2
-},
+// {
+// text: "And the Academy Award for _ goes to _.",
+// pick: 2
+// },
+// {
+// text: "For my next trick, I will pull _ out of _.",
+// pick: 2
+// },
 {
 text: "_: Good to the last drop.",
 pick: 1
@@ -374,50 +374,50 @@ pick: 1
 text: "What gets better with age?",
 pick: 1
 },
-{
-text: "I never truly understood _ until I encountered _.",
-pick: 2
-},
-{
-text: "Rumor has it that Vladimir Putin's favorite delicacy is _ stuffed with _.",
-pick: 2
-},
-{
-text: "Lifetime&reg; presents _, the story of _.",
-pick: 2
-},
-{
-text: "Make a haiku.",
-pick: 3
-},
-{
-text: "In M. Night Shyamalan's new movie, Bruce Willis discovers that _ had really been _ all along.",
-pick: 2
-},
-{
-text: "_ is a slippery slope that leads to _.",
-pick: 2
-},
-{
-text: "In a world ravaged by _, our only solace is _.",
-pick: 2
-},
-{
-text: "That's right, I killed _. How, you ask? _.",
-pick: 2
-},
-{
-text: "When I was tripping on acid, _ turned into _.",
-pick: 2
-},
-{
-text: "_ + _ = _.",
-pick: 3
-},
-{
-text: "What's the next superhero/sidekick duo?",
-pick: 2
-},
+// {
+// text: "I never truly understood _ until I encountered _.",
+// pick: 2
+// },
+// {
+// text: "Rumor has it that Vladimir Putin's favorite delicacy is _ stuffed with _.",
+// pick: 2
+// },
+// {
+// text: "Lifetime&reg; presents _, the story of _.",
+// pick: 2
+// },
+// {
+// text: "Make a haiku.",
+// pick: 3
+// },
+// {
+// text: "In M. Night Shyamalan's new movie, Bruce Willis discovers that _ had really been _ all along.",
+// pick: 2
+// },
+// {
+// text: "_ is a slippery slope that leads to _.",
+// pick: 2
+// },
+// {
+// text: "In a world ravaged by _, our only solace is _.",
+// pick: 2
+// },
+// {
+// text: "That's right, I killed _. How, you ask? _.",
+// pick: 2
+// },
+// {
+// text: "When I was tripping on acid, _ turned into _.",
+// pick: 2
+// },
+// {
+// text: "_ + _ = _.",
+// pick: 3
+// },
+// {
+// text: "What's the next superhero/sidekick duo?",
+// pick: 2
+// },
 {
 text: "Dear Abby,<br><br>I'm having some trouble with _ and would like your advice.",
 pick: 1
@@ -442,10 +442,10 @@ pick: 1
 text: "Next on ESPN2, the World Series of _.",
 pick: 1
 },
-{
-text: "Step 1: _. Step 2: _. Step 3: Profit.",
-pick: 2
-},
+// {
+// text: "Step 1: _. Step 2: _. Step 3: Profit.",
+// pick: 2
+// },
 {
 text: "Here is the church<br>Here is the steeple<br>Open the doors<br>And there is _.",
 pick: 1
@@ -1591,6 +1591,37 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+
+			console.log('res', res.data)
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){
@@ -1619,37 +1650,6 @@ angular.module('cardsAgainstHumanity')
 			console.log(err);
 		});
 	}
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-
-			console.log('res', res.data)
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
 });
 
 'use strict';
