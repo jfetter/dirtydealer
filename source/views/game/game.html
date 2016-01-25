@@ -1,14 +1,16 @@
 <div class="container col-xs-12" ng-if="isLoggedIn" id="gameBoard">
 
   <div class="row" id="waitingDiv">
-    <div ng-hide="{{ 3 - playerss.length}} === true" class="col-sm-8">
-      <h1>Waiting for {{ 3 - playerss.length}} players!</h1>
+    <div class="col-sm-8">
+      <h1 ng-show="!currentState">Waiting for {{ 3 - playerss.length}} more to join!</h1>
       <br>
     </div>
   </div>
 
   <div class="row" id="counter">
+    <h1 ng-hide="!currentState"> Time Until Next Round <br>
     {{counter}}
+    </h1>
   </div>
 
 
@@ -18,8 +20,10 @@
   |______________| */ -->
   <div class="row">
   <div class="blackVote container col-sm-3 col-md-3" id="blackCardDiv">
-    <h1>Black Card</h1>
-    <div class="blackCard"> {{blackCard.text}} <br> Pick: {{blackCard.pick}}</div>
+    <h1>Scenario Card</h1>
+    <div class="blackCard"> 
+      <span ng-hide="!currentState">{{blackCard.text}} <br> Pick: {{blackCard.pick}}</span>
+    </div>
   </div>
 
 
@@ -56,10 +60,10 @@
   |   Responses  |
   |______________| */ -->
 
-  <div class="blackVote container col-sm-3 col-md-3" id="responseDiv">
-    <h1>Response</h1>
-    <div ng-if="!voted" ng-repeat="response in responses track by $index">
-      <p class="whiteCard" ng-click="voteCard(response)"> {{response.text}} </p>
+  <div  ng-hide="!currentState" class="blackVote container col-sm-3 col-md-3" id="responseDiv">
+    <h1>Responses</h1>
+    <div ng-repeat="response in responses track by $index">
+      <p class="whiteCard" ng-click="voteCard(response)"><span ng-show="currentState === 2">{{response.text}} </span> </p>
     </div>
 
   </div>
@@ -71,12 +75,12 @@
 |______________| */ -->
 
 
-<!-- MAKE THIS A TABLE -->
+
 <div class="container col-sm-3 col-md-3" id="leaderBoardDiv">
   <h2>Leaderboard</h2>
   <div class="row" ng-repeat="player in playerss track by $index">
     <div class="col-sm-12">
-      <p> player: {{player.username}} HAS points: {{player.gamePoints}}</p>
+      <p> player: {{player.username}} points: {{player.gamePoints}}  </p>
     </div>
   </div>
 </div>
@@ -84,18 +88,22 @@
 
 <!-- /* ______________
 |              |
-|   White Deck:|
+|   Your Hand: |
 |______________| */ -->
 
-<div class="container" id="whiteCardDiv">
-  <h2>Your Deck of Whites</h2>
-  <div ng-repeat="card in myHand track by $index">
+<div ng-hide="!currentState" class="container" id="whiteCardDiv">
+  <h2>Your Hand</h2>
+  <div  ng-repeat="card in myHand track by $index">
     <div ng-click="addToResponseCards(card, $index)" class="whiteCard"
     >{{card}}</div>
   </div>
 </div>
 
- <button ng-click="removePlayer()">Quit Game</button>
+  <div class="row">
+    <div class="col-sm-12">
+     <button ng-click="removePlayer()">Quit Game</button>
+    </div>
+  </div>
 </div>
 
 

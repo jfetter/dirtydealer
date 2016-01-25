@@ -1067,6 +1067,7 @@ angular.module('cardsAgainstHumanity')
 		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
 		var player = card.player;
 		this.votes.$add(player);
+		$rootScope.voted = false;
 	}
 
 	//deal a new white card for the player (game state 3)
@@ -1271,6 +1272,11 @@ angular.module('cardsAgainstHumanity')
 		var token = jwtHelper.decodeToken(cookies)
 	}
 
+		$scope.sayName = function(){
+		var token = jwtHelper.decodeToken(cookies)
+		console.log("TOKEN MASTER ", token)
+	}
+
 	/* ______________
 	|              |
 	| Firebase:    |
@@ -1334,7 +1340,6 @@ angular.module('cardsAgainstHumanity')
 		} 
 
 
-
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
@@ -1362,7 +1367,7 @@ angular.module('cardsAgainstHumanity')
 				title: "Uh-Oh!",
 				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: 'GET GOIN ! ',
+				confirmButtonText: "GET GOIN' ",
 			});
 			remaining = false;
 			$scope.counter = 60;
@@ -1382,7 +1387,7 @@ angular.module('cardsAgainstHumanity')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && $scope.playerss.length > 0 ) {
+			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
@@ -1396,8 +1401,8 @@ angular.module('cardsAgainstHumanity')
 		});
 	});
 
-	//Update number of players when a player quits.
 	playersRef.on("child_removed", function(snap) {
+	//Update number of players when a player quits?
 		console.log("PLAYER QUIT", snap.val())
 	});
 
@@ -1444,6 +1449,42 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| Votes:   		 |
 	|______________| */
+
+
+
+
+	$scope.voteCard = function(card){
+		if ($rootScope.voted || $scope.currentState !== 2){
+			console.log("YOU ALREADY VOTED")
+			return;
+		}
+			console.log("IN VOTECARD", card)
+		// votesRef.on("child_added", function(snap){
+			// var card = snap.val();
+			// console.log("CARD ",card);
+			// console.log("my ID", myId);
+			if (card.player === myId){
+				console.log('YOU CANNOT VOTE FOR YOURSELF');
+				votesRef.child(myId).remove();			
+						swal({
+					type: "error",
+					title: "Wow, someone thinks they're special",
+					text: "Choose someone else's response",
+					showConfirmButton: true,
+					confirmButtonText: "Choose Again",
+				 });
+			} else {
+				$rootScope.voted = true;
+				GameService.voteCard(card);
+			}
+		// })
+		//console.log("YOU voted for:", card)
+		//$rootScope.voted = true;
+	}
+
+	$scope.addToResponseCards = function(cardClicked, index) {
+		GameService.addToResponseCards(cardClicked, index);
+	}
 
 	votesRef.on("value", function(snap) {
 		$scope.haveVoted = true;
@@ -1527,20 +1568,6 @@ angular.module('cardsAgainstHumanity')
 		// $scope.newMessageText = "";
 	}
 
-	$scope.voteCard = function(card){
-		GameService.voteCard(card);
-		console.log("YOU voted for:", card)
-		//$scope.voted = true;
-	}
-
-	$scope.sayName = function(){
-		var token = jwtHelper.decodeToken(cookies)
-		console.log("TOKEN MASTER ", token)
-	}
-
-	$scope.addToResponseCards = function(cardClicked, index) {
-		GameService.addToResponseCards(cardClicked, index);
-	}
 
 
 });
