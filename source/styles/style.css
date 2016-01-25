@@ -1,0 +1,382 @@
+/* ______________
+|              |
+|  Messages:   |
+|______________| */
+
+#messageContainer {
+  text-align: center;
+}
+
+#playerMessageName {
+  color: lightblue;
+  font-size: 30px;
+}
+
+#messageSent {
+  color: darkblue;
+}
+
+#addMessageInput {
+  text-align: center;
+}
+
+/* ______________
+|              |
+|  Profile:    |
+|______________| */
+
+#userHeader {
+  text-align: center;
+  font-size: 35px;
+  color: lightblue;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background-color: black;
+  margin-left: 80px;
+  width: 1100px;
+}
+
+#mainProfileContainer {
+  margin-right: 50px;
+  margin-left: 50px;
+  text-align: center;
+  border: 5px solid black;
+}
+
+/* ______________
+|              |
+|  Navbar:     |
+|______________| */
+
+a.navbar-brand {
+  font-size: 30px;
+  color: white;
+}
+
+
+/* ______________
+|              |
+|  Shared:     |
+|______________| */
+
+h1, p, .navbar, div, button, .modal, li, a {
+  font-family: 'Righteous', cursive;
+}
+
+#backgroundGif {
+  z-index: -9999;
+  background-size: cover;
+  position: absolute;
+  display: block;
+  width: 1250px;
+  height: 710px;
+}
+
+#backgroundHomeGif {
+  z-index: -9999;
+  background-size: cover;
+  position: absolute;
+  display: block;
+  width: 1250px;
+  height: 710px;
+  margin-left: 15px;
+}
+
+
+/* ______________
+|              |
+|  LoginPage:  |
+|______________| */
+
+#loginHolder {
+  z-index: 5000;
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+}
+
+#loginPageContainer {
+  width: 100%;
+  height: 100%;
+}
+
+#loginTitle {
+  text-align: center;
+}
+
+#login {
+  margin-top: 20px;
+  margin-left: 140px;
+}
+
+#homeLabel {
+  font-size: 20px;
+}
+
+/* ______________
+|                |
+|  RegisterPage: |
+|________________| */
+
+#registerHolder {
+  z-index: 5000;
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+}
+
+#registerPageContainer {
+  width: 100%;
+  height: 100%;
+}
+
+#registerTitle {
+  text-align: center;
+}
+
+#register {
+  margin-top: 20px;
+  margin-left: 140px;
+}
+
+/* ______________
+|                |
+|  GameBoard:    |
+|________________| */
+#gameBoard {
+  background-color: lightblue;
+}
+
+
+/* ______________
+|                |
+|  Messages:     |
+|________________| */
+
+#messageDiv {
+  margin-right: auto;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ______________
+|                |
+|  LeaderBoard:  |
+|________________| */
+
+#leaderBoardDiv {
+  margin-right: auto;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ______________
+|                |
+|  Waiting:      |
+|________________| */
+
+#waitingDiv {
+  margin-left: auto;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* ______________
+|                |
+|  Black Card:   |
+|________________| */
+
+#blackCardDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* ______________
+|                |
+|  Response:     |
+|________________| */
+
+#responseDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+/* ______________
+|                |
+|  White Deck:   |
+|________________| */
+
+#whiteCardDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#counter {
+  text-align: center;
+  font-size: 40px;
+}
+
+
+
+
+#userImage {
+  max-height: 50vh;
+  max-width: 50vh;
+}
+.blackVote{
+  display: inline-block;
+}
+.whiteCard{
+  color: black;
+  border: 1px solid black;
+  height: 250px;
+  width: 200px;
+  display: inline-block;
+  float: left;
+}
+.blackCard{
+  color: white;
+  border: 1px solid black;
+  background-color: black;
+  height: 250px;
+  width: 200px;
+  display: inline-block;
+}
+.userThumbnail {
+  max-height: 8vh;
+  max-width: 8vh;
+  border-radius: 7px;
+}
+
+#profile {
+  text-align: center;
+  font-size: 15px;
+  border: 5px, solid-red;
+}
+
+
+
+#profileHeader {
+  font-size: 15px;
+  color: lightblue;
+  text-align: left;
+}
+
+#profileDetails {
+  font-size: 20px;
+  text-align: left;
+}
+
+#favoritesHeader {
+  text-align: center;
+  font-size: 35px;
+  color: lightblue;
+  font-weight: bold;
+}
+
+#favoriteImage {
+  max-height: 25vh;
+  max-width: 25vh;
+  padding: 5px;
+}
+
+#unfavoriteButton {
+  padding: 5px;
+}
+
+.thumbnail {
+  margin: 2px 20px 0 0;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  background: red;
+  cursor: inherit;
+  display: block;
+}
+
+input[readonly] {
+  background-color: white !important;
+  cursor: text !important;
+}
+#user-list-container{
+  border:1px solid #313131;
+
+}
+
+.userListProfilePicDiv{
+  border-right: 1px solid #d3d3d3;
+  margin-top: 3vh;
+  text-align: center;
+}
+
+.userList-titleHeader, .userList-titleSearch{
+  text-align: center;
+  margin: 0px auto;
+  display; block;
+}
+
+.userList-EmailAndName{
+  margin-top: 4vh;
+}
+
+.userListInfoContainer{
+  min-height: 20vh;
+}
+.userContainer{
+  border: 1px solid #d3d3d3;
+  min-height: 20vh;
+}
+
+.userContainer:hover{
+  background-color: #d3d3d3
+}
+
+
+.userContainer{
+  border:1px solid #d3d3d3;
+  border-bottom: none;
+}
+
+.userContainer{
+  border:1px solid #d3d3d3;
+  border-bottom: 1px solid  #d3d3d3;
+}
+#userList-favoriteButton{
+  margin-top: 6vh;
+  margin-right: 10px;
+}
+
+
+#home-link, #logout{
+  cursor: pointer;
+}
+
+#userList-unFavoriteButton{
+  margin-top: 6vh;
+  margin-right: 10px;
+}

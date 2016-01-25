@@ -1,0 +1,11 @@
+<div class="container" id="loginPageContainer">
+  <img src="https://media.giphy.com/media/2c266ALbOp692/giphy.gif" alt="homepage image" id="backgroundGif">
+  <h1 id="loginTitle">Login</h1>
+  <div class="form-group" id="loginHolder">
+    <label id="homeLabel" for="username">Username:</label>
+    <input ng-model='user.username' type="text" id='username' class="form-control">
+    <label id="homeLabel" for="password">Password:</label>
+    <input ng-model='user.password' type="password" id='password' class="form-control">
+    <button ng-click='submit(user)' class="btn btn-primary" id="login">Login</button>
+  </div>
+</div>

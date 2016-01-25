@@ -1,0 +1,13 @@
+<div class="container" id="registerPageContainer">
+  <img src="https://media.giphy.com/media/2c266ALbOp692/giphy.gif" alt="homepage image" id="backgroundGif">
+  <h1 id="registerTitle">Register</h1>
+  <div class="form-group" id="registerHolder">
+    <label id="homeLabel" for="username">Username:</label>
+    <input ng-model='user.username' type="text" id='username' class="form-control">
+    <label id="homeLabel" for="password">Password:</label>
+    <input ng-model='user.password' type="password" id='password' class="form-control">
+    <label id="homeLabel" for="password2">Confirm Password:</label>
+    <input ng-model='user.password2' type="password" id='password2' class="form-control">
+    <button ng-click='submit(user)' class="btn btn-primary" id="register">Register</button>
+  </div>
+</div>
