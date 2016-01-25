@@ -115,6 +115,7 @@ angular.module('cardsAgainstHumanity')
 		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
 		var player = card.player;
 		this.votes.$add(player);
+		$rootScope.voted = false;
 	}
 
 	//deal a new white card for the player (game state 3)
