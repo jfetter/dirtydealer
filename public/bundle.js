@@ -1308,7 +1308,7 @@ angular.module('cardsAgainstHumanity')
 
 				case 1:
 				if ($scope.counter === 60){
-				  TimerService.countDown();
+				  //TimerService.countDown();
 				}else if (!$scope.haveSubmitted){
 						// auto select a card to go to responses
 					}
@@ -1319,7 +1319,7 @@ angular.module('cardsAgainstHumanity')
 				case 2:
 					console.log("STATE 2 VOTE !!!!!")
 					if($scope.counter === 60){
-						TimerService.countDown();
+						//TimerService.countDown();
 					} else if (!$scope.haveVoted){
 						// auto select a card to vote for
 					}
@@ -1610,6 +1610,14 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -1670,14 +1678,6 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 

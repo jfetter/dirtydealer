@@ -71,7 +71,7 @@ angular.module('cardsAgainstHumanity')
 
 				case 1:
 				if ($scope.counter === 60){
-				  TimerService.countDown();
+				  //TimerService.countDown();
 				}else if (!$scope.haveSubmitted){
 						// auto select a card to go to responses
 					}
@@ -82,7 +82,7 @@ angular.module('cardsAgainstHumanity')
 				case 2:
 					console.log("STATE 2 VOTE !!!!!")
 					if($scope.counter === 60){
-						TimerService.countDown();
+						//TimerService.countDown();
 					} else if (!$scope.haveVoted){
 						// auto select a card to vote for
 					}
