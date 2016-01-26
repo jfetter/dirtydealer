@@ -1350,10 +1350,10 @@ angular.module('cardsAgainstHumanity')
 
 			console.log("HERE I AM!", myId);
 
-			// if(!playersRef.child(myId).hasOwnProperty('cards')){
-			// 	// GameService.pickCards();s
-			// 	console.log("DREW A HAND!")
-			// }
+			if(!playersRef.child(myId).hasOwnProperty('cards')){
+				console.log("DREW A HAND!")
+			// GameService.pickCards();
+			}
 
 			$rootScope.voted = false;
 			if ($scope.counter === 60){
@@ -1456,6 +1456,7 @@ angular.module('cardsAgainstHumanity')
 
 	thisGame.on('value', function(snap){
 		var cards = snap.val().cards;
+		var players = snap.val().players;
 		if (!cards){
 			console.log("THERE ARE NO CARDS!");
 			CardsService.startDeck();
@@ -1463,6 +1464,9 @@ angular.module('cardsAgainstHumanity')
 			return;
 		} else{
 			console.log("THERE ARE CARDS!");
+			if(!players.child(myId).hasOwnProperty('cards')){
+				console.log("YOU DONT HAVE ANY CARDS");
+			}
 			return;
 		}
 	})
@@ -1475,12 +1479,6 @@ angular.module('cardsAgainstHumanity')
 
 	//Add player to waiting room when they click join.
 
-	console.log("FALSE?", playersRef.child(myId).hasOwnProperty('username'));
-	// if(!scenarioCardRef.hasOwnProperty('text')){
-	// 	console.log("Populating", );
-	// 	CardsService.startDeck();
-	// 	CardsService.dealBlackCard();
-	// }
 
 	playersRef.on("child_added", function() {
 		$timeout(function() {
