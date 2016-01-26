@@ -183,7 +183,18 @@ angular.module('cardsAgainstHumanity')
 	///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
 	GameService.addPlayer();
 
-
+	thisGame.on('value', function(snap){
+		var cards = snap.val().cards;
+		if (!cards){
+			console.log("THERE ARE NO CARDS!");
+			CardsService.startDeck();
+			CardsService.dealBlackCard();
+			return;
+		} else{
+			console.log("THERE ARE CARDS!");
+			return;
+		}
+	})
 
 	// playersRef.once('child_added', function() {
 	// 	CardsService.startDeck();
@@ -200,15 +211,7 @@ angular.module('cardsAgainstHumanity')
 	// 	CardsService.dealBlackCard();
 	// }
 
-
 	playersRef.on("child_added", function() {
-		if(!playersRef.child(myId).hasOwnProperty('cards')){
-			console.log("YOU HAVE NO CARDS!");
-			// GameService.pickCards();
-			// console.log("DREW A HAND!")
-		} else {
-			console.log("YOU HAVE CARDS");
-		}
 		$timeout(function() {
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 2 && !$scope.gameState) {
