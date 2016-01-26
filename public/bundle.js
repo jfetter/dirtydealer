@@ -4,7 +4,7 @@ var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'n
 
 app.constant('ENV', {
   //API_URL: 'http://localhost:3000'
-  API_URL: 'https://dry-dawn-94066.herokuapp.com'
+  API_URL: 'http://localhost:3000'
 });
 
 
@@ -351,7 +351,6 @@ pick: 1
 text: "What's my anti-drug?",
 pick: 1
 },
-<<<<<<< HEAD
 // {
 // text: "And the Academy Award for _ goes to _.",
 // pick: 2
@@ -360,33 +359,7 @@ pick: 1
 // text: "For my next trick, I will pull _ out of _.",
 // pick: 2
 // },
-=======
-{
-text: "And the Academy Award for _ goes to _.",
-pick: 2
-},
-{
-text: "For my next trick, I will pull _ out of _.",
-pick: 2
-},
->>>>>>> 118cf790f085b85c8a67e45750a06a128df32d8f
-{
-text: "_: Good to the last drop.",
-pick: 1
-},
-{
-text: "What did Vin Diesel eat for dinner?",
-pick: 1
-},
-{
-text: "_: kid-tested, mother-approved.",
-pick: 1
-},
-{
-text: "What gets better with age?",
-pick: 1
-},
-<<<<<<< HEAD
+
 // {
 // text: "I never truly understood _ until I encountered _.",
 // pick: 2
@@ -431,52 +404,7 @@ pick: 1
 // text: "What's the next superhero/sidekick duo?",
 // pick: 2
 // },
-=======
-{
-text: "I never truly understood _ until I encountered _.",
-pick: 2
-},
-{
-text: "Rumor has it that Vladimir Putin's favorite delicacy is _ stuffed with _.",
-pick: 2
-},
-{
-text: "Lifetime&reg; presents _, the story of _.",
-pick: 2
-},
-{
-text: "Make a haiku.",
-pick: 3
-},
-{
-text: "In M. Night Shyamalan's new movie, Bruce Willis discovers that _ had really been _ all along.",
-pick: 2
-},
-{
-text: "_ is a slippery slope that leads to _.",
-pick: 2
-},
-{
-text: "In a world ravaged by _, our only solace is _.",
-pick: 2
-},
-{
-text: "That's right, I killed _. How, you ask? _.",
-pick: 2
-},
-{
-text: "When I was tripping on acid, _ turned into _.",
-pick: 2
-},
-{
-text: "_ + _ = _.",
-pick: 3
-},
-{
-text: "What's the next superhero/sidekick duo?",
-pick: 2
-},
->>>>>>> 118cf790f085b85c8a67e45750a06a128df32d8f
+
 {
 text: "Dear Abby,<br><br>I'm having some trouble with _ and would like your advice.",
 pick: 1
@@ -501,17 +429,11 @@ pick: 1
 text: "Next on ESPN2, the World Series of _.",
 pick: 1
 },
-<<<<<<< HEAD
 // {
 // text: "Step 1: _. Step 2: _. Step 3: Profit.",
 // pick: 2
 // },
-=======
-{
-text: "Step 1: _. Step 2: _. Step 3: Profit.",
-pick: 2
-},
->>>>>>> 118cf790f085b85c8a67e45750a06a128df32d8f
+
 {
 text: "Here is the church<br>Here is the steeple<br>Open the doors<br>And there is _.",
 pick: 1
@@ -1760,39 +1682,6 @@ angular.module('cardsAgainstHumanity')
 
 angular.module('cardsAgainstHumanity')
 
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
 	$scope.user = {};
@@ -1863,4 +1752,37 @@ angular.module('cardsAgainstHumanity')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
 });
