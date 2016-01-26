@@ -158,7 +158,9 @@ angular.module('cardsAgainstHumanity')
 				GameService.pickCards();
 				$scope.counter = 60;
 				gameStateRef.set(1);
+				console.log("THE Playas:", $scope.playerss)
 			} else if ($scope.playerss.length < 3){
+				console.log("THE current Playas:", $scope.playerss)
 				return;
 			} else {
 				///launch new game
@@ -312,7 +314,9 @@ angular.module('cardsAgainstHumanity')
 		//need to set up play again / quit options
 		//quit redirects to profile page view and play again does
 		// location.reload();
-		var winner = snap.val().username
+		var winner = snap.val();
+		console.log("WINNER", snap.val().winnerName);
+
 		swal({
 				type: "error",
 				title: "And the winner is...",

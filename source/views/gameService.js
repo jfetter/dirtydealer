@@ -103,9 +103,9 @@ angular.module('cardsAgainstHumanity')
 			var tempHand;
 			console.log(cardClicked, "BEGINNNING");
 			this.playersRef.child(myId).on('value', function(snap) {
-				console.log(snap.val().cards, "IN SNAP.VAL");
+				//console.log(snap.val().cards, "IN SNAP.VAL");
 				tempHand = (snap.val().cards);
-				console.log("Temporary hand", tempHand);
+				//console.log("Temporary hand", tempHand);
 			})
 			if(tempHand.length < 10){
 				return tempHand
@@ -122,9 +122,9 @@ angular.module('cardsAgainstHumanity')
 			var tempHand;
 			var newCard = CardsService.draw();
 			this.playersRef.child(myId).on('value', function(snap) {
-				console.log(snap.val().cards, "IN SNAP.VAL");
+			//	console.log(snap.val().cards, "IN SNAP.VAL");
 				tempHand = (snap.val().cards);
-				console.log("Temporary hand", tempHand);
+			//	console.log("Temporary hand", tempHand);
 			})
 			playersRef.child(myId).update({tempHand: tempHand})
 			tempHand.push(newCard);
@@ -139,7 +139,6 @@ angular.module('cardsAgainstHumanity')
 		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
 		var player = card.player;
 		this.votes.$add(player);
-		// $rootScope.voted = false;
 	}
 
 	//deal a new white card for the player (game state 3)
@@ -162,8 +161,19 @@ angular.module('cardsAgainstHumanity')
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
 		var myRef = playersRef.child(myId);
+
+
 		//only add points once per player
 		if (player === myId){
+			var winnerName;
+			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
+			playersRef.on('value', function(snap){
+				console.log(snap.val(), "= snapval.myId.username");
+			winnerName = snap.val().myId.username;
+			})
+			playersRef.update({temp: "temp"});
+			playersRef.child('temp').remove();
+
 			var myPoints;
 			myRef.on('value', function(snap) {
 				myPoints = snap.val().gamePoints;
@@ -176,8 +186,12 @@ angular.module('cardsAgainstHumanity')
 
 				myRef.child('gamePoints').set(myNewPoints)
 				if (myNewPoints >= 1){
+					var winnerName = winnerName + "!";
 					console.log('we have a winner')
-					this.gameInstance.child('winner').set(player);
+					this.gameInstance.child('winner').set({
+						userId: player,
+						winnerName: winnerName
+					});
 					updateMongoWins(player, myId);
 				}
 				playersRef.child(player).update({gamePoints: myNewPoints})
@@ -185,6 +199,7 @@ angular.module('cardsAgainstHumanity')
 						// this code is not tested and not finished !!!!!
 				gameStateRef.set(3)
 	}
+
 	return;
 }
 
@@ -195,7 +210,7 @@ angular.module('cardsAgainstHumanity')
 
 		function updateMongoWins(winner, me){
 			console.log("set up route etc to add win point to mongo")
-			var winner = snap.val();
+			var winner = snap.val().userId;
 			if (winner = myInfo._id){
 				//$http.put("/dirtyWin", {id: winner})
 				//.then(function (res){
