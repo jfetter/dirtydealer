@@ -1086,8 +1086,6 @@ angular.module('cardsAgainstHumanity')
 
 	//vote for a card (game state 2)
 	this.voteCard = function(card){
-		var myInfo = this.identifyPlayer()
-		var myId = myInfo._id
 		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
 		var player = card.player;
 		this.votes.$add(player);
@@ -1192,6 +1190,123 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+
+.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
+	$scope.user = {};
+	$scope.editPayload = {};
+	var cookies = $cookies.get('token');
+	var token = jwtHelper.decodeToken(cookies)
+	console.log("COOKIES", cookies)
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		console.log(res.data)
+		 if (res.data === "authRequired"){
+			 $location.path('/login')
+		 } else{$scope.isLoggedIn = true;}
+	})
+
+	UserService.page($state.params.username)
+	.then(function(res) {
+		$scope.user = res.data;
+		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
+		$scope.isEditing = false;
+		$scope.editPayload.username = $scope.user.username;
+		$scope.editPayload._id = $scope.user._id
+
+    //console.log($scope.isEditing)
+		//console.log("edit Payload", $scope.editPayload)
+		//console.log('token:',token);
+		console.log('scope user username: ', $scope.user.username);
+    if(res.data.avatar){
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
+    } else {
+      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
+    }
+
+	}, function(err) {
+		console.error(err)
+	});
+
+	$scope.toggleEdit = function(){
+    //console.log($scope.isEditing)
+		$scope.isEditing = !$scope.isEditing
+	}
+
+	$scope.saveEdits = function(){
+		console.log("save edits!!!!!" , $scope.editPayload);
+		UserService.editAccount($scope.editPayload)
+		.then(function(response){
+			$scope.$emit('edit', response.data)
+			$scope.user = response.data;
+			$scope.isEditing = !$scope.isEditing;
+			//console.log(response.data, "received")
+		})
+	}
+
+  $scope.uploadImage = function(image){
+    console.log(image)
+    UserService.uploadImage(image, $scope.user._id)
+    .then(function(res){
+      //console.log(res.data)
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
+      console.log($scope.profileImageSrc)
+    })
+  }
+
+	$scope.exposeData = function(){console.log($scope.myFile)}
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		//console.log(res.data)
+		 if (res.data === "authRequired"){$location.path('/login')}
+		 else{$scope.isLoggedIn = true;}
+	})
 });
 
 'use strict';
@@ -1313,6 +1428,12 @@ angular.module('cardsAgainstHumanity')
 		var token = jwtHelper.decodeToken(cookies)
 		console.log("TOKEN MASTER ", token)
 	}
+	/* ______________
+	|              |
+	|Utility Functs|
+	|______________| */
+
+
 
 	/* ______________
 	|              |
@@ -1331,6 +1452,7 @@ angular.module('cardsAgainstHumanity')
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
+	var winVotes = GameService.votes;
 	// $scope.blackCard = scenarioCardRef
 
 	/* ______________
@@ -1345,7 +1467,6 @@ angular.module('cardsAgainstHumanity')
 
 				case 1:
 				$rootScope.voted = false;
-				  //TimerService.countDown();
 
 				//ng-hide all the cards submitted for vote
 				break;
@@ -1353,9 +1474,6 @@ angular.module('cardsAgainstHumanity')
 				case 2:
 					console.log("STATE 2 VOTE !!!!!")
 
-					 if (!$scope.haveVoted){
-						// auto select a card to vote for
-					}
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
 				break;
@@ -1365,6 +1483,8 @@ angular.module('cardsAgainstHumanity')
 				votesRef.remove();
 				responseRef.remove();
 				scenarioCardRef.remove();
+				myRef.child('voted').remove();
+				myRef.child('submittedResponse').remove();
 				GameService.drawOneCard();
 				CardsService.dealBlackCard();
 				gameStateRef.set(1)
@@ -1396,19 +1516,30 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
-			console.log("SCOPE HAVESUBMITTED", $scope.haveSubmitted)
 			if ($scope.haveSubmitted != true && $scope.currentState === 1){
-				console.log("you should have submitted by now")
-				console.log("My hand", $scope.myHand )
+				//console.log("you should have submitted by now")
+				//console.log("My hand", $scope.myHand )
 				var rando = Math.floor((Math.random() * $scope.myHand.length ) + 0);
 				var spliced = $scope.myHand.splice(rando, 1)
 				//console.log("spliced", spliced, "rando", rando);
 				GameService.addToResponseCards(spliced, rando)
 				myRef.child('cards').set($scope.myHand);
-
-				// auto select a card to go to responses
-
 				myRef.child('submittedResponse').set(true) 
+			}
+			console.log("ROOTSCOPE voted", $rootScope.voted)
+				var otherPlayers = [];
+			if ($rootScope.voted != true && $scope.currentState === 2){
+				console.log($scope.playerss)
+				$scope.playerss.forEach(function(player){
+					if(player != myId){
+						otherPlayers.push(player)
+					}
+				})
+					var rando = Math.floor((Math.random() * otherPlayers.length ) + 0);
+					var spliced = otherPlayers.splice(rando, 1)
+					spliced = spliced[0].playerId;
+					winVotes.$add(spliced)	
+					console.log("YOU VOTE FOR", spliced)
 			} 
 			swal({
 				type: "error",
@@ -1430,12 +1561,17 @@ angular.module('cardsAgainstHumanity')
 
 //Will not reset your player info by logging you in if you are already in
 thisGame.once('value', function(snap){
-	var players = snap.val().players;
+		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
+	if (snap.val() === null){
+		GameService.addPlayer();
+		return;
+	} 
+		var players = snap.val().players;
 	if (players.hasOwnProperty(myId) === false){
 		GameService.addPlayer();
-		//console.log("LOGGING IN ONCE")
+		console.log("LOGGING IN ONCE")
 	} else{
-		//console.log("NOT LOGGING IN TWICE")
+		console.log("NOT LOGGING IN TWICE")
 	}
 
 })
@@ -1495,20 +1631,22 @@ thisGame.once('value', function(snap){
 	|______________| */
 
 // notify firebase that I submitted a response card
-	responseRef.child(myId).on('value', function(snap){
-		console.log("I SUBMITTED A RESPONSE!")
-		myRef.update({
-			submittedResponse: true
-		})
+	responseRef.on('child_added', function(snap){
+		var responses = snap.val();
+		console.log("RESPONSE REF IS NOW",responses)
+		if(responses.hasOwnProperty(myId)){
+			console.log("I SUBMITTED A RESPONSE!")
+			myRef.update({
+				submittedResponse: true
+			})
+		}
 	})
 
 //update the scope when I submit a response card
 	myRef.child('submittedResponse').on('value', function(snap){
-		console.log(snap.val(), "SNAP VAL IN SUBMITTD RESPONSE")
-		//if (snap.val() == true){
-			console.log("$scope.haveSubmitted", $scope.haveSubmitted)
-			$scope.haveSubmitted = snap.val();
-		//}
+		//console.log(snap.val(), "SNAP VAL IN SUBMITTD RESPONSE")
+		//console.log("$scope.haveSubmitted", $scope.haveSubmitted)
+		$scope.haveSubmitted = snap.val();
 	})
 
 	responseRef.on("child_added", function(snap) {
@@ -1538,8 +1676,9 @@ thisGame.once('value', function(snap){
 	| Votes:   		 |
 	|______________| */
 
-
-
+	votesRef.on("value", function(snap){
+		console.log(snap.val());
+	})
 
 	$scope.voteCard = function(card){
 		if ($rootScope.voted === true || $scope.currentState !== 2){
@@ -1552,7 +1691,6 @@ thisGame.once('value', function(snap){
 			// console.log("CARD ",card);
 			// console.log("my ID", myId);
 			if (card.player === myId){
-				console.log('YOU CANNOT VOTE FOR YOURSELF');
 				votesRef.child(myId).remove();
 						swal({
 					type: "error",
@@ -1703,14 +1841,6 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -1737,113 +1867,4 @@ angular.module('cardsAgainstHumanity')
 		});
 	}
 
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-
-
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
-	$scope.user = {};
-	$scope.editPayload = {};
-	var cookies = $cookies.get('token');
-	var token = jwtHelper.decodeToken(cookies)
-	console.log("COOKIES", cookies)
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		console.log(res.data)
-		 if (res.data === "authRequired"){
-			 $location.path('/login')
-		 } else{$scope.isLoggedIn = true;}
-	})
-
-	UserService.page($state.params.username)
-	.then(function(res) {
-		$scope.user = res.data;
-		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
-		$scope.isEditing = false;
-		$scope.editPayload.username = $scope.user.username;
-		$scope.editPayload._id = $scope.user._id
-
-    //console.log($scope.isEditing)
-		//console.log("edit Payload", $scope.editPayload)
-		//console.log('token:',token);
-		console.log('scope user username: ', $scope.user.username);
-    if(res.data.avatar){
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
-    } else {
-      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
-    }
-
-	}, function(err) {
-		console.error(err)
-	});
-
-	$scope.toggleEdit = function(){
-    //console.log($scope.isEditing)
-		$scope.isEditing = !$scope.isEditing
-	}
-
-	$scope.saveEdits = function(){
-		console.log("save edits!!!!!" , $scope.editPayload);
-		UserService.editAccount($scope.editPayload)
-		.then(function(response){
-			$scope.$emit('edit', response.data)
-			$scope.user = response.data;
-			$scope.isEditing = !$scope.isEditing;
-			//console.log(response.data, "received")
-		})
-	}
-
-  $scope.uploadImage = function(image){
-    console.log(image)
-    UserService.uploadImage(image, $scope.user._id)
-    .then(function(res){
-      //console.log(res.data)
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
-      console.log($scope.profileImageSrc)
-    })
-  }
-
-	$scope.exposeData = function(){console.log($scope.myFile)}
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		//console.log(res.data)
-		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;}
-	})
 });
