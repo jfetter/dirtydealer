@@ -139,7 +139,7 @@ angular.module('cardsAgainstHumanity')
 		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
 		var player = card.player;
 		this.votes.$add(player);
-		$rootScope.voted = false;
+		// $rootScope.voted = false;
 	}
 
 	//deal a new white card for the player (game state 3)
@@ -175,7 +175,7 @@ angular.module('cardsAgainstHumanity')
 				myRef.child('temp').remove();
 
 				myRef.child('gamePoints').set(myNewPoints)
-				if (myNewPoints >= 10){
+				if (myNewPoints >= 1){
 					console.log('we have a winner')
 					this.gameInstance.child('winner').set(player);
 					updateMongoWins(player, myId);

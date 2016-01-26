@@ -70,6 +70,7 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
+				$rootScope.voted = false;
 				if ($scope.counter === 60){
 				  //TimerService.countDown();
 				}else if (!$scope.haveSubmitted){
