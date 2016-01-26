@@ -1595,7 +1595,8 @@ angular.module('cardsAgainstHumanity')
 					$state.go('userPage', {"username": username})
 				}, 2000)
 			} else {
-				gameStateRef.set(3);
+				// gameStateRef.set(3);
+				GameService.gameInstance.set(null);
 				setTimeout(function() {
 					location.reload(true);
 				})
