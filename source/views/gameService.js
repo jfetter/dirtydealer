@@ -16,7 +16,7 @@ angular.module('cardsAgainstHumanity')
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
-	var responseRef = this.responseRef	
+	var responseRef = this.responseRef
 	this.voteRef = this.gameInstance.child("votes");
 	var voteRef = this.voteRef
 	this.votes = $firebaseArray(voteRef);
@@ -151,7 +151,7 @@ angular.module('cardsAgainstHumanity')
 				myRef.child('temp').remove();
 
 				myRef.child('gamePoints').set(myNewPoints)
-				if (myNewPoints >= 10){
+				if (myNewPoints >= 0){
 					console.log('we have a winner')
 					this.gameInstance.child('winner').set(player);
 					updateMongoWins(player, myId);
