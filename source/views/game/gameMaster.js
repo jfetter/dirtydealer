@@ -70,6 +70,7 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
+				$rootScope.voted = false;
 				if ($scope.counter === 60){
 				  //TimerService.countDown();
 				}else if (!$scope.haveSubmitted){
@@ -311,7 +312,9 @@ angular.module('cardsAgainstHumanity')
 		//need to set up play again / quit options
 		//quit redirects to profile page view and play again does
 		// location.reload();
-		var winner = snap.val().username
+		var winner = snap.val();
+		console.log("WINNER", snap.val());
+
 		swal({
 				type: "error",
 				title: "And the winner is...",
