@@ -44,6 +44,9 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| Firebase:    |
 	|______________| */
+
+
+	var allGames = GameService.allGames 
 	var thisGame = GameService.gameInstance
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
@@ -59,6 +62,30 @@ angular.module('cardsAgainstHumanity')
 	var votesRef = GameService.gameInstance.child("votes");
 	// $scope.blackCard = scenarioCardRef
 
+	var myGame = 0;
+	//create a game array on main firebase
+	var gamesRef = allGames.child('games')
+	//create a unique game if there are less than 3 players
+	gamesRef.on('child_added', function(snap){
+		console.log("SNAP VAL", snap.val())
+		console.log("current Game is", $rootScope.myGame);
+		if ($scope.playerss.length > 3){
+			$rootScope.myGame ++; 
+		} else {
+			$rootScope.myGame = snap.val();
+		}
+	}) 
+	if (myGame === 0){
+		console.log("MY GAME === 0")
+		allGames.child('games').set(1);
+		GameService.addPlayer();
+	} else{
+		console.log("####MY GAME === ", $rootScope.myGame)
+		games.update($rootScope.myGame);
+		GameService.addPlayer();
+	}
+
+
 	/* ______________
 	|              |
 	|  States:     |
@@ -70,40 +97,29 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
-				if ($scope.counter === 60){
-				  //TimerService.countDown();
-				}else if (!$scope.haveSubmitted){
-						// auto select a card to go to responses
-					}
-				//}
-				//ng-hide all the cards submitted for vote
+				console.log("CASE 1")
+				
 				break;
 
 				case 2:
-					console.log("STATE 2 VOTE !!!!!")
-					if($scope.counter === 60){
-						//TimerService.countDown();
-					} else if (!$scope.haveVoted){
-						// auto select a card to vote for
-					}
-				// ng-show all the cards that are submitted for voting
-				// ng-disable clickable cards from your deck
+					console.log("STATE 2 VOTE !!!!!")		 
+
 				break;
 
 				case 3:
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
 				responseRef.remove();
-				$scope.addToResponseCards();
+				scenarioCardRef.remove();
+				CardsService.dealBlackCard();
+				GameService.draw();
 				gameStateRef.set(1)
 
 				break;
 			}
-
 		} 
 
-
-	//connect with firebase game states
+	//change game state as gameState on Firebase changes
 	gameStateRef.on('value', function(snap) {
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
@@ -112,12 +128,10 @@ angular.module('cardsAgainstHumanity')
 	})
 
 
-
 	/* ______________
 	|              |
 	| Timer:       |
 	|______________| */
-
 	$scope.timerRef.on("value", function(snap){
 		$scope.counter = snap.val();
 	})
@@ -125,6 +139,8 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
+				console.log(" I'M GOING TO AUTO SELECT A CARD FOR YOU");
+				// PUT AUTO SELCTOR HERE
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
@@ -141,45 +157,39 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| Players:     |
 	|______________|
-	*/	// Create array to store each player's info.
+	*/	
 
-///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
-	GameService.addPlayer();
+		
 
 	//Add player to waiting room when they click join.
-	playersRef.on("child_added", function() {
-		$timeout(function() {
-			//&& $scope.currentState === undefined
+	playersRef.on("child_added", function(snap) {
 			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				CardsService.startDeck();
-				CardsService.dealBlackCard();
 				GameService.pickCards();
-				$scope.counter = 60;
+				TimerService.countDown();
 				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				return;
 			} else {
-				///launch new game
+				//launch new firebase gameInstance
+				//$rootScope.myGame ++; 
 			}
-		});
 	});
-
-	playersRef.on("child_removed", function(snap) {
-	//Update number of players when a player quits?
-		console.log("PLAYER QUIT", snap.val())
-	});
+	//var myGame = $rootScope.myGame;
 
 	$scope.removePlayer = function(){
 		GameService.removePlayer();
 		$state.go("userPage");
 	}
 
+	playersRef.on("child_removed", function(snap){
+		alert(`${snap.val().username} has left the game!`);
+	})
+
 	/* ______________
 	|              |
 	| cards        |
 	|______________| */
-// maybe need to play around with child_added/ child_removed
-// to prevent re-deals?
 
 	$scope.myHand = [];
 
@@ -204,6 +214,9 @@ angular.module('cardsAgainstHumanity')
 		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
 			$scope.haveSubmitted = true;
+			//start timer for next round;
+			//TimerService.counter = 61;
+			//TimerService.countDown();
 			gameStateRef.set(2);
 		}
 	});

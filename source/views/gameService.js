@@ -3,17 +3,18 @@ angular.module('cardsAgainstHumanity')
 
 
 .service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+	var myGame = $rootScope.myGame;
+
 
 	var cookies = $cookies.get('token');
-
-
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	this.allGames = new Firebase('https://cardsagainsthumanity-ch.firebaseio.com');
+	this.gameInstance = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}`);
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
+	this.playerss = $firebaseArray(playersRef);
 	this.messageRef = this.gameInstance.child("messages");
 	var messageRef = this.messageRef
-	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
 	var responseRef = this.responseRef	
@@ -22,7 +23,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}/gamestate`);
 	var gameStateRef = this.gameStateRef;
 
 	this.advanceGameState = function(){
@@ -67,6 +68,7 @@ angular.module('cardsAgainstHumanity')
 
 	this.addPlayer = function(){
 		//initialize test 'children'
+		console.log("MY GAME!!!!", myGame)
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
 		var cards = ["testA", "testB"];
