@@ -110,12 +110,14 @@ angular.module('cardsAgainstHumanity')
 
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
+		// if (){
+		// 	return; 
+		// }
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
 		$scope.currentState = thisState;
 		gameState(thisState);
 	})
-
 
 
 	/* ______________
@@ -135,6 +137,7 @@ angular.module('cardsAgainstHumanity')
 				//console.log("My hand", $scope.myHand )
 				var rando = Math.floor((Math.random() * $scope.myHand.length ) + 0);
 				var spliced = $scope.myHand.splice(rando, 1)
+				spliced = spliced[0];
 				//console.log("spliced", spliced, "rando", rando);
 				GameService.addToResponseCards(spliced, rando)
 				myRef.child('cards').set($scope.myHand);
@@ -181,11 +184,14 @@ thisGame.once('value', function(snap){
 		return;
 	} 
 		var players = snap.val().players;
+		console.log("PLAYERS", players);
 	if (players.hasOwnProperty(myId) === false){
 		GameService.addPlayer();
 		console.log("LOGGING IN ONCE")
+		return;
 	} else{
 		console.log("NOT LOGGING IN TWICE")
+		return;
 	}
 
 })
@@ -194,13 +200,14 @@ thisGame.once('value', function(snap){
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
+			if ($scope.playerss.length === 3 && !$scope.currentState) {
+				console.log("STARTING GAME", $scope.playerss)
+	
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
 				TimerService.countDown();
 				gameStateRef.set(1);
-				console.log("THE Playas:", $scope.playerss)
 			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
 				return;
@@ -290,9 +297,6 @@ thisGame.once('value', function(snap){
 	| Votes:   		 |
 	|______________| */
 
-	votesRef.on("value", function(snap){
-		console.log(snap.val());
-	})
 
 	$scope.voteCard = function(card){
 		if ($rootScope.voted === true || $scope.currentState !== 2){
@@ -328,8 +332,8 @@ thisGame.once('value', function(snap){
 		GameService.addToResponseCards(cardClicked, index);
 	}
 
-	votesRef.on("value", function(snap) {
-		$scope.haveVoted = true;
+	votesRef.on("child_added", function(snap) {
+		//$scope.haveVoted = true;
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
