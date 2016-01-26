@@ -141,7 +141,6 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	$scope.selfDestruct = function(){
-		console.log("I DID IT, RIGHT?")
 		gameStateRef.remove();
 		GameService.killAll();
 		CardsService.killCards();
