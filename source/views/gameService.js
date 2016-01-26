@@ -180,7 +180,7 @@ angular.module('cardsAgainstHumanity')
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 1){
+			if (myNewPoints >= 10){
 				winnerName = winnerName + "!";
 				console.log('we have a winner')
 				this.gameInstance.child('winner').set({
