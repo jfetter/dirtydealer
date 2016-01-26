@@ -52,7 +52,6 @@ angular.module('cardsAgainstHumanity')
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	$scope.timerRef = TimerService.timerRef;
-
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
@@ -71,7 +70,6 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
-
 				$rootScope.voted = false;
 				if ($scope.counter === 60){
 				  //TimerService.countDown();
@@ -223,7 +221,6 @@ angular.module('cardsAgainstHumanity')
 
 
 	$scope.voteCard = function(card){
-
 		if ($rootScope.voted === true || $scope.currentState !== 2){
 			console.log("YOU ALREADY VOTED")
 			return;

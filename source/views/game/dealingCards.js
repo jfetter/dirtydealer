@@ -60,7 +60,6 @@ angular.module('cardsAgainstHumanity')
 		return fullHand;
 	}
 
-
 	this.draw = function(){
 		// for(var i=0; i<n; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);

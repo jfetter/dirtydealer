@@ -5,6 +5,7 @@ angular.module('cardsAgainstHumanity')
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
+	
 	var timerRef = this.timerRef; 
 	var counter = 61;
 	var mytimeout = null;
@@ -24,5 +25,6 @@ angular.module('cardsAgainstHumanity')
 	this.countDown = function(){
 		countDown();
 		};
+
 
 })

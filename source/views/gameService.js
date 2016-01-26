@@ -16,9 +16,7 @@ angular.module('cardsAgainstHumanity')
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
-
-	var responseRef = this.responseRef	
-
+	var responseRef = this.responseRef
 	this.voteRef = this.gameInstance.child("votes");
 	var voteRef = this.voteRef
 	this.votes = $firebaseArray(voteRef);
@@ -67,7 +65,6 @@ angular.module('cardsAgainstHumanity')
 		//return myHand;
 	}
 
-
 	// this.drawCard = function(){
 	// 	var myInfo = this.identifyPlayer()
 	// 	var myId = myInfo._id
@@ -76,7 +73,6 @@ angular.module('cardsAgainstHumanity')
 	// 		cards: newCard
 	// 	});
 	// }
-
 
 	this.addPlayer = function(){
 		//initialize test 'children'
@@ -102,7 +98,6 @@ angular.module('cardsAgainstHumanity')
 
 	//submit response card (game state 1)
 	this.addToResponseCards = function(cardClicked, index) {
-
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
 		var tempHand;
@@ -167,9 +162,11 @@ angular.module('cardsAgainstHumanity')
 		var myId = myInfo._id
 		var myRef = playersRef.child(myId);
 
+
 		//only add points once per player
 		if (player === myId){
 			var winnerName;
+
 
 			var myPoints;
 			myRef.on('value', function(snap) {
@@ -218,6 +215,7 @@ angular.module('cardsAgainstHumanity')
 		//})
 		//}
 	}
+
 
 
 	/* ______________
