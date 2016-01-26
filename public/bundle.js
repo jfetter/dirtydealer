@@ -1572,7 +1572,8 @@ angular.module('cardsAgainstHumanity')
 		var winner = snap.val();
 		console.log("WINNER", snap.val().winnerName);
 
-		//Play Again redirects
+		//Play Again refreshes game page & clears out old data.
+		//Quit Game redirects to userpages & removes player from game. 
 		swal({
 			title: "And the winner is...",
 			text: winner,
@@ -1592,7 +1593,10 @@ angular.module('cardsAgainstHumanity')
 					$scope.userInfo = (jwtHelper.decodeToken(cookies))
 				}
 				setTimeout(function() {
-					$state.go('userPage', {"username": username})
+					$scope.removePlayer = function(){
+						GameService.removePlayer();
+						$state.go('userPage', {"username": username})
+					}
 				}, 2000)
 			} else {
 				GameService.gameInstance.set(null);
@@ -1603,7 +1607,6 @@ angular.module('cardsAgainstHumanity')
 		});
 		return;
 	});
-
 
 	/* ______________
 	|              |
