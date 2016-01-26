@@ -46,6 +46,7 @@ angular.module('cardsAgainstHumanity')
 	this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val().array;
 		console.log("Temp white card updated", tempWhiteCard)
+		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
 
 	this.startingHand = function(){
@@ -55,7 +56,7 @@ angular.module('cardsAgainstHumanity')
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').update({array: tempWhiteCard})
+			this.gameInstance.child('whiteCards').set({array: tempWhiteCard})
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)

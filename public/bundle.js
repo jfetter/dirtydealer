@@ -1239,6 +1239,7 @@ angular.module('cardsAgainstHumanity')
 	this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val().array;
 		console.log("Temp white card updated", tempWhiteCard)
+		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
 
 	this.startingHand = function(){
@@ -1248,7 +1249,7 @@ angular.module('cardsAgainstHumanity')
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').update({array: tempWhiteCard})
+			this.gameInstance.child('whiteCards').set({array: tempWhiteCard})
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)
@@ -1328,6 +1329,7 @@ angular.module('cardsAgainstHumanity')
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
 
+	var cardsRef = GameService.gameInstance.child("cards");
 
 	// playersRef.child(myId).on('value', function(snap){
 	// 	console.log("I EVLOLVED", snap.val().cards.length)
@@ -1348,10 +1350,10 @@ angular.module('cardsAgainstHumanity')
 
 			console.log("HERE I AM!", myId);
 
-			if(!playersRef.child(myId).hasOwnProperty('cards')){
-				// GameService.pickCards();s
-				console.log("DREW A HAND!")
-			}
+			// if(!playersRef.child(myId).hasOwnProperty('cards')){
+			// 	// GameService.pickCards();s
+			// 	console.log("DREW A HAND!")
+			// }
 
 			$rootScope.voted = false;
 			if ($scope.counter === 60){
@@ -1408,6 +1410,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.summonHand = function(){
 		console.log("I DID IT, RIGHT?")
 		GameService.pickCards();
+		console.log("FALSE?", playersRef.child(myId).hasOwnProperty('cards'));
 	}
 
 	$scope.selfDestruct = function(){
@@ -1461,10 +1464,22 @@ angular.module('cardsAgainstHumanity')
 
 	//Add player to waiting room when they click join.
 
-
+	console.log("FALSE?", playersRef.child(myId).hasOwnProperty('username'));
+	// if(!scenarioCardRef.hasOwnProperty('text')){
+	// 	console.log("Populating", );
+	// 	CardsService.startDeck();
+	// 	CardsService.dealBlackCard();
+	// }
 
 
 	playersRef.on("child_added", function() {
+		if(!playersRef.child(myId).hasOwnProperty('cards')){
+			console.log("YOU HAVE NO CARDS!");
+			// GameService.pickCards();
+			// console.log("DREW A HAND!")
+		} else {
+			console.log("YOU HAVE CARDS");
+		}
 		$timeout(function() {
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 2 && !$scope.gameState) {
@@ -1473,8 +1488,6 @@ angular.module('cardsAgainstHumanity')
 				console.log("THE Playas:", $scope.playerss)
 			} else if ($scope.playerss.length < 2){
 				console.log("THE current Playas:", $scope.playerss)
-				CardsService.startDeck();
-				CardsService.dealBlackCard();
 				return;
 			} else {
 				return;
