@@ -4,6 +4,7 @@ var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'n
 
 app.constant('ENV', {
   API_URL: 'http://localhost:3000'
+  //API_URL: 'https://dry-dawn-94066.herokuapp.com'
 });
 
 
@@ -61,11 +62,11 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   })
 
   $scope.logout = function(){
+    GameService.removePlayer();
     $cookies.remove('token');
     if (localStorage.playing){localStorage.removeItem('player')}
     $state.go('login')
     $scope.isLoggedIn = false;
-    GameService.removePlayer();
   }
   $scope.goHome = function(){
     var username = $scope.userInfo.username
@@ -350,14 +351,14 @@ pick: 1
 text: "What's my anti-drug?",
 pick: 1
 },
-{
-text: "And the Academy Award for _ goes to _.",
-pick: 2
-},
-{
-text: "For my next trick, I will pull _ out of _.",
-pick: 2
-},
+// {
+// text: "And the Academy Award for _ goes to _.",
+// pick: 2
+// },
+// {
+// text: "For my next trick, I will pull _ out of _.",
+// pick: 2
+// },
 {
 text: "_: Good to the last drop.",
 pick: 1
@@ -374,50 +375,50 @@ pick: 1
 text: "What gets better with age?",
 pick: 1
 },
-{
-text: "I never truly understood _ until I encountered _.",
-pick: 2
-},
-{
-text: "Rumor has it that Vladimir Putin's favorite delicacy is _ stuffed with _.",
-pick: 2
-},
-{
-text: "Lifetime&reg; presents _, the story of _.",
-pick: 2
-},
-{
-text: "Make a haiku.",
-pick: 3
-},
-{
-text: "In M. Night Shyamalan's new movie, Bruce Willis discovers that _ had really been _ all along.",
-pick: 2
-},
-{
-text: "_ is a slippery slope that leads to _.",
-pick: 2
-},
-{
-text: "In a world ravaged by _, our only solace is _.",
-pick: 2
-},
-{
-text: "That's right, I killed _. How, you ask? _.",
-pick: 2
-},
-{
-text: "When I was tripping on acid, _ turned into _.",
-pick: 2
-},
-{
-text: "_ + _ = _.",
-pick: 3
-},
-{
-text: "What's the next superhero/sidekick duo?",
-pick: 2
-},
+// {
+// text: "I never truly understood _ until I encountered _.",
+// pick: 2
+// },
+// {
+// text: "Rumor has it that Vladimir Putin's favorite delicacy is _ stuffed with _.",
+// pick: 2
+// },
+// {
+// text: "Lifetime&reg; presents _, the story of _.",
+// pick: 2
+// },
+// {
+// text: "Make a haiku.",
+// pick: 3
+// },
+// {
+// text: "In M. Night Shyamalan's new movie, Bruce Willis discovers that _ had really been _ all along.",
+// pick: 2
+// },
+// {
+// text: "_ is a slippery slope that leads to _.",
+// pick: 2
+// },
+// {
+// text: "In a world ravaged by _, our only solace is _.",
+// pick: 2
+// },
+// {
+// text: "That's right, I killed _. How, you ask? _.",
+// pick: 2
+// },
+// {
+// text: "When I was tripping on acid, _ turned into _.",
+// pick: 2
+// },
+// {
+// text: "_ + _ = _.",
+// pick: 3
+// },
+// {
+// text: "What's the next superhero/sidekick duo?",
+// pick: 2
+// },
 {
 text: "Dear Abby,<br><br>I'm having some trouble with _ and would like your advice.",
 pick: 1
@@ -442,10 +443,10 @@ pick: 1
 text: "Next on ESPN2, the World Series of _.",
 pick: 1
 },
-{
-text: "Step 1: _. Step 2: _. Step 3: Profit.",
-pick: 2
-},
+// {
+// text: "Step 1: _. Step 2: _. Step 3: Profit.",
+// pick: 2
+// },
 {
 text: "Here is the church<br>Here is the steeple<br>Open the doors<br>And there is _.",
 pick: 1
@@ -968,11 +969,10 @@ angular.module('cardsAgainstHumanity')
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
-	var responseRef = this.responseRef	
+	var responseRef = this.responseRef
 	this.voteRef = this.gameInstance.child("votes");
 	var voteRef = this.voteRef
 	this.votes = $firebaseArray(voteRef);
-
 
 	///Add game state to firebase
 	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
@@ -994,13 +994,11 @@ angular.module('cardsAgainstHumanity')
 
 	//remove players
 	this.removePlayer = function(){
-		// var player = JSON.parse(localStorage.player);
-		var player = localStorage.player;
-		console.log("player to remove", player);
-		playersRef.child(player).remove();
-		console.log("players before remove", this.playerss)
-		localStorage.removeItem("player");
-		console.log("players after remove", this.playerss)
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+
+		playersRef.child(myId).remove();
+		console.log("PLAYER QUIT", myId)
 	}
 
 	this.identifyPlayer = function(){
@@ -1020,22 +1018,82 @@ angular.module('cardsAgainstHumanity')
 		//return myHand;
 	}
 
+	// this.drawCard = function(){
+	// 	var myInfo = this.identifyPlayer()
+	// 	var myId = myInfo._id
+	// 	var newCard = CardsService.draw();
+	// 	this.playersRef.child(myId).update({
+	// 		cards: newCard
+	// 	});
+	// }
+
 	this.addPlayer = function(){
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
-		var gamePoints = 0;
-		var cards = ["testA", "testB"];
-
-		//set player data in firebase
+		var cards = [];
+		//console.log("INSIDE ADD PLAYER")
 		playersRef.child(myId).set({
 			playerId: myInfo._id,
 			username: myInfo.username,
 			cards: cards,
-			gamePoints: gamePoints
+			gamePoints: 0
 		});
 	}
 
+
+
+	/* ______________
+	|              |
+	| cards        |
+	|______________| */
+
+	//submit response card (game state 1)
+	this.addToResponseCards = function(cardClicked, index) {
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		var tempHand;
+		console.log(cardClicked, "BEGINNNING");
+		this.playersRef.child(myId).on('value', function(snap) {
+			//console.log(snap.val().cards, "IN SNAP.VAL");
+			tempHand = (snap.val().cards);
+			//console.log("Temporary hand", tempHand);
+		})
+		if(tempHand.length < 10){
+			return tempHand
+		}
+		playersRef.child(myId).update({tempHand: tempHand})
+		tempHand.splice(index, 1);
+		playersRef.child(myId).update({cards: tempHand})
+		responseRef.child(myId).set({text: cardClicked, player: myId})
+		return tempHand
+	}
+	this.drawOneCard = function() {
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		var tempHand;
+		var newCard = CardsService.draw();
+		this.playersRef.child(myId).on('value', function(snap) {
+			//	console.log(snap.val().cards, "IN SNAP.VAL");
+			tempHand = (snap.val().cards);
+			//	console.log("Temporary hand", tempHand);
+		})
+		playersRef.child(myId).update({tempHand: tempHand})
+		tempHand.push(newCard);
+		playersRef.child(myId).update({cards: tempHand})
+		return tempHand
+	}
+
+	//vote for a card (game state 2)
+	this.voteCard = function(card){
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
+		var player = card.player;
+		this.votes.$add(player);
+	}
+
+	//deal a new white card for the player (game state 3)
 	this.updatePlayerAfterVote = function(){
 		// find player in player array
 		if (player.votes > highestVotes){
@@ -1044,6 +1102,78 @@ angular.module('cardsAgainstHumanity')
 		// restockHand(n); where n = number of cards to replace in hand
 		console.log("player should have new cards and new point total now")
 	}
+
+	/* ______________
+	|              |
+	| win points   |
+	|______________| */
+
+	// if you won the round add a point to your score (game state 2)
+	this.addWinPoint = function(player){
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		var myRef = playersRef.child(myId);
+
+
+		//only add points once per player
+		if (player === myId){
+			var winnerName;
+
+
+			var myPoints;
+			myRef.on('value', function(snap) {
+				myPoints = snap.val().gamePoints;
+				winnerName = snap.val().username;
+			})
+			var myNewPoints = myPoints + 1;
+
+			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
+			myRef.update({temp: "temp"});
+			myRef.child('temp').remove();
+
+			myRef.child('gamePoints').set(myNewPoints)
+			if (myNewPoints >= 10){
+				winnerName = winnerName + "!";
+				console.log('we have a winner')
+				this.gameInstance.child('winner').set({
+					userId: player,
+					winnerName: winnerName
+				});
+				updateMongoWins(player, myId);
+			}
+			playersRef.child(player).update({gamePoints: myNewPoints})
+			console.log(player, 'got a win point');
+			// this code is not tested and not finished !!!!!
+			gameStateRef.set(3)
+		}
+
+		return;
+	}
+
+	/* ______________
+	|              |
+	| update MONGO |
+	|______________| */
+
+	function updateMongoWins(winner, me){
+		console.log("set up route etc to add win point to mongo")
+		//var winner = snap.val().userId;
+		//if (winner === myInfo._id){
+		//$http.put("/dirtyWin", {id: winner})
+		//.then(function (res){
+		// console.log(res);
+		//}, function(err){
+		//console.log(err)
+		//})
+		//}
+	}
+
+
+
+	/* ______________
+	|              |
+	| messages     |
+	|______________| */
 
 	this.addMessage = function(message, player) {
 		if(!message) return;
@@ -1061,37 +1191,6 @@ angular.module('cardsAgainstHumanity')
 			timestamp: Date.now()
 		});
 	}
-
-
-	this.addToResponseCards = function(cardClicked, index) {
-			var myInfo = this.identifyPlayer()
-			var myId = myInfo._id
-			var tempHand;
-			console.log(cardClicked, "BEGINNNING");
-			this.playersRef.child(myId).on('value', function(snap) {
-				console.log(snap.val().cards, "IN SNAP.VAL");
-				tempHand = (snap.val().cards);
-				console.log("Temporary hand", tempHand);
-			})
-			if(tempHand.length < 10){
-				return tempHand
-			}
-			playersRef.child(myId).update({tempHand: tempHand})
-			tempHand.splice(index, 1);
-			playersRef.child(myId).update({cards: tempHand})
-			responseRef.child(myId).set({text: cardClicked, player: myId})
-			return tempHand
-	}
-
-
-	this.voteCard = function(card){
-		var myInfo = this.identifyPlayer()
-		var myId = myInfo._id
-		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
-		var player = card.player;
-		this.votes.$add(player);
-	}
-
 
 });
 
@@ -1157,15 +1256,15 @@ angular.module('cardsAgainstHumanity')
 		return fullHand;
 	}
 
-	this.draw = function(n){
-		for(var i=0; i<n; i++){
+	this.draw = function(){
+		// for(var i=0; i<n; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
 			var takenCard = tempWhiteCard.array[rando];
 			console.log("TAKEN", takenCard);
 			tempWhiteCard.array.splice(rando, 1);
-			this.gameInstance.child("exampleHand").push(takenCard)
 			this.gameInstance.child('whiteCards').set(tempWhiteCard);
-		}
+		// }
+		return takenCard
 	}
 
 });
@@ -1176,7 +1275,7 @@ angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
-	var currentState = '';
+	// var currentState = '';
 
 	/* ______________
 	|              |
@@ -1201,31 +1300,22 @@ angular.module('cardsAgainstHumanity')
 		} else {return true}
 	}
 
-	/* ______________
-	|              |
-	| Card Dealing:|
-	|______________| */
-	$scope.startDeck = function(){
-		CardsService.startDeck();
-	}
-	$scope.dealBlackCard = function(){
-		// $scope.blackCard = CardsService.dealBlackCard();
-		// $scope.blackCard = $scope.scenarioCardRef
 
-
-	}
-	$scope.startingHand = function(){
-		CardsService.startingHand();
-	}
-	$scope.draw = function(n){
-		CardsService.draw(n);
+	if($scope.isLoggedIn){
+		var cookies = $cookies.get('token');
+		var token = jwtHelper.decodeToken(cookies)
 	}
 
+		$scope.sayName = function(){
+		var token = jwtHelper.decodeToken(cookies)
+		console.log("TOKEN MASTER ", token)
+	}
 
 	/* ______________
 	|              |
 	| Firebase:    |
 	|______________| */
+	var thisGame = GameService.gameInstance
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	var responseRef = GameService.gameInstance.child("response");
@@ -1233,23 +1323,12 @@ angular.module('cardsAgainstHumanity')
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	$scope.timerRef = TimerService.timerRef;
-	var myRef = playersRef.child(myId); 
+	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
 	// $scope.blackCard = scenarioCardRef
-	
-	$scope.myHand = [];
-
-	myRef.child('cards').on('value', function(snap){
-		$scope.myHand = snap.val();
-		console.log("MY SCOPE CARDS ARE", $scope.myHand);
-	});
-
-	$scope.numPlayers;
-
-
 
 	/* ______________
 	|              |
@@ -1257,80 +1336,52 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 
-	if($scope.isLoggedIn){
-		var cookies = $cookies.get('token');
-		var token = jwtHelper.decodeToken(cookies)
-	}
-
-
-
-
-
-	var gameWon = false; // link this to a node on firebase...
-
 	var gameState = function(thisState) {
-		// console.log("THIS IS THE BLACK CARD!", $scope.blackCard);
-		//send a deck of black cards and white to Firebase
-		//console.log("in game state function")
-		//var gameStates = ['prevote', 'vote', 'postvote'];
-		var count = 0;
-		// console.log("in game state function")
-		// var gameStates = ['prevote', 'vote', 'postvote'];
-		// var count = 0;
-		var n = 60;
-
-		if (gameWon === false){
 
 			switch (thisState) {
 
-
 				case 1:
-					console.log("IFFY IFFY LALALA")
-					GameService.pickCards();
+				$rootScope.voted = false;
+				if ($scope.counter === 60){
+				  //TimerService.countDown();
+				}else if (!$scope.haveSubmitted){
+						// auto select a card to go to responses
+					}
 				//}
-				//GameService.advanceGameState();
 				//ng-hide all the cards submitted for vote
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
 				break;
 
-
 				case 2:
-				console.log("STATE 2")
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
-				console.log("!!!! VOTE !!!!")
-				// ng-show="currentState === vote"
+					console.log("STATE 2 VOTE !!!!!")
+					if($scope.counter === 60){
+						//TimerService.countDown();
+					} else if (!$scope.haveVoted){
+						// auto select a card to vote for
+					}
 				// ng-show all the cards that are submitted for voting
 				// ng-disable clickable cards from your deck
 				break;
 
-
 				case 3:
-				// if (!$scope.counter){
-				// 	$scope.countDown();
-				// }
-
 				console.log("!!!! POSTVOTE !!!!")
-				//check if game won returns true...
+				votesRef.remove();
+				responseRef.remove();
+				scenarioCardRef.remove();
+				GameService.drawOneCard();
+				CardsService.dealBlackCard();
+				gameStateRef.set(1)
 				break;
 			}
 
-		} else {
-			console.log("execute game won sequence")
-			return;
 		}
-		// break;
-	}
 
 
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
-			gameState(thisState);
+		$scope.currentState = thisState;
+		gameState(thisState);
 	})
 
 
@@ -1344,38 +1395,18 @@ angular.module('cardsAgainstHumanity')
 		$scope.counter = snap.val();
 	})
 
-	var n = 60;
-	var mytimeout = null;
-	// Actual timer method, counts down every second, stops on zero.
-	$scope.countDown = function() {
-
-		console.log("COUNTER ", n)
-		if(n ===  0) {
-			$scope.$broadcast('timer-stopped', 0);
-			$timeout.cancel(mytimeout);
-			return;
-		}
-		n--;
-		TimerService.countDown(n);
-		mytimeout = $timeout($scope.countDown, 1000);
-	};
-
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
-			//advance game to next state
-			// GameService.advanceGameState();
-			// gameState();
-			$scope.timerRef.remove();
-			GameService.advanceGameState();
-			gameState();
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
 				text: "Next Phase is underway!",
 				showConfirmButton: true,
-				confirmButtonText: currentState,
+				confirmButtonText: "GET GOIN' ",
 			});
+			remaining = false;
+			$scope.counter = 60;
 		}
 	});
 
@@ -1385,34 +1416,196 @@ angular.module('cardsAgainstHumanity')
 	|______________|
 	*/	// Create array to store each player's info.
 
-	if (!localStorage.thisPlayer){
+//Will not reset your player info by logging you in if you are already in
+thisGame.once('value', function(snap){
+	var players = snap.val().players;
+	if (players.hasOwnProperty(myId) === false){
 		GameService.addPlayer();
+		//console.log("LOGGING IN ONCE")
+	} else{
+		//console.log("NOT LOGGING IN TWICE")
 	}
+
+})
 
 	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length >= 3 ) {
+			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
+				GameService.pickCards();
+				$scope.counter = 60;
 				gameStateRef.set(1);
+				console.log("THE Playas:", $scope.playerss)
+			} else if ($scope.playerss.length < 3){
+				console.log("THE current Playas:", $scope.playerss)
+				return;
+			} else {
+				///launch new game
 			}
 		});
 	});
 
-	//Update number of players when a player quits.
-	playersRef.on("child_removed", function() {
-		$timeout(function() {
-			console.log("PLAYER QUIT", playersRef)
-			$scope.numPlayers = $scope.playerss.length
-		});
+	playersRef.on("child_removed", function(snap) {
+	//Update number of players when a player quits?
+		console.log("PLAYER QUIT", snap.val())
 	});
 
 	$scope.removePlayer = function(){
 		GameService.removePlayer();
 		$state.go("userPage");
 	}
+
+	/* ______________
+	|              |
+	| cards        |
+	|______________| */
+// maybe need to play around with child_added/ child_removed
+// to prevent re-deals?
+
+	$scope.myHand = [];
+
+	myRef.child('cards').on('value', function(snap){
+		$scope.myHand = snap.val();
+		//console.log("MY SCOPE CARDS ARE", $scope.myHand);
+	});
+
+	scenarioCardRef.on("value", function(snap) {
+		$scope.blackCard = snap.val();
+	});
+
+	/* ______________
+	|              |
+	| Responses:   |
+	|______________| */
+
+	responseRef.on("value", function(snap) {
+		$scope.responses = snap.val();
+		var numResponses = snap.numChildren();
+		console.log(snap.val(), "OUTSIDE THE IF");
+		if (numResponses === $scope.playerss.length && numResponses > 0) {
+			console.log(snap.val(), "INSIDE");
+			$scope.haveSubmitted = true;
+			gameStateRef.set(2);
+		}
+	});
+
+	/* ______________
+	|              |
+	| Votes:   		 |
+	|______________| */
+
+
+
+
+	$scope.voteCard = function(card){
+		if ($rootScope.voted === true || $scope.currentState !== 2){
+			console.log("YOU ALREADY VOTED")
+			return;
+		}
+			console.log("IN VOTECARD", card)
+		// votesRef.on("child_added", function(snap){
+			// var card = snap.val();
+			// console.log("CARD ",card);
+			// console.log("my ID", myId);
+			if (card.player === myId){
+				console.log('YOU CANNOT VOTE FOR YOURSELF');
+				votesRef.child(myId).remove();
+						swal({
+					type: "error",
+					title: "Wow, someone thinks they're special",
+					text: "Choose someone else's response",
+					showConfirmButton: true,
+					confirmButtonText: "Choose Again",
+				 });
+			} else {
+				$rootScope.voted = true;
+				console.log("I AM ROOT:", $rootScope.voted)
+				GameService.voteCard(card);
+			}
+		// })
+		//console.log("YOU voted for:", card)
+		//$rootScope.voted = true;
+	}
+
+	$scope.addToResponseCards = function(cardClicked, index) {
+		GameService.addToResponseCards(cardClicked, index);
+	}
+
+	votesRef.on("value", function(snap) {
+		$scope.haveVoted = true;
+		var votes = snap.val();
+		var votesLength = snap.numChildren();
+		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
+		//console.log(votesLength, "VOTES CHILDREN")
+		if (votesLength === $scope.playerss.length && votesLength > 0) {
+			var votesCast = {};
+				for(var player in votes){
+					player = votes[player];
+				if (!votesCast[player]){
+					votesCast[player] = 1;
+				} else {
+					votesCast[player] ++;
+				}
+				console.log(votesCast, "*.*. VOTES CAST *,*,");
+			}
+				var winner = [];
+				var prev = 0;
+				for (var player in votesCast){
+					if (votesCast[player] >= prev){
+						var person = {}
+						person.player = player;
+						person.points = votesCast[player];
+						winner.pop();
+						winner.push(person);
+						prev = votesCast[player];
+					}
+				}
+					console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
+
+					winner.forEach(function(player){
+					var player = player.player;
+					console.log(player, "GETS A POINT !")
+					GameService.addWinPoint(player);
+					// playersRef.child(player).on('value', function(snap){
+					// 	var thisPlayer = snap.val()
+					// 	swal({
+					// 		type: "error",
+					// 		title: "this round goes to",
+					// 		text: thisPlayer.username,
+					// 		showConfirmButton: true,
+					// 		confirmButtonText: "sweet!",
+					// 	});
+					//})
+				})
+		}
+	});
+
+
+
+	/* ______________
+	|              |
+	| Winner!			 |
+	|______________| */
+
+	thisGame.child('winner').on('child_added', function(snap){
+		//need to set up play again / quit options
+		//quit redirects to profile page view and play again does
+		// location.reload();
+		var winner = snap.val();
+		console.log("WINNER", snap.val().winnerName);
+
+		swal({
+				type: "error",
+				title: "And the winner is...",
+				text: winner,
+				showConfirmButton: true,
+				confirmButtonText: "sweet!",
+			});
+	})
+
 
 
 	/* ______________
@@ -1425,73 +1618,6 @@ angular.module('cardsAgainstHumanity')
 		// $scope.newMessageText = "";
 	}
 
-	$scope.voteCard = function(card){
-		GameService.voteCard(card);
-		console.log("YOU voted for:", card)
-		//$scope.voted = true;
-	}
-
-
-	$scope.sayName = function(){
-		var token = jwtHelper.decodeToken(cookies)
-		console.log("TOKEN MASTER ", token)
-	}
-
-
-	$scope.addToResponseCards = function(cardClicked, index) {
-		GameService.addToResponseCards(cardClicked, index);
-	}
-
-
-	/* ______________
-	|              |
-	| Responses:   |
-	|______________| */
-
-
-
-	responseRef.on("value", function(snap) {
-		$scope.responses = snap.val();
-		var numResponses = snap.numChildren();
-		console.log(snap.val(), "OUTSIDE THE IF");
-		if (numResponses === $scope.playerss.length) {
-			console.log(snap.val(), "INSIDE");
-			gameStateRef.set(2);
-		}
-	});
-	scenarioCardRef.on("value", function(snap) {
-		$scope.blackCard = snap.val();
-	});
-
-	/* ______________
-	|              |
-	| Votes:   		 |
-	|______________| */
-
-	votesRef.on("value", function(snap) {
-		var votes = snap.val();
-		//var votesLength = votes.numChildren();
-		console.log(votes, "VOTES OUTSIDE THE IF IN VOTES");
-		//console.log(votesLength, "VOTES CHILDREN")
-		if (votes === $scope.playerss.length) {
-			var votesCast = {};
-			votes.forEach(function(player){
-				console.log(votesCast, "*.*. VOTES CAST *,*,");
-				
-				if (!votesCast.player){
-					votesCast.player = 1;
-				} else {
-					votesCast.player ++;
-				}
-			})
-			//gameStateRef.set(2);
-		}
-	});
-
-		this.tallyVotes = function(){
-			console.log("TALLY H@!")
-		
-	}
 
 
 });
@@ -1503,24 +1629,27 @@ angular.module('cardsAgainstHumanity')
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
 	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
-	//var counter = 60;
-	//this.mytimeout = null;
+	
+	var timerRef = this.timerRef; 
+	var counter = 61;
+	var mytimeout = null;
 
+		var countDown = function(){
+			console.log("IN COUNTDOWN FUnCTION", counter)
+			if(counter ===  0) {
+			$rootScope.$broadcast('timer-stopped', 0);
+			$timeout.cancel(mytimeout);
+			return;
+		}
+		counter--;
+		timerRef.set(counter);
+		mytimeout = $timeout(countDown, 1000);
+		}
 
-	this.countDown = function(counter){
-		console.log("REMAINING SECONDS", counter)
-		this.timerRef.set(counter);
-	};
+	this.countDown = function(){
+		countDown();
+		};
 
-
-
-
-	// 	this.timerRef.on('value', function(snap){
-	// 	console.log(snap)
-	// 	var counter = snap --
-	// 	this.timerRef.set(counter);
-	// 	return snap;
-	// })
 
 })
 
@@ -1529,14 +1658,6 @@ angular.module('cardsAgainstHumanity')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
@@ -1572,35 +1693,10 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
 
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
+})
 
 'use strict';
 
@@ -1676,4 +1772,37 @@ angular.module('cardsAgainstHumanity')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
 });

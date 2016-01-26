@@ -78,9 +78,8 @@ angular.module('cardsAgainstHumanity')
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
-		var cards = ["testA", "testB"];
-
-		//set player data in firebase
+		var cards = [];
+		//console.log("INSIDE ADD PLAYER")
 		playersRef.child(myId).set({
 			playerId: myInfo._id,
 			username: myInfo.username,

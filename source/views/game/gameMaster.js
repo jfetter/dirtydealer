@@ -145,8 +145,17 @@ angular.module('cardsAgainstHumanity')
 	|______________|
 	*/	// Create array to store each player's info.
 
-///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
-	GameService.addPlayer();
+//Will not reset your player info by logging you in if you are already in
+thisGame.once('value', function(snap){
+	var players = snap.val().players;
+	if (players.hasOwnProperty(myId) === false){
+		GameService.addPlayer();
+		//console.log("LOGGING IN ONCE")
+	} else{
+		//console.log("NOT LOGGING IN TWICE")
+	}
+
+})
 
 	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
