@@ -3,7 +3,6 @@
 var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
-  //API_URL: 'http://localhost:3000'
   API_URL: 'http://localhost:3000'
 });
 
@@ -31,7 +30,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   .then(function(res , err){
     console.log(res.data)
     if (res.data !== "authRequired"){
-      $state.go('userPage', {"username": res.data.username})
+      // $state.go('userPage', {"username": res.data.username})
     $scope.isLoggedIn = true;
     console.log("LOGGED IN!")
   } else {

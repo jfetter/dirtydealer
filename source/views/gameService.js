@@ -7,7 +7,7 @@ angular.module('cardsAgainstHumanity')
 	var cookies = $cookies.get('token');
 
 
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com");
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
@@ -22,7 +22,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase("https://rachdirtydeals.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
 	this.advanceGameState = function(){
@@ -181,7 +181,7 @@ angular.module('cardsAgainstHumanity')
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 10){
+			if (myNewPoints >= 1){
 				winnerName = winnerName + "!";
 				console.log('we have a winner')
 				this.gameInstance.child('winner').set({

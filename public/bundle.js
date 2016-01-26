@@ -3,7 +3,6 @@
 var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
-  //API_URL: 'http://localhost:3000'
   API_URL: 'http://localhost:3000'
 });
 
@@ -31,7 +30,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   .then(function(res , err){
     console.log(res.data)
     if (res.data !== "authRequired"){
-      $state.go('userPage', {"username": res.data.username})
+      // $state.go('userPage', {"username": res.data.username})
     $scope.isLoggedIn = true;
     console.log("LOGGED IN!")
   } else {
@@ -947,7 +946,7 @@ angular.module('cardsAgainstHumanity')
 	var cookies = $cookies.get('token');
 
 
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com");
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
@@ -962,7 +961,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase("https://rachdirtydeals.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
 	this.advanceGameState = function(){
@@ -1121,7 +1120,7 @@ angular.module('cardsAgainstHumanity')
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 10){
+			if (myNewPoints >= 1){
 				winnerName = winnerName + "!";
 				console.log('we have a winner')
 				this.gameInstance.child('winner').set({
@@ -1190,7 +1189,7 @@ angular.module('cardsAgainstHumanity')
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
@@ -1295,7 +1294,7 @@ angular.module('cardsAgainstHumanity')
 		var token = jwtHelper.decodeToken(cookies)
 	}
 
-		$scope.sayName = function(){
+	$scope.sayName = function(){
 		var token = jwtHelper.decodeToken(cookies)
 		console.log("TOKEN MASTER ", token)
 	}
@@ -1327,42 +1326,42 @@ angular.module('cardsAgainstHumanity')
 
 	var gameState = function(thisState) {
 
-			switch (thisState) {
+		switch (thisState) {
 
-				case 1:
-				$rootScope.voted = false;
-				if ($scope.counter === 60){
-				  //TimerService.countDown();
-				}else if (!$scope.haveSubmitted){
-						// auto select a card to go to responses
-					}
-				//}
-				//ng-hide all the cards submitted for vote
-				break;
-
-				case 2:
-					console.log("STATE 2 VOTE !!!!!")
-					if($scope.counter === 60){
-						//TimerService.countDown();
-					} else if (!$scope.haveVoted){
-						// auto select a card to vote for
-					}
-				// ng-show all the cards that are submitted for voting
-				// ng-disable clickable cards from your deck
-				break;
-
-				case 3:
-				console.log("!!!! POSTVOTE !!!!")
-				votesRef.remove();
-				responseRef.remove();
-				scenarioCardRef.remove();
-				GameService.drawOneCard();
-				CardsService.dealBlackCard();
-				gameStateRef.set(1)
-				break;
+			case 1:
+			$rootScope.voted = false;
+			if ($scope.counter === 60){
+				//TimerService.countDown();
+			}else if (!$scope.haveSubmitted){
+				// auto select a card to go to responses
 			}
+			//}
+			//ng-hide all the cards submitted for vote
+			break;
 
+			case 2:
+			console.log("STATE 2 VOTE !!!!!")
+			if($scope.counter === 60){
+				//TimerService.countDown();
+			} else if (!$scope.haveVoted){
+				// auto select a card to vote for
+			}
+			// ng-show all the cards that are submitted for voting
+			// ng-disable clickable cards from your deck
+			break;
+
+			case 3:
+			console.log("!!!! POSTVOTE !!!!")
+			votesRef.remove();
+			responseRef.remove();
+			scenarioCardRef.remove();
+			GameService.drawOneCard();
+			CardsService.dealBlackCard();
+			gameStateRef.set(1)
+			break;
 		}
+
+	}
 
 
 	//connect with firebase game states
@@ -1405,7 +1404,7 @@ angular.module('cardsAgainstHumanity')
 	|______________|
 	*/	// Create array to store each player's info.
 
-///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
+	///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
 	GameService.addPlayer();
 
 	//Add player to waiting room when they click join.
@@ -1429,7 +1428,7 @@ angular.module('cardsAgainstHumanity')
 	});
 
 	playersRef.on("child_removed", function(snap) {
-	//Update number of players when a player quits?
+		//Update number of players when a player quits?
 		console.log("PLAYER QUIT", snap.val())
 	});
 
@@ -1442,8 +1441,8 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| cards        |
 	|______________| */
-// maybe need to play around with child_added/ child_removed
-// to prevent re-deals?
+	// maybe need to play around with child_added/ child_removed
+	// to prevent re-deals?
 
 	$scope.myHand = [];
 
@@ -1477,34 +1476,33 @@ angular.module('cardsAgainstHumanity')
 	| Votes:   		 |
 	|______________| */
 
-
-
-
 	$scope.voteCard = function(card){
 		if ($rootScope.voted === true || $scope.currentState !== 2){
-			console.log("YOU ALREADY VOTED")
-			return;
+			console.log("YOU ALREADY VOTED");
+			return
+
 		}
-			console.log("IN VOTECARD", card)
+		console.log("IN VOTECARD", card)
 		// votesRef.on("child_added", function(snap){
-			// var card = snap.val();
-			// console.log("CARD ",card);
-			// console.log("my ID", myId);
-			if (card.player === myId){
-				console.log('YOU CANNOT VOTE FOR YOURSELF');
-				votesRef.child(myId).remove();
-						swal({
-					type: "error",
-					title: "Wow, someone thinks they're special",
-					text: "Choose someone else's response",
-					showConfirmButton: true,
-					confirmButtonText: "Choose Again",
-				 });
-			} else {
-				$rootScope.voted = true;
-				console.log("I AM ROOT:", $rootScope.voted)
-				GameService.voteCard(card);
-			}
+		// var card = snap.val();
+		// console.log("CARD ",card);
+		// console.log("my ID", myId);
+		if (card.player === myId){
+			console.log('YOU CANNOT VOTE FOR YOURSELF');
+			votesRef.child(myId).remove();
+
+			swal({
+				type: "error",
+				title: "Wow, someone thinks they're special",
+				text: "Choose someone else's response",
+				showConfirmButton: true,
+				confirmButtonText: "Choose Again",
+			});
+		} else {
+			$rootScope.voted = true;
+			console.log("I AM ROOT:", $rootScope.voted)
+			GameService.voteCard(card);
+		}
 		// })
 		//console.log("YOU voted for:", card)
 		//$rootScope.voted = true;
@@ -1522,8 +1520,8 @@ angular.module('cardsAgainstHumanity')
 		//console.log(votesLength, "VOTES CHILDREN")
 		if (votesLength === $scope.playerss.length && votesLength > 0) {
 			var votesCast = {};
-				for(var player in votes){
-					player = votes[player];
+			for(var player in votes){
+				player = votes[player];
 				if (!votesCast[player]){
 					votesCast[player] = 1;
 				} else {
@@ -1531,35 +1529,35 @@ angular.module('cardsAgainstHumanity')
 				}
 				console.log(votesCast, "*.*. VOTES CAST *,*,");
 			}
-				var winner = [];
-				var prev = 0;
-				for (var player in votesCast){
-					if (votesCast[player] >= prev){
-						var person = {}
-						person.player = player;
-						person.points = votesCast[player];
-						winner.pop();
-						winner.push(person);
-						prev = votesCast[player];
-					}
+			var winner = [];
+			var prev = 0;
+			for (var player in votesCast){
+				if (votesCast[player] >= prev){
+					var person = {}
+					person.player = player;
+					person.points = votesCast[player];
+					winner.pop();
+					winner.push(person);
+					prev = votesCast[player];
 				}
-					console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
+			}
+			console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
 
-					winner.forEach(function(player){
-					var player = player.player;
-					console.log(player, "GETS A POINT !")
-					GameService.addWinPoint(player);
-					// playersRef.child(player).on('value', function(snap){
-					// 	var thisPlayer = snap.val()
-					// 	swal({
-					// 		type: "error",
-					// 		title: "this round goes to",
-					// 		text: thisPlayer.username,
-					// 		showConfirmButton: true,
-					// 		confirmButtonText: "sweet!",
-					// 	});
-					//})
-				})
+			winner.forEach(function(player){
+				var player = player.player;
+				console.log(player, "GETS A POINT !")
+				GameService.addWinPoint(player);
+				// playersRef.child(player).on('value', function(snap){
+				// 	var thisPlayer = snap.val()
+				// 	swal({
+				// 		type: "error",
+				// 		title: "this round goes to",
+				// 		text: thisPlayer.username,
+				// 		showConfirmButton: true,
+				// 		confirmButtonText: "sweet!",
+				// 	});
+				//})
+			})
 		}
 	});
 
@@ -1571,21 +1569,40 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 	thisGame.child('winner').on('child_added', function(snap){
-		//need to set up play again / quit options
-		//quit redirects to profile page view and play again does
-		// location.reload();
 		var winner = snap.val();
 		console.log("WINNER", snap.val().winnerName);
 
+		//Play Again redirects
 		swal({
-				type: "error",
-				title: "And the winner is...",
-				text: winner,
-				showConfirmButton: true,
-				confirmButtonText: "sweet!",
-			});
-	})
-
+			title: "And the winner is...",
+			text: winner,
+			type: "success",
+			animation: "slide-from-top",
+			showCancelButton: true,
+			cancelButtonText: "Play Again",
+			closeOnConfirm: true,
+			showLoaderOnConfirm: true,
+			showConfirmButton: true,
+			confirmButtonText: "Cool. I'm done."
+		}, function(isConfirm) {
+			if (isConfirm) {
+				var cookies = $cookies.get('token');
+				var username;
+				if(cookies){
+					$scope.userInfo = (jwtHelper.decodeToken(cookies))
+				}
+				setTimeout(function() {
+					$state.go('userPage', {"username": username})
+				}, 2000)
+			} else {
+				gameStateRef.set(3);
+				setTimeout(function() {
+					location.reload(true);
+				})
+			};
+		});
+		return;
+	});
 
 
 	/* ______________
@@ -1682,6 +1699,39 @@ angular.module('cardsAgainstHumanity')
 
 angular.module('cardsAgainstHumanity')
 
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		console.log(user)
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
 
 .controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
 	$scope.user = {};
@@ -1752,37 +1802,4 @@ angular.module('cardsAgainstHumanity')
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		console.log(user)
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
 });
