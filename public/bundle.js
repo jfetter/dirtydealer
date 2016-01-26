@@ -952,7 +952,8 @@ angular.module('cardsAgainstHumanity')
 	var cookies = $cookies.get('token');
 
 
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+	this.gameInstance = new Firebase("https://mycah.firebaseio.com");
+	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
@@ -967,7 +968,8 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase("https://mycah.firebaseio.com/gamestate");
+	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
 	this.advanceGameState = function(){
@@ -1025,7 +1027,7 @@ angular.module('cardsAgainstHumanity')
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
-		var cards = ["testA", "testB"];
+		var cards = [];
 
 		//set player data in firebase
 		playersRef.child(myId).set({
@@ -1196,11 +1198,14 @@ angular.module('cardsAgainstHumanity')
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://mycah.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
-	this.exampleHand = this.gameInstance.child("exampleHand")
+
+	// this.exampleHand = this.gameInstance.child("exampleHand")
+	this.tempWhiteRef = this.gameInstance.child("tempWhite")
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
@@ -1230,21 +1235,20 @@ angular.module('cardsAgainstHumanity')
 		return takenCard;
 	}
 
-	var tempWhiteCard = [];
+	var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val();
-		console.log("BASE", tempWhiteCard)
+		tempWhiteCard = snap.val().array;
+		console.log("Temp white card updated", tempWhiteCard)
 	});
-
 
 	this.startingHand = function(){
 		var fullHand = [];
 		for(var i = 0; i<10; i++){
-			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-			var takenCards = tempWhiteCard.array[rando];
-			tempWhiteCard.array.splice(rando, 1);
+			var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
+			var takenCards = tempWhiteCard[rando];
+			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').set(tempWhiteCard)
+			this.gameInstance.child('whiteCards').update({array: tempWhiteCard})
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)
@@ -1253,11 +1257,11 @@ angular.module('cardsAgainstHumanity')
 
 	this.draw = function(){
 		// for(var i=0; i<n; i++){
-			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-			var takenCard = tempWhiteCard.array[rando];
-			console.log("TAKEN", takenCard);
-			tempWhiteCard.array.splice(rando, 1);
-			this.gameInstance.child('whiteCards').set(tempWhiteCard);
+		var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
+		var takenCard = tempWhiteCard.array[rando];
+		console.log("TAKEN", takenCard);
+		tempWhiteCard.array.splice(rando, 1);
+		this.gameInstance.child('whiteCards').set(tempWhiteCard);
 		// }
 		return takenCard
 	}
@@ -1323,6 +1327,11 @@ angular.module('cardsAgainstHumanity')
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
+
+
+	// playersRef.child(myId).on('value', function(snap){
+	// 	console.log("I EVLOLVED", snap.val().cards.length)
+	// })
 	// $scope.blackCard = scenarioCardRef
 
 	/* ______________
@@ -1336,6 +1345,14 @@ angular.module('cardsAgainstHumanity')
 		switch (thisState) {
 
 			case 1:
+
+			console.log("HERE I AM!", myId);
+
+			if(!playersRef.child(myId).hasOwnProperty('cards')){
+				// GameService.pickCards();s
+				console.log("DREW A HAND!")
+			}
+
 			$rootScope.voted = false;
 			if ($scope.counter === 60){
 				//TimerService.countDown();
@@ -1434,29 +1451,34 @@ angular.module('cardsAgainstHumanity')
 
 	///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
 	GameService.addPlayer();
-	var cardSet = false;
 
-	if(!cardSet){
-		CardsService.startDeck();
-		CardsService.dealBlackCard();
-		cardSet = true;
-	}
 
-	GameService.pickCards();
+
+	// playersRef.once('child_added', function() {
+	// 	CardsService.startDeck();
+	// 	CardsService.dealBlackCard();
+	// })
+	// GameService.pickCards();
+
 	//Add player to waiting room when they click join.
+
+
+
+
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
-				// GameService.pickCards();
+			if ($scope.playerss.length === 2 && !$scope.gameState) {
 				$scope.counter = 60;
 				gameStateRef.set(1);
 				console.log("THE Playas:", $scope.playerss)
-			} else if ($scope.playerss.length < 3){
+			} else if ($scope.playerss.length < 2){
 				console.log("THE current Playas:", $scope.playerss)
+				CardsService.startDeck();
+				CardsService.dealBlackCard();
 				return;
 			} else {
-				///launch new game
+				return;
 			}
 		});
 	});
@@ -1622,19 +1644,19 @@ angular.module('cardsAgainstHumanity')
 			$scope.selfDestruct();
 		}
 	);
-	})
+})
 
 
 
-	/* _____________
-	|              |
-	| Messages:    |
-	|______________| */
-	$scope.messages = GameService.messages;
-	$scope.addMessage = function(message) {
-		GameService.addMessage(message);
-		// $scope.newMessageText = "";
-	}
+/* _____________
+|              |
+| Messages:    |
+|______________| */
+$scope.messages = GameService.messages;
+$scope.addMessage = function(message) {
+	GameService.addMessage(message);
+	// $scope.newMessageText = "";
+}
 
 
 

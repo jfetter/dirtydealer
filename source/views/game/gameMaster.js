@@ -57,6 +57,11 @@ angular.module('cardsAgainstHumanity')
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
+
+
+	// playersRef.child(myId).on('value', function(snap){
+	// 	console.log("I EVLOLVED", snap.val().cards.length)
+	// })
 	// $scope.blackCard = scenarioCardRef
 
 	/* ______________
@@ -70,6 +75,14 @@ angular.module('cardsAgainstHumanity')
 		switch (thisState) {
 
 			case 1:
+
+			console.log("HERE I AM!", myId);
+
+			if(!playersRef.child(myId).hasOwnProperty('cards')){
+				// GameService.pickCards();s
+				console.log("DREW A HAND!")
+			}
+
 			$rootScope.voted = false;
 			if ($scope.counter === 60){
 				//TimerService.countDown();
@@ -168,29 +181,34 @@ angular.module('cardsAgainstHumanity')
 
 	///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
 	GameService.addPlayer();
-	var cardSet = false;
 
-	if(!cardSet){
-		CardsService.startDeck();
-		CardsService.dealBlackCard();
-		cardSet = true;
-	}
 
-	GameService.pickCards();
+
+	// playersRef.once('child_added', function() {
+	// 	CardsService.startDeck();
+	// 	CardsService.dealBlackCard();
+	// })
+	// GameService.pickCards();
+
 	//Add player to waiting room when they click join.
+
+
+
+
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
-				// GameService.pickCards();
+			if ($scope.playerss.length === 2 && !$scope.gameState) {
 				$scope.counter = 60;
 				gameStateRef.set(1);
 				console.log("THE Playas:", $scope.playerss)
-			} else if ($scope.playerss.length < 3){
+			} else if ($scope.playerss.length < 2){
 				console.log("THE current Playas:", $scope.playerss)
+				CardsService.startDeck();
+				CardsService.dealBlackCard();
 				return;
 			} else {
-				///launch new game
+				return;
 			}
 		});
 	});
@@ -356,19 +374,19 @@ angular.module('cardsAgainstHumanity')
 			$scope.selfDestruct();
 		}
 	);
-	})
+})
 
 
 
-	/* _____________
-	|              |
-	| Messages:    |
-	|______________| */
-	$scope.messages = GameService.messages;
-	$scope.addMessage = function(message) {
-		GameService.addMessage(message);
-		// $scope.newMessageText = "";
-	}
+/* _____________
+|              |
+| Messages:    |
+|______________| */
+$scope.messages = GameService.messages;
+$scope.addMessage = function(message) {
+	GameService.addMessage(message);
+	// $scope.newMessageText = "";
+}
 
 
 

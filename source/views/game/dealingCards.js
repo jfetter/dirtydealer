@@ -5,11 +5,14 @@ angular.module('cardsAgainstHumanity')
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 
-	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://mycah.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
-	this.exampleHand = this.gameInstance.child("exampleHand")
+
+	// this.exampleHand = this.gameInstance.child("exampleHand")
+	this.tempWhiteRef = this.gameInstance.child("tempWhite")
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
@@ -39,21 +42,20 @@ angular.module('cardsAgainstHumanity')
 		return takenCard;
 	}
 
-	var tempWhiteCard = [];
+	var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val();
-		console.log("BASE", tempWhiteCard)
+		tempWhiteCard = snap.val().array;
+		console.log("Temp white card updated", tempWhiteCard)
 	});
-
 
 	this.startingHand = function(){
 		var fullHand = [];
 		for(var i = 0; i<10; i++){
-			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-			var takenCards = tempWhiteCard.array[rando];
-			tempWhiteCard.array.splice(rando, 1);
+			var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
+			var takenCards = tempWhiteCard[rando];
+			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').set(tempWhiteCard)
+			this.gameInstance.child('whiteCards').update({array: tempWhiteCard})
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)
@@ -62,11 +64,11 @@ angular.module('cardsAgainstHumanity')
 
 	this.draw = function(){
 		// for(var i=0; i<n; i++){
-			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-			var takenCard = tempWhiteCard.array[rando];
-			console.log("TAKEN", takenCard);
-			tempWhiteCard.array.splice(rando, 1);
-			this.gameInstance.child('whiteCards').set(tempWhiteCard);
+		var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
+		var takenCard = tempWhiteCard.array[rando];
+		console.log("TAKEN", takenCard);
+		tempWhiteCard.array.splice(rando, 1);
+		this.gameInstance.child('whiteCards').set(tempWhiteCard);
 		// }
 		return takenCard
 	}
