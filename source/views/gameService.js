@@ -16,7 +16,9 @@ angular.module('cardsAgainstHumanity')
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
+
 	var responseRef = this.responseRef	
+
 	this.voteRef = this.gameInstance.child("votes");
 	var voteRef = this.voteRef
 	this.votes = $firebaseArray(voteRef);
@@ -65,6 +67,17 @@ angular.module('cardsAgainstHumanity')
 		//return myHand;
 	}
 
+
+	// this.drawCard = function(){
+	// 	var myInfo = this.identifyPlayer()
+	// 	var myId = myInfo._id
+	// 	var newCard = CardsService.draw();
+	// 	this.playersRef.child(myId).update({
+	// 		cards: newCard
+	// 	});
+	// }
+
+
 	this.addPlayer = function(){
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
@@ -89,23 +102,39 @@ angular.module('cardsAgainstHumanity')
 
 	//submit response card (game state 1)
 	this.addToResponseCards = function(cardClicked, index) {
-			var myInfo = this.identifyPlayer()
-			var myId = myInfo._id
-			var tempHand;
-			console.log(cardClicked, "BEGINNNING");
-			this.playersRef.child(myId).on('value', function(snap) {
-				console.log(snap.val().cards, "IN SNAP.VAL");
-				tempHand = (snap.val().cards);
-				console.log("Temporary hand", tempHand);
-			})
-			if(tempHand.length < 10){
-				return tempHand
-			}
-			playersRef.child(myId).update({tempHand: tempHand})
-			tempHand.splice(index, 1);
-			playersRef.child(myId).update({cards: tempHand})
-			responseRef.child(myId).set({text: cardClicked, player: myId})
+
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		var tempHand;
+		console.log(cardClicked, "BEGINNNING");
+		this.playersRef.child(myId).on('value', function(snap) {
+			//console.log(snap.val().cards, "IN SNAP.VAL");
+			tempHand = (snap.val().cards);
+			//console.log("Temporary hand", tempHand);
+		})
+		if(tempHand.length < 10){
 			return tempHand
+		}
+		playersRef.child(myId).update({tempHand: tempHand})
+		tempHand.splice(index, 1);
+		playersRef.child(myId).update({cards: tempHand})
+		responseRef.child(myId).set({text: cardClicked, player: myId})
+		return tempHand
+	}
+	this.drawOneCard = function() {
+		var myInfo = this.identifyPlayer()
+		var myId = myInfo._id
+		var tempHand;
+		var newCard = CardsService.draw();
+		this.playersRef.child(myId).on('value', function(snap) {
+			//	console.log(snap.val().cards, "IN SNAP.VAL");
+			tempHand = (snap.val().cards);
+			//	console.log("Temporary hand", tempHand);
+		})
+		playersRef.child(myId).update({tempHand: tempHand})
+		tempHand.push(newCard);
+		playersRef.child(myId).update({cards: tempHand})
+		return tempHand
 	}
 
 	//vote for a card (game state 2)
@@ -115,11 +144,10 @@ angular.module('cardsAgainstHumanity')
 		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
 		var player = card.player;
 		this.votes.$add(player);
-		$rootScope.voted = false;
 	}
 
 	//deal a new white card for the player (game state 3)
-		this.updatePlayerAfterVote = function(){
+	this.updatePlayerAfterVote = function(){
 		// find player in player array
 		if (player.votes > highestVotes){
 			//increment this players points key
@@ -138,53 +166,61 @@ angular.module('cardsAgainstHumanity')
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
 		var myRef = playersRef.child(myId);
+
 		//only add points once per player
 		if (player === myId){
+			var winnerName;
+
 			var myPoints;
 			myRef.on('value', function(snap) {
 				myPoints = snap.val().gamePoints;
+				winnerName = snap.val().username;
 			})
-				var myNewPoints = myPoints + 1;
+			var myNewPoints = myPoints + 1;
 
-				//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
-				myRef.update({temp: "temp"});
-				myRef.child('temp').remove();
+			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
+			myRef.update({temp: "temp"});
+			myRef.child('temp').remove();
 
-				myRef.child('gamePoints').set(myNewPoints)
-				if (myNewPoints >= 10){
-					console.log('we have a winner')
-					this.gameInstance.child('winner').set(player);
-					updateMongoWins(player, myId);
-				}
-				playersRef.child(player).update({gamePoints: myNewPoints})
-				console.log(player, 'got a win point');
-						// this code is not tested and not finished !!!!!
-				gameStateRef.set(3)
+			myRef.child('gamePoints').set(myNewPoints)
+			if (myNewPoints >= 10){
+				winnerName = winnerName + "!";
+				console.log('we have a winner')
+				this.gameInstance.child('winner').set({
+					userId: player,
+					winnerName: winnerName
+				});
+				updateMongoWins(player, myId);
+			}
+			playersRef.child(player).update({gamePoints: myNewPoints})
+			console.log(player, 'got a win point');
+			// this code is not tested and not finished !!!!!
+			gameStateRef.set(3)
+		}
+
+		return;
 	}
-	return;
-}
 
-		/* ______________
+	/* ______________
 	|              |
 	| update MONGO |
 	|______________| */
 
-		function updateMongoWins(winner, me){
-			console.log("set up route etc to add win point to mongo")
-			var winner = snap.val();
-			if (winner = myInfo._id){
-				//$http.put("/dirtyWin", {id: winner})
-				//.then(function (res){
-					// console.log(res);
-					//}, function(err){
-				//console.log(err)
-				//})
-			}
-		}
+	function updateMongoWins(winner, me){
+		console.log("set up route etc to add win point to mongo")
+		//var winner = snap.val().userId;
+		//if (winner === myInfo._id){
+		//$http.put("/dirtyWin", {id: winner})
+		//.then(function (res){
+		// console.log(res);
+		//}, function(err){
+		//console.log(err)
+		//})
+		//}
+	}
 
 
-
-		/* ______________
+	/* ______________
 	|              |
 	| messages     |
 	|______________| */

@@ -60,15 +60,16 @@ angular.module('cardsAgainstHumanity')
 		return fullHand;
 	}
 
-	this.draw = function(n){
-		for(var i=0; i<n; i++){
+
+	this.draw = function(){
+		// for(var i=0; i<n; i++){
 			var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
 			var takenCard = tempWhiteCard.array[rando];
 			console.log("TAKEN", takenCard);
 			tempWhiteCard.array.splice(rando, 1);
-			this.gameInstance.child("exampleHand").push(takenCard)
 			this.gameInstance.child('whiteCards').set(tempWhiteCard);
-		}
+		// }
+		return takenCard
 	}
 
 });

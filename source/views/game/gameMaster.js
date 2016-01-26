@@ -52,7 +52,8 @@ angular.module('cardsAgainstHumanity')
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	$scope.timerRef = TimerService.timerRef;
-	var myRef = playersRef.child(myId); 
+
+	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
@@ -70,8 +71,10 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
+
+				$rootScope.voted = false;
 				if ($scope.counter === 60){
-				  TimerService.countDown();
+				  //TimerService.countDown();
 				}else if (!$scope.haveSubmitted){
 						// auto select a card to go to responses
 					}
@@ -82,7 +85,7 @@ angular.module('cardsAgainstHumanity')
 				case 2:
 					console.log("STATE 2 VOTE !!!!!")
 					if($scope.counter === 60){
-						TimerService.countDown();
+						//TimerService.countDown();
 					} else if (!$scope.haveVoted){
 						// auto select a card to vote for
 					}
@@ -94,13 +97,14 @@ angular.module('cardsAgainstHumanity')
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
 				responseRef.remove();
-				$scope.addToResponseCards();
+				scenarioCardRef.remove();
+				GameService.drawOneCard();
+				CardsService.dealBlackCard();
 				gameStateRef.set(1)
-
 				break;
 			}
 
-		} 
+		}
 
 
 	//connect with firebase game states
@@ -156,7 +160,9 @@ angular.module('cardsAgainstHumanity')
 				GameService.pickCards();
 				$scope.counter = 60;
 				gameStateRef.set(1);
+				console.log("THE Playas:", $scope.playerss)
 			} else if ($scope.playerss.length < 3){
+				console.log("THE current Playas:", $scope.playerss)
 				return;
 			} else {
 				///launch new game
@@ -217,7 +223,8 @@ angular.module('cardsAgainstHumanity')
 
 
 	$scope.voteCard = function(card){
-		if ($rootScope.voted || $scope.currentState !== 2){
+
+		if ($rootScope.voted === true || $scope.currentState !== 2){
 			console.log("YOU ALREADY VOTED")
 			return;
 		}
@@ -228,7 +235,7 @@ angular.module('cardsAgainstHumanity')
 			// console.log("my ID", myId);
 			if (card.player === myId){
 				console.log('YOU CANNOT VOTE FOR YOURSELF');
-				votesRef.child(myId).remove();			
+				votesRef.child(myId).remove();
 						swal({
 					type: "error",
 					title: "Wow, someone thinks they're special",
@@ -238,6 +245,7 @@ angular.module('cardsAgainstHumanity')
 				 });
 			} else {
 				$rootScope.voted = true;
+				console.log("I AM ROOT:", $rootScope.voted)
 				GameService.voteCard(card);
 			}
 		// })
@@ -279,7 +287,7 @@ angular.module('cardsAgainstHumanity')
 					}
 				}
 					console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
-					
+
 					winner.forEach(function(player){
 					var player = player.player;
 					console.log(player, "GETS A POINT !")
@@ -305,11 +313,13 @@ angular.module('cardsAgainstHumanity')
 	| Winner!			 |
 	|______________| */
 
-	thisGame.child('winner').on('value', function(snap){
+	thisGame.child('winner').on('child_added', function(snap){
 		//need to set up play again / quit options
 		//quit redirects to profile page view and play again does
 		// location.reload();
-		var winner = snap.val().username
+		var winner = snap.val();
+		console.log("WINNER", snap.val().winnerName);
+
 		swal({
 				type: "error",
 				title: "And the winner is...",
