@@ -74,20 +74,15 @@ angular.module('cardsAgainstHumanity')
 
 				case 1:
 				$rootScope.voted = false;
-				if ($scope.counter === 60){
 				  //TimerService.countDown();
-				}else if (!$scope.haveSubmitted){
-						// auto select a card to go to responses
-					}
-				//}
+
 				//ng-hide all the cards submitted for vote
 				break;
 
 				case 2:
 					console.log("STATE 2 VOTE !!!!!")
-					if($scope.counter === 60){
-						//TimerService.countDown();
-					} else if (!$scope.haveVoted){
+
+					 if (!$scope.haveVoted){
 						// auto select a card to vote for
 					}
 				// ng-show all the cards that are submitted for voting
@@ -130,6 +125,20 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		if(remaining === 0) {
+			console.log("SCOPE HAVESUBMITTED", $scope.haveSubmitted)
+			if ($scope.haveSubmitted != true && $scope.currentState === 1){
+				console.log("you should have submitted by now")
+				console.log("My hand", $scope.myHand )
+				var rando = Math.floor((Math.random() * $scope.myHand.length ) + 0);
+				var spliced = $scope.myHand.splice(rando, 1)
+				//console.log("spliced", spliced, "rando", rando);
+				GameService.addToResponseCards(spliced, rando)
+				myRef.child('cards').set($scope.myHand);
+
+				// auto select a card to go to responses
+
+				myRef.child('submittedResponse').set(true) 
+			} 
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
@@ -168,7 +177,7 @@ thisGame.once('value', function(snap){
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
-				$scope.counter = 60;
+				TimerService.countDown();
 				gameStateRef.set(1);
 				console.log("THE Playas:", $scope.playerss)
 			} else if ($scope.playerss.length < 3){
@@ -182,6 +191,7 @@ thisGame.once('value', function(snap){
 
 	playersRef.on("child_removed", function(snap) {
 	//Update number of players when a player quits?
+	//SWAL XXX HAS LEFT THE GAME;
 		console.log("PLAYER QUIT", snap.val())
 	});
 
@@ -213,13 +223,41 @@ thisGame.once('value', function(snap){
 	| Responses:   |
 	|______________| */
 
-	responseRef.on("value", function(snap) {
-		$scope.responses = snap.val();
+// notify firebase that I submitted a response card
+	responseRef.child(myId).on('value', function(snap){
+		console.log("I SUBMITTED A RESPONSE!")
+		myRef.update({
+			submittedResponse: true
+		})
+	})
+
+//update the scope when I submit a response card
+	myRef.child('submittedResponse').on('value', function(snap){
+		console.log(snap.val(), "SNAP VAL IN SUBMITTD RESPONSE")
+		//if (snap.val() == true){
+			console.log("$scope.haveSubmitted", $scope.haveSubmitted)
+			$scope.haveSubmitted = snap.val();
+		//}
+	})
+
+	responseRef.on("child_added", function(snap) {
 		var numResponses = snap.numChildren();
-		console.log(snap.val(), "OUTSIDE THE IF");
+		var allResponses = snap.val();
+		$scope.responses = snap.val();
+		console.log("ALL RESPONSES", allResponses)
+		// if (allResponses.hasOwnProperty(myId))
+		// 	{
+		// 		console.log("I SUBMITTED!")
+		// 		myRef.child()
+		// 		// to account for refreshing could set this as
+		// 		// a key in the player schema; 
+		// 	}
+		//console.log(snap.val(), "OUTSIDE THE IF");
 		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
-			$scope.haveSubmitted = true;
+		//start timer for next round;
+			TimerService.counter = 61;
+			TimerService.countDown();
 			gameStateRef.set(2);
 		}
 	});
@@ -263,6 +301,7 @@ thisGame.once('value', function(snap){
 	}
 
 	$scope.addToResponseCards = function(cardClicked, index) {
+		console.log(cardClicked)
 		GameService.addToResponseCards(cardClicked, index);
 	}
 
