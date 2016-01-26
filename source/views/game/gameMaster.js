@@ -308,11 +308,11 @@ angular.module('cardsAgainstHumanity')
 	| Winner!			 |
 	|______________| */
 
-	thisGame.child('winner').on('value', function(snap){
+	thisGame.child('winner').on('child_added', function(snap){
 		//need to set up play again / quit options
 		//quit redirects to profile page view and play again does
 		// location.reload();
-		var winner = snap.val();
+		var winner = snap.val().winnerName;
 		console.log("WINNER", snap.val());
 
 		swal({

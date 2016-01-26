@@ -166,17 +166,11 @@ angular.module('cardsAgainstHumanity')
 		//only add points once per player
 		if (player === myId){
 			var winnerName; 
-			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
-			playersRef.on('value', function(snap){
-				console.log(snap.val(), "= snapval.myId.username");
-			winnerName = snap.val().myId.username;
-			})
-			playersRef.update({temp: "temp"});
-			playersRef.child('temp').remove();
 
 			var myPoints;
 			myRef.on('value', function(snap) {
 				myPoints = snap.val().gamePoints;
+				winnerName = snap.val().username;
 			})
 				var myNewPoints = myPoints + 1;
 
@@ -186,7 +180,7 @@ angular.module('cardsAgainstHumanity')
 
 				myRef.child('gamePoints').set(myNewPoints)
 				if (myNewPoints >= 1){
-					var winnerName = winnerName + "!";
+					winnerName = winnerName + "!";
 					console.log('we have a winner')
 					this.gameInstance.child('winner').set({
 						userId: player,
@@ -210,15 +204,15 @@ angular.module('cardsAgainstHumanity')
 
 		function updateMongoWins(winner, me){
 			console.log("set up route etc to add win point to mongo")
-			var winner = snap.val().userId;
-			if (winner = myInfo._id){
+			//var winner = snap.val().userId;
+			//if (winner === myInfo._id){
 				//$http.put("/dirtyWin", {id: winner})
 				//.then(function (res){
 					// console.log(res);
 					//}, function(err){
 				//console.log(err)
 				//})
-			}
+			//}
 		}
 
 
