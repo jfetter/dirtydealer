@@ -52,7 +52,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	$scope.timerRef = TimerService.timerRef;
-	var myRef = playersRef.child(myId); 
+	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
@@ -94,13 +94,14 @@ angular.module('cardsAgainstHumanity')
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
 				responseRef.remove();
-				$scope.addToResponseCards();
+				scenarioCardRef.remove();
+				GameService.drawOneCard();
+				CardsService.dealBlackCard();
 				gameStateRef.set(1)
-
 				break;
 			}
 
-		} 
+		}
 
 
 	//connect with firebase game states
@@ -217,7 +218,7 @@ angular.module('cardsAgainstHumanity')
 
 
 	$scope.voteCard = function(card){
-		if ($rootScope.voted || $scope.currentState !== 2){
+		if ($rootScope.voted === true || $scope.currentState !== 2){
 			console.log("YOU ALREADY VOTED")
 			return;
 		}
@@ -228,7 +229,7 @@ angular.module('cardsAgainstHumanity')
 			// console.log("my ID", myId);
 			if (card.player === myId){
 				console.log('YOU CANNOT VOTE FOR YOURSELF');
-				votesRef.child(myId).remove();			
+				votesRef.child(myId).remove();
 						swal({
 					type: "error",
 					title: "Wow, someone thinks they're special",
@@ -238,6 +239,7 @@ angular.module('cardsAgainstHumanity')
 				 });
 			} else {
 				$rootScope.voted = true;
+				console.log("I AM ROOT:", $rootScope.voted)
 				GameService.voteCard(card);
 			}
 		// })
@@ -279,7 +281,7 @@ angular.module('cardsAgainstHumanity')
 					}
 				}
 					console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
-					
+
 					winner.forEach(function(player){
 					var player = player.player;
 					console.log(player, "GETS A POINT !")

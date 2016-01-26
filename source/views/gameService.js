@@ -16,7 +16,7 @@ angular.module('cardsAgainstHumanity')
 	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
-	var responseRef = this.responseRef	
+	var responseRef = this.responseRef
 	this.voteRef = this.gameInstance.child("votes");
 	var voteRef = this.voteRef
 	this.votes = $firebaseArray(voteRef);
@@ -65,6 +65,15 @@ angular.module('cardsAgainstHumanity')
 		//return myHand;
 	}
 
+	// this.drawCard = function(){
+	// 	var myInfo = this.identifyPlayer()
+	// 	var myId = myInfo._id
+	// 	var newCard = CardsService.draw();
+	// 	this.playersRef.child(myId).update({
+	// 		cards: newCard
+	// 	});
+	// }
+
 	this.addPlayer = function(){
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
@@ -105,6 +114,21 @@ angular.module('cardsAgainstHumanity')
 			tempHand.splice(index, 1);
 			playersRef.child(myId).update({cards: tempHand})
 			responseRef.child(myId).set({text: cardClicked, player: myId})
+			return tempHand
+	}
+	this.drawOneCard = function() {
+			var myInfo = this.identifyPlayer()
+			var myId = myInfo._id
+			var tempHand;
+			var newCard = CardsService.draw();
+			this.playersRef.child(myId).on('value', function(snap) {
+				console.log(snap.val().cards, "IN SNAP.VAL");
+				tempHand = (snap.val().cards);
+				console.log("Temporary hand", tempHand);
+			})
+			playersRef.child(myId).update({tempHand: tempHand})
+			tempHand.push(newCard);
+			playersRef.child(myId).update({cards: tempHand})
 			return tempHand
 	}
 
