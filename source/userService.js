@@ -4,7 +4,7 @@ var app = angular.module('cardsAgainstHumanity');
 
 app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 	this.register = function(user){
-		console.log(user)
+		console.log("USER SERVICE .REGISTER",user)
 		return $http.post(`${ENV.API_URL}/register`, user);
 	};
 	this.login = function(user){

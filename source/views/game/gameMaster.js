@@ -19,8 +19,11 @@ angular.module('cardsAgainstHumanity')
 
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
-		if (res.data === "authRequired"){$location.path('/login')}
-		else{$scope.isLoggedIn = true;}
+		if (res.data === "authRequired"){
+			console.log("AUTH REQUIRED")
+			$location.path('/login')
+		}else{
+			$scope.isLoggedIn = true;}
 	})
 
 	$scope.isUser = function(user){

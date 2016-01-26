@@ -25,9 +25,9 @@ angular.module('cardsAgainstHumanity')
 		$scope.editPayload.username = $scope.user.username;
 		$scope.editPayload._id = $scope.user._id
 
-    console.log($scope.isEditing)
-		console.log("edit Payload", $scope.editPayload)
-		console.log('token:',token);
+    //console.log($scope.isEditing)
+		//console.log("edit Payload", $scope.editPayload)
+		//console.log('token:',token);
 		console.log('scope user username: ', $scope.user.username);
     if(res.data.avatar){
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
@@ -40,7 +40,7 @@ angular.module('cardsAgainstHumanity')
 	});
 
 	$scope.toggleEdit = function(){
-    console.log($scope.isEditing)
+    //console.log($scope.isEditing)
 		$scope.isEditing = !$scope.isEditing
 	}
 
@@ -51,7 +51,7 @@ angular.module('cardsAgainstHumanity')
 			$scope.$emit('edit', response.data)
 			$scope.user = response.data;
 			$scope.isEditing = !$scope.isEditing;
-			console.log(response.data, "received")
+			//console.log(response.data, "received")
 		})
 	}
 
@@ -59,7 +59,7 @@ angular.module('cardsAgainstHumanity')
     console.log(image)
     UserService.uploadImage(image, $scope.user._id)
     .then(function(res){
-      console.log(res.data)
+      //console.log(res.data)
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
       console.log($scope.profileImageSrc)
     })
@@ -68,7 +68,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.exposeData = function(){console.log($scope.myFile)}
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
-		console.log(res.data)
+		//console.log(res.data)
 		 if (res.data === "authRequired"){$location.path('/login')}
 		 else{$scope.isLoggedIn = true;}
 	})
