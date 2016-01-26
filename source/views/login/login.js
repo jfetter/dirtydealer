@@ -5,8 +5,6 @@ angular.module('cardsAgainstHumanity')
 	$scope.submit = function(user){
 		UserService.login(user)
 		.then(function(res){
-
-			console.log('res', res.data)
 			if(res.data=="login succesfull"){
 				UserService.loggedIn = 'true';
 				$scope.$emit('loggedIn');

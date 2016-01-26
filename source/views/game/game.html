@@ -7,6 +7,26 @@
     </div>
   </div>
 
+
+ <!-- _______________
+|	              |
+|	Debug:        |
+|_______________| -->
+
+
+<div>
+  <button ng-click="summonDeck()">
+    Create Deck
+  </button>
+  <button ng-click="summonHand()">
+    Create Hand
+  </button>
+  <button ng-click="selfDestruct()">
+    Destroy World
+  </button>
+</div>
+
+
   <div class="row" id="counter">
 
     <h1 ng-hide="!currentState"> Time Until Next Round <br>
@@ -22,7 +42,7 @@
   <div class="row">
   <div class="blackVote container col-sm-3 col-md-3" id="blackCardDiv">
     <h1>Scenario Card</h1>
-    <div class="blackCard"> 
+    <div class="blackCard">
       <span ng-hide="!currentState">{{blackCard.text}} <br> Pick: {{blackCard.pick}}</span>
     </div>
   </div>
@@ -110,5 +130,3 @@
 
 
 </div>
-
-

@@ -4,7 +4,8 @@ var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'n
 
 app.constant('ENV', {
   //API_URL: 'http://localhost:3000'
-  API_URL: 'https://dry-dawn-94066.herokuapp.com'
+  API_URL: 'http://localhost:3000' || 'https://dry-dawn-94066.herokuapp.com'
+  // API_URL: 'https://dry-dawn-94066.herokuapp.com' || 'http://localhost:3000'
 });
 
 
@@ -29,11 +30,9 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
 
   UserService.isAuthed(cookies)
   .then(function(res , err){
-    console.log(res.data)
     if (res.data !== "authRequired"){
       $state.go('userPage', {"username": res.data.username})
     $scope.isLoggedIn = true;
-    console.log("LOGGED IN!")
   } else {
     $scope.isLoggedIn = false;
     $state.go('login');
@@ -43,21 +42,15 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
     $scope.isLoggedIn = true;
     var cookies = $cookies.get('token');
     if(cookies){
-      console.log("in cookis if")
       $scope.userInfo = (jwtHelper.decodeToken(cookies))
     }
     username = $scope.userInfo.username
 
   })
   $scope.$on('edit', function(event, data){
-    console.log('e:', event);
-    console.log('d:', data);
-    console.log("New:", data._id)
-    console.log("Old", $scope.userInfo._id)
     if(!$scope.userInfo.isAdmin || data._id === $scope.userInfo._id){
       $scope.userInfo = data;
       username = $scope.userInfo.username
-      console.log("NEWUSERNAME!!!!!", username)
     }
   })
 
@@ -70,7 +63,6 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   }
   $scope.goHome = function(){
     var username = $scope.userInfo.username
-    console.log("ISUSERNAME", username)
     $state.go('userPage', {"username": username})
   }
 })

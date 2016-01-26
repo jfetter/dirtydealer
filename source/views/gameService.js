@@ -37,7 +37,9 @@ angular.module('cardsAgainstHumanity')
 
 	}
 
-
+	this.killAll = function(){
+		playersRef.remove();
+	}
 
 	//remove players
 	this.removePlayer = function(){
@@ -180,7 +182,7 @@ angular.module('cardsAgainstHumanity')
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 10){
+			if (myNewPoints >= 0){
 				winnerName = winnerName + "!";
 				console.log('we have a winner')
 				this.gameInstance.child('winner').set({
