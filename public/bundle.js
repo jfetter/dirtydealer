@@ -1186,14 +1186,6 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
@@ -1543,7 +1535,7 @@ angular.module('cardsAgainstHumanity')
 					var person = {}
 					person.player = player;
 					person.points = votesCast[player];
-					person.winningWhiteCard = votesCast[player];
+					// person.winningWhiteCard = votesCast[player];
 					winner.pop();
 					winner.push(person);
 					prev = votesCast[player];
@@ -1810,3 +1802,11 @@ angular.module('cardsAgainstHumanity')
 		 else{$scope.isLoggedIn = true;}
 	})
 });
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})

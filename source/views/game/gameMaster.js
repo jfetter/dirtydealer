@@ -275,7 +275,7 @@ angular.module('cardsAgainstHumanity')
 					var person = {}
 					person.player = player;
 					person.points = votesCast[player];
-					person.winningWhiteCard = votesCast[player];
+					// person.winningWhiteCard = votesCast[player];
 					winner.pop();
 					winner.push(person);
 					prev = votesCast[player];
