@@ -1263,7 +1263,6 @@ angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
-	// var currentState = '';
 
 	/* ______________
 	|              |
@@ -1316,7 +1315,6 @@ angular.module('cardsAgainstHumanity')
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
-	// $scope.blackCard = scenarioCardRef
 
 	/* ______________
 	|              |
@@ -1570,13 +1568,17 @@ angular.module('cardsAgainstHumanity')
 
 	thisGame.child('winner').on('child_added', function(snap){
 		var winner = snap.val();
+		var winningBlackCard = thisGame.child('scenarioCard').text();
+		var winningWhiteCard =
 		console.log("WINNER", snap.val().winnerName);
 
 		//Play Again refreshes game page & clears out old data.
-		//Quit Game redirects to userpages & removes player from game. 
+		//Quit Game redirects to userpages & removes player from game.
 		swal({
 			title: "And the winner is...",
 			text: winner,
+			html: true,
+
 			type: "success",
 			animation: "slide-from-top",
 			showCancelButton: true,
