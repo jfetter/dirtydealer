@@ -1194,6 +1194,14 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
@@ -1385,6 +1393,7 @@ angular.module('cardsAgainstHumanity')
 		var thisState = snap.val();
 		$scope.currentState = thisState;
 		gameState(thisState);
+		TimerService.countDown();
 	})
 
 
@@ -1448,7 +1457,10 @@ angular.module('cardsAgainstHumanity')
 thisGame.once('value', function(snap){
 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
 	if (snap.val() === null){
-		GameService.addPlayer();
+		CardsService.startDeck();
+		$timeout(function(){
+			GameService.addPlayer();
+		},100);
 		return;
 	} 
 		var players = snap.val().players;
@@ -1470,11 +1482,9 @@ thisGame.once('value', function(snap){
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 3 && !$scope.currentState) {
 				console.log("STARTING GAME", $scope.playerss)
-	
-				CardsService.startDeck();
+				$scope.counter = 60;
 				CardsService.dealBlackCard();
 				GameService.pickCards();
-				TimerService.countDown();
 				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
@@ -1520,7 +1530,7 @@ thisGame.once('value', function(snap){
 	|______________| */
 
 // notify firebase that I submitted a response card
-	responseRef.on('child_added', function(snap){
+	responseRef.on('value', function(snap){
 		var responses = snap.val();
 		console.log("RESPONSE REF IS NOW",responses)
 		if(responses.hasOwnProperty(myId)){
@@ -1538,7 +1548,7 @@ thisGame.once('value', function(snap){
 		$scope.haveSubmitted = snap.val();
 	})
 
-	responseRef.on("child_added", function(snap) {
+	responseRef.on("value", function(snap) {
 		var numResponses = snap.numChildren();
 		var allResponses = snap.val();
 		$scope.responses = snap.val();
@@ -1554,8 +1564,6 @@ thisGame.once('value', function(snap){
 		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
 		//start timer for next round;
-			TimerService.counter = 61;
-			TimerService.countDown();
 			gameStateRef.set(2);
 		}
 	});
@@ -1723,14 +1731,6 @@ angular.module('cardsAgainstHumanity')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 
