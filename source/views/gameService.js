@@ -182,7 +182,6 @@ angular.module('cardsAgainstHumanity')
 			// this code is not tested and not finished !!!!!
 			gameStateRef.set(3)
 		}
-
 		return;
 	}
 

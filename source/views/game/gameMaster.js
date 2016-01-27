@@ -183,6 +183,7 @@ angular.module('cardsAgainstHumanity')
 					winVotes.$add(spliced)
 					console.log("YOU VOTE FOR", spliced)
 			}
+			$scope.counter = 60;
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
@@ -190,8 +191,6 @@ angular.module('cardsAgainstHumanity')
 				showConfirmButton: true,
 				confirmButtonText: "GET GOIN' ",
 			});
-			remaining = false;
-			$scope.counter = 60;
 		}
 	});
 
@@ -219,46 +218,42 @@ angular.module('cardsAgainstHumanity')
 			console.log("ALREAYD LOGGED IN")
 		}
 	})
-	// GameService.addPlayer();
 
 
-	playersRef.child(myId).once('child_added', function(snap) {
-		if(!snap.val().cards){
-			//GameService.pickCards();
-			console.log("You have cards now");
-		} else {
-			console.log("You already have cards");
-		}
-	})
+	// playersRef.child(myId).once('child_added', function(snap) {
+	// 	if(!snap.val().cards){
+	// 		console.log("You have cards now");
+	// 	} else {
+	// 		console.log("You already have cards");
+	// 	}
+	// })
 //Will not reset your player info by logging you in if you are already in
-thisGame.once('value', function(snap){
-		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
-	// if (snap.val() === null){
-	// 	GameService.addPlayer();
-	// 	return;
-	// }
-		var players = snap.val().players;
-		console.log("PLAYERS", players);
-	if (players.hasOwnProperty(myId) === false){
-		GameService.addPlayer();
-		console.log("LOGGING IN ONCE")
-		return;
-	} else{
-		console.log("NOT LOGGING IN TWICE")
-		return;
-	}
+// thisGame.once('value', function(snap){
+// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
+// 	// if (snap.val() === null){
+// 	// 	GameService.addPlayer();
+// 	// 	return;
+// 	// }
+// 		var players = snap.val().players;
+// 		console.log("PLAYERS", players);
+// 	if (players.hasOwnProperty(myId) === false){
+// 		GameService.addPlayer();
+// 		console.log("LOGGING IN ONCE")
+// 		return;
+// 	} else{
+// 		console.log("NOT LOGGING IN TWICE")
+// 		return;
+// 	}
 
-})
+// })
 
 	//Add player to waiting room when they click join.
 
 
-	playersRef.on("child_added", function() {
-		$timeout(function() {
+	playersRef.on("child_added", function() {		
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				$scope.counter = 60;
-
 				console.log("STARTING GAME", $scope.playerss)
 				TimerService.countDown();
 				gameStateRef.set(1);
@@ -268,11 +263,11 @@ thisGame.once('value', function(snap){
 			} else {
 				return;
 			}
-		});
 	});
 
 	playersRef.on("child_removed", function(snap) {
 		console.log("PLAYER QUIT", snap.val())
+		//put a popup here. 
 	});
 
 	$scope.removePlayer = function(){
@@ -303,16 +298,13 @@ thisGame.once('value', function(snap){
 	|______________| */
 
 // notify firebase that I submitted a response card
-	responseRef.on('child_added', function(snap){
-		var responses = snap.val();
-		console.log("RESPONSE REF IS NOW",responses)
-		if(responses.hasOwnProperty(myId)){
-			console.log("I SUBMITTED A RESPONSE!")
-			myRef.update({
-				submittedResponse: true
-			})
-		}
-	})
+	//responseRef.on('child_added', function(snap){
+
+	//})
+	$scope.addToResponseCards = function(cardClicked, index) {
+		console.log("cardClicked", cardClicked)
+		GameService.addToResponseCards(cardClicked, index);
+	}
 
 //update the scope when I submit a response card
 	myRef.child('submittedResponse').on('value', function(snap){
@@ -321,11 +313,18 @@ thisGame.once('value', function(snap){
 		$scope.haveSubmitted = snap.val();
 	})
 
-	responseRef.on("child_added", function(snap) {
-		var numResponses = snap.numChildren();
+	responseRef.on("value", function(snap) {
 		var allResponses = snap.val();
+		var numResponses = snap.numChildren();
 		$scope.responses = snap.val();
-		console.log("ALL RESPONSES", allResponses)
+		console.log("RESPONSE REF IS NOW",allResponses)
+		console.log("$scope.playerss.length", $scope.playerss.length)
+		if(allResponses.hasOwnProperty(myId)){
+			console.log("I SUBMITTED A RESPONSE!")
+			myRef.update({
+				submittedResponse: true
+			})
+		}
 		// if (allResponses.hasOwnProperty(myId))
 		// 	{
 		// 		console.log("I SUBMITTED!")
@@ -378,17 +377,13 @@ thisGame.once('value', function(snap){
 		//$rootScope.voted = true;
 	}
 
-	$scope.addToResponseCards = function(cardClicked, index) {
-		console.log(cardClicked)
-		GameService.addToResponseCards(cardClicked, index);
-	}
-
-	votesRef.on("child_added", function(snap) {
+	votesRef.on("value", function(snap) {
 		//$scope.haveVoted = true;
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-		if (votesLength === $scope.playerss.length && votesLength > 0) {
+		if (votesLength == $scope.playerss.length && votesLength > 0) {
+			console.log("INSIDE VOTES")
 			var votesCast = {};
 			for(var player in votes){
 				player = votes[player];
@@ -415,7 +410,7 @@ thisGame.once('value', function(snap){
 
 			winner.forEach(function(player){
 				var player = player.player;
-				console.log(player, "GETS A POINT !")
+				console.log(player, "GETS A POINT !!!!")
 				GameService.addWinPoint(player);
 				// playersRef.child(player).on('value', function(snap){
 				// 	var thisPlayer = snap.val()
@@ -428,7 +423,7 @@ thisGame.once('value', function(snap){
 				// 	});
 				//})
 			})
-		}
+		} // end votes === playerss length
 	});
 
 
