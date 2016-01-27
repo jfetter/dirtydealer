@@ -460,7 +460,9 @@ playersRef.on("child_removed", function(snap) {
 		var winner = snap.val();
 		// var winningBlackCard = thisGame.child('scenarioCard').text();
 		// var winningWhiteCard = thisGame.child()
-		console.log("Announcing the winner", snap.val().winnerName);
+
+		//console.log("Announcing the winner", snap.val().winnerName);
+		console.log("Announcing the winner", snap.val());
 
 		//Play Again refreshes game page & clears out old data.
 		//Quit Game redirects to userpages & removes player from game.

@@ -32,4 +32,25 @@ router.post("/edit", function(req, res){
 })
 })
 
+// dirty deals win points 
+router.post('/dirtyWin', function(req, res){
+  var userId = req.body.userId;
+  User.findById( userId, function(err, user) {
+    if (err) { res.send(err);
+   } else {
+      var newPoints = user.ddWins + 1;
+      console.log("NEW GAME POINTS", newPoints)
+      User.findByIdAndUpdate(userId, { 
+        $set:{ ddWins: newPoints }
+      }, function(err, updatedUser){
+          if (err){res.send(err);
+          } else { 
+            res.send( "game points updated");
+            }
+          })
+         //end Find By Id and update 
+      } //end else find by ID 
+    })
+}) //end post to dd wins
+
 module.exports = router;
