@@ -198,12 +198,11 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| Players:     |
 	|______________|
-	*/	// Create array to store each player's info.
+	*/	
 
-	///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
-	// GameService.addPlayer();
-
+// upon login or refresh page
 	thisGame.once('value', function(snap){
+
 		if(snap.val() == null){
 			CardsService.startDeck();
 			CardsService.dealBlackCard();
@@ -211,11 +210,14 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer()
 			},100)
 		} else {
-			if (playersRef.hasOwnProperty(myId) === false){
+			var players = snap.val().players;
+			console.log("PLAYERS", players);
+			if (players.hasOwnProperty(myId) === false){
 				GameService.addPlayer();
 				return;
 			}
-			console.log("ALREAYD LOGGED IN")
+			console.log(players[myId].cards);
+			$scope.myHand = players[myId].cards;
 		}
 	})
 
@@ -255,7 +257,7 @@ angular.module('cardsAgainstHumanity')
 			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				$scope.counter = 60;
 				console.log("STARTING GAME", $scope.playerss)
-				TimerService.countDown();
+				//TimerService.countDown();
 				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
@@ -282,7 +284,8 @@ angular.module('cardsAgainstHumanity')
 	// maybe need to play around with child_added/ child_removed
 	// to prevent re-deals?
 
-	$scope.myHand = [];
+	//$scope.myHand = [];
+
 
 	myRef.child('cards').on('value', function(snap){
 		$scope.myHand = snap.val();
@@ -338,8 +341,8 @@ angular.module('cardsAgainstHumanity')
 		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
 		//start timer for next round;
-			TimerService.counter = 61;
-			TimerService.countDown();
+			//TimerService.counter = 61;
+			//TimerService.countDown();
 			gameStateRef.set(2);
 		}
 	});
