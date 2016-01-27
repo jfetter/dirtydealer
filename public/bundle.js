@@ -1105,7 +1105,7 @@ angular.module('cardsAgainstHumanity')
 		//only add points once per player
 		if (player === myId){
 			var winnerName;
-
+			// var winningWhiteCard;
 
 			var myPoints;
 			myRef.on('value', function(snap) {
@@ -1126,6 +1126,7 @@ angular.module('cardsAgainstHumanity')
 				this.gameInstance.child('winner').set({
 					userId: player,
 					winnerName: winnerName
+					// winningWhiteCard = snap.val().repsonseRef.child(myId)
 				});
 				updateMongoWins(player, myId);
 			}
@@ -1181,6 +1182,14 @@ angular.module('cardsAgainstHumanity')
 	}
 
 });
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+	console.log('homeCtrl');
+
+})
 
 'use strict';
 
@@ -1534,6 +1543,7 @@ angular.module('cardsAgainstHumanity')
 					var person = {}
 					person.player = player;
 					person.points = votesCast[player];
+					person.winningWhiteCard = votesCast[player];
 					winner.pop();
 					winner.push(person);
 					prev = votesCast[player];
@@ -1568,14 +1578,14 @@ angular.module('cardsAgainstHumanity')
 
 	thisGame.child('winner').on('child_added', function(snap){
 		var winner = snap.val();
-		var winningBlackCard = thisGame.child('scenarioCard').text();
-		var winningWhiteCard =
-		console.log("WINNER", snap.val().winnerName);
+		// var winningBlackCard = thisGame.child('scenarioCard').text();
+		// var winningWhiteCard = thisGame.child()
+		console.log("Announcing the winner", snap.val().winnerName);
 
 		//Play Again refreshes game page & clears out old data.
 		//Quit Game redirects to userpages & removes player from game.
 		swal({
-			title: "And the winner is...",
+			title: "<b> And the winner is... </b>",
 			text: winner,
 			html: true,
 
@@ -1630,9 +1640,9 @@ angular.module('cardsAgainstHumanity')
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
-	this.timerRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/timer");
-	
-	var timerRef = this.timerRef; 
+	this.timerRef = new Firebase("https://rachdirtydeals.firebaseio.com/timer");
+
+	var timerRef = this.timerRef;
 	var counter = 61;
 	var mytimeout = null;
 
@@ -1660,14 +1670,6 @@ angular.module('cardsAgainstHumanity')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-	console.log('homeCtrl');
-
-})
 
 'use strict';
 

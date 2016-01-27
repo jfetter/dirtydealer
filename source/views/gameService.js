@@ -166,7 +166,7 @@ angular.module('cardsAgainstHumanity')
 		//only add points once per player
 		if (player === myId){
 			var winnerName;
-
+			// var winningWhiteCard;
 
 			var myPoints;
 			myRef.on('value', function(snap) {
@@ -187,6 +187,7 @@ angular.module('cardsAgainstHumanity')
 				this.gameInstance.child('winner').set({
 					userId: player,
 					winnerName: winnerName
+					// winningWhiteCard = snap.val().repsonseRef.child(myId)
 				});
 				updateMongoWins(player, myId);
 			}

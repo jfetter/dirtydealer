@@ -275,6 +275,7 @@ angular.module('cardsAgainstHumanity')
 					var person = {}
 					person.player = player;
 					person.points = votesCast[player];
+					person.winningWhiteCard = votesCast[player];
 					winner.pop();
 					winner.push(person);
 					prev = votesCast[player];
@@ -309,14 +310,14 @@ angular.module('cardsAgainstHumanity')
 
 	thisGame.child('winner').on('child_added', function(snap){
 		var winner = snap.val();
-		var winningBlackCard = thisGame.child('scenarioCard').text();
-		var winningWhiteCard =
-		console.log("WINNER", snap.val().winnerName);
+		// var winningBlackCard = thisGame.child('scenarioCard').text();
+		// var winningWhiteCard = thisGame.child()
+		console.log("Announcing the winner", snap.val().winnerName);
 
 		//Play Again refreshes game page & clears out old data.
 		//Quit Game redirects to userpages & removes player from game.
 		swal({
-			title: "And the winner is...",
+			title: "<b> And the winner is... </b>",
 			text: winner,
 			html: true,
 
