@@ -336,15 +336,17 @@ angular.module('cardsAgainstHumanity')
 				if(cookies){
 					$scope.userInfo = (jwtHelper.decodeToken(cookies))
 				}
-				setTimeout(function() {
-					$scope.removePlayer = function(){
-						GameService.removePlayer();
-						$state.go('userPage', {"username": username})
-					}
-				}, 2000)
+				$timeout(function() {
+					$scope.removePlayer()
+
+						// GameService.removePlayer();
+						// $state.go('userPage', {"username": username})
+						console.log("REMOVED PLAYER");
+					// }
+				}, 500)
 			} else {
 				GameService.gameInstance.set(null);
-				setTimeout(function() {
+				$timeout(function() {
 					location.reload(true);
 				})
 			};
