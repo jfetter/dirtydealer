@@ -48,8 +48,8 @@ angular.module('cardsAgainstHumanity')
 	var messageRef = GameService.gameInstance.child("messages")
 	var responseRef = GameService.gameInstance.child("response");
 	$scope.playerss = GameService.playerss
-	$scope.whiteCardRef = CardsService.whiteCardRef;
-	$scope.blackCardRef = CardsService.blackCardRef;
+	$scope.whiteCardRef = CardsService.whiteCard;
+	$scope.blackCardRef = CardsService.blackCard;
 	$scope.timerRef = TimerService.timerRef;
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
@@ -151,7 +151,6 @@ angular.module('cardsAgainstHumanity')
 		$timeout(function() {
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 3 && !$scope.currentState) {
-				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
 				$scope.counter = 60;
@@ -339,7 +338,11 @@ angular.module('cardsAgainstHumanity')
 				GameService.gameInstance.set(null);
 				$timeout(function() {
 					$scope.removePlayer()
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 8f0c2b1de1bb0a461f49e81f550be5812bec3b33
 					// GameService.removePlayer();
 					$state.go('userPage', {"username": username})
 					console.log("REMOVED PLAYER");
