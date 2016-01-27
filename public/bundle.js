@@ -946,7 +946,7 @@ angular.module('cardsAgainstHumanity')
 	var cookies = $cookies.get('token');
 
 
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cah");
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
@@ -961,7 +961,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://rachdirtydeals.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase("https://rachdirtydeals.firebaseio.com/cah/gamestate");
 	var gameStateRef = this.gameStateRef;
 
 	this.advanceGameState = function(){
@@ -1190,7 +1190,7 @@ angular.module('cardsAgainstHumanity')
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
@@ -1599,7 +1599,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.gameInstance.set(null);
 				$timeout(function() {
 					$scope.removePlayer()
-					
+				
 					// GameService.removePlayer();
 					$state.go('userPage', {"username": username})
 					console.log("REMOVED PLAYER");
@@ -1634,7 +1634,7 @@ angular.module('cardsAgainstHumanity')
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
-	this.timerRef = new Firebase("https://rachdirtydeals.firebaseio.com/timer");
+	this.timerRef = new Firebase("https://rachdirtydeals.firebaseio.com/cah/timer");
 
 	var timerRef = this.timerRef;
 	var counter = 61;

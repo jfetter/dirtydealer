@@ -5,7 +5,7 @@ angular.module('cardsAgainstHumanity')
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
