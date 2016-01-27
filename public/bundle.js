@@ -1372,7 +1372,6 @@ angular.module('cardsAgainstHumanity')
 	})
 
 
-
 	/* ______________
 	|              |
 	| Timer:       |
@@ -1404,13 +1403,40 @@ angular.module('cardsAgainstHumanity')
 	*/	// Create array to store each player's info.
 
 	///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
-	GameService.addPlayer();
+// 	thisGame.once('value', function(snap){
+// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
+// 		//var players = snap.val().players;
+// 		console.log("PLAYERS", players);
+// 	if (players.hasOwnProperty(myId) === false){
+// 		GameService.addPlayer();
+// 		console.log("LOGGING IN ONCE")
+// 		return;
+// 	} else{
+// 		console.log("NOT LOGGING IN TWICE")
+// 		return;
+// 	}
+// })
+
+
+	thisGame.once('value', function(snap){
+		if(snap.val() == null){
+			//CardsService.startDeck();
+			//CardsService.dealBlackCard();
+			//$timeout(function(){
+				GameService.addPlayer();
+		//	},100)
+		} else if (playersRef.hasOwnProperty(myId) === false){
+				GameService.addPlayer();
+				return;
+			}
+			console.log("ALREAYD LOGGED IN")
+	})
 
 	//Add player to waiting room when they click join.
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
+			if ($scope.playerss.length === 3 && !$scope.currentState) {
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
@@ -1427,8 +1453,16 @@ angular.module('cardsAgainstHumanity')
 	});
 
 	playersRef.on("child_removed", function(snap) {
-		//Update number of players when a player quits?
-		console.log("PLAYER QUIT", snap.val())
+		alert("PLAYER QUIT", snap.val())
+		if ($scope.playerss.length === 0 ){
+			GameService.gameInstance.set(null);
+		} else if ( $scope.playerss.length ===1){
+			GameService.gameInstance.set(null);
+			$timeout(function() {
+				location.reload(true);
+			}, 500);
+		}
+		return; 
 	});
 
 	$scope.removePlayer = function(){
