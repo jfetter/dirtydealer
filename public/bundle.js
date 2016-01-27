@@ -1258,10 +1258,10 @@ angular.module('cardsAgainstHumanity')
 
 	this.draw = function(){
 		// for(var i=0; i<n; i++){
-		var rando = Math.floor((Math.random() * tempWhiteCard.array.length ) + 0);
-		var takenCard = tempWhiteCard.array[rando];
+		var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
+		var takenCard = tempWhiteCard[rando];
 		console.log("TAKEN", takenCard);
-		tempWhiteCard.array.splice(rando, 1);
+		tempWhiteCard.splice(rando, 1);
 		this.gameInstance.child('whiteCards').set(tempWhiteCard);
 		// }
 		return takenCard
@@ -1452,24 +1452,23 @@ angular.module('cardsAgainstHumanity')
 	*/	// Create array to store each player's info.
 
 	///NEED TO LIMIT TO ADDING ONLY ONCE...UNLESS SET HANDLES THAT?
-	GameService.addPlayer();
+	// GameService.addPlayer();
 
-	thisGame.on('value', function(snap){
-		var cards = snap.val().cards;
-		var players = snap.val().players;
-		if (!cards){
-			console.log("THERE ARE NO CARDS!");
+	thisGame.once('value', function(snap){
+		if(snap.val() == null){
 			CardsService.startDeck();
 			CardsService.dealBlackCard();
-			return;
-		} else{
-			console.log("THERE ARE CARDS!");
-			return;
+			$timeout(function(){
+				GameService.addPlayer()
+			},100)
+		} else {
+			GameService.addPlayer()
 		}
 	})
+	// GameService.addPlayer();
 
 
-	playersRef.once('child_added', function(snap) {
+	playersRef.child(myId).once('child_added', function(snap) {
 		if(!snap.val().cards){
 			GameService.pickCards();
 			console.log("You have cards now");
@@ -1484,7 +1483,7 @@ angular.module('cardsAgainstHumanity')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
+			if ($scope.playerss.length === 2 && !$scope.gameState) {
 				$scope.counter = 60;
 				gameStateRef.set(1);
 				console.log("THE Playas:", $scope.playerss)
