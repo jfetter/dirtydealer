@@ -250,7 +250,7 @@ angular.module('cardsAgainstHumanity')
 	//Add player to waiting room when they click join.
 
 
-	playersRef.on("child_added", function() {		
+	playersRef.on("value", function() {		
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				$scope.counter = 60;
@@ -319,11 +319,13 @@ angular.module('cardsAgainstHumanity')
 		$scope.responses = snap.val();
 		console.log("RESPONSE REF IS NOW",allResponses)
 		console.log("$scope.playerss.length", $scope.playerss.length)
-		if(allResponses.hasOwnProperty(myId)){
-			console.log("I SUBMITTED A RESPONSE!")
-			myRef.update({
-				submittedResponse: true
-			})
+		if (allResponses != null){
+			if(allResponses.hasOwnProperty(myId)){
+				console.log("I SUBMITTED A RESPONSE!")
+				myRef.update({
+					submittedResponse: true
+				})
+			}
 		}
 		// if (allResponses.hasOwnProperty(myId))
 		// 	{
