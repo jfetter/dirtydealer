@@ -149,6 +149,7 @@ angular.module('cardsAgainstHumanity')
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
 		var myRef = playersRef.child(myId);
+		var winCardRef = responseRef.child(myId)
 
 
 		//only add points once per player
@@ -161,6 +162,12 @@ angular.module('cardsAgainstHumanity')
 				myPoints = snap.val().gamePoints;
 				winnerName = snap.val().username;
 			})
+
+			var myWinCards;
+			winCardRef.on('value', function(snap) {
+				winningWhiteCard = snap.val().text;
+			})
+
 			var myNewPoints = myPoints + 1;
 
 			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
@@ -173,7 +180,8 @@ angular.module('cardsAgainstHumanity')
 				console.log('we have a winner')
 				this.gameInstance.child('winner').set({
 					userId: player,
-					winnerName: winnerName
+					winnerName: winnerName,
+					winningWhiteCard: winningWhiteCard
 				});
 				updateMongoWins(player, myId);
 			}
