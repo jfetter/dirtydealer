@@ -52,6 +52,7 @@ angular.module('cardsAgainstHumanity')
 	this.startingHand = function(){
 		var fullHand = [];
 		for(var i = 0; i<10; i++){
+			console.log("TEMP WHITE CARD IN STARTING HAND", tempWhiteCard);
 			var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
@@ -64,7 +65,11 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.draw = function(){
+		if(tempWhiteCard === null) {
+			console.log("TEMP WHITE CARD IS NULLLLLLLLLLLL");
+		}
 		// for(var i=0; i<n; i++){
+		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
 		var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
 		var takenCard = tempWhiteCard[rando];
 		console.log("TAKEN", takenCard);
