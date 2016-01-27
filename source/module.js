@@ -5,7 +5,6 @@ var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'n
 app.constant('ENV', {
   //API_URL: 'http://localhost:3000'
   API_URL: 'http://localhost:3000' || 'https://dry-dawn-94066.herokuapp.com'
-  // API_URL: 'https://dry-dawn-94066.herokuapp.com' || 'http://localhost:3000'
 });
 
 
@@ -31,7 +30,7 @@ app.controller('MasterController', function(UserService, $cookies, jwtHelper, $s
   UserService.isAuthed(cookies)
   .then(function(res , err){
     if (res.data !== "authRequired"){
-      $state.go('userPage', {"username": res.data.username})
+      //$state.go('userPage', {"username": res.data.username})
     $scope.isLoggedIn = true;
   } else {
     $scope.isLoggedIn = false;

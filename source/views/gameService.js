@@ -36,7 +36,6 @@ angular.module('cardsAgainstHumanity')
 			}
 			gameStateRef.set(next);
 		})
-
 	}
 
 	this.killAll = function(){
@@ -83,8 +82,6 @@ angular.module('cardsAgainstHumanity')
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
 		var cards = [];
-
-		//set player data in firebase
 		playersRef.child(myId).set({
 			playerId: myInfo._id,
 			username: myInfo.username,
@@ -138,8 +135,6 @@ angular.module('cardsAgainstHumanity')
 
 	//vote for a card (game state 2)
 	this.voteCard = function(card){
-		var myInfo = this.identifyPlayer()
-		var myId = myInfo._id
 		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
 		var player = card.player;
 		this.votes.$add(player);

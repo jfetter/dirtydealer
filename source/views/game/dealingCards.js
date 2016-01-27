@@ -28,7 +28,7 @@ angular.module('cardsAgainstHumanity')
 	var tempBlackCard = [];
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
-		console.log("Black", tempBlackCard)
+		//console.log("Black", tempBlackCard)
 	});
 
 	this.dealBlackCard = function(){

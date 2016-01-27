@@ -22,10 +22,11 @@ angular.module('cardsAgainstHumanity')
 		$scope.isEditing = false;
 		$scope.editPayload.username = $scope.user.username;
 		$scope.editPayload._id = $scope.user._id
+		console.log('scope user username: ', $scope.user.username);
     if(res.data.avatar){
       $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
     } else {
-      $scope.profileImageSrc = `http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg`
+      $scope.profileImageSrc = 'http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg'
     }
 
 	}, function(err) {
