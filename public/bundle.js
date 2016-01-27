@@ -1467,9 +1467,11 @@ angular.module('cardsAgainstHumanity')
 			var players = snap.val().players;
 			console.log("PLAYERS", players);
 			if (players.hasOwnProperty(myId) === false){
+				console.log("I JUST GOT ADDED");
 				GameService.addPlayer();
 				return;
 			}
+			//$scope.counter === TimerService.counter;
 			$scope.playerss = [];
 			for (var player in players){
 				$scope.playerss.push(player);
@@ -1510,10 +1512,13 @@ angular.module('cardsAgainstHumanity')
 	//Add player to waiting room when they click join.
 
 
-	playersRef.on("value", function() {		
+	playersRef.on("value", function(snap) {		
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
-				$scope.counter = 60;
+			var players = snap.val();
+			var numPlayers = snap.numChildren();
+			console.log("playas gonna play play play play play", players)
+			if (numPlayers === 3 && !$scope.gameState) {
+				//$scope.counter = 60;
 				console.log("STARTING GAME", $scope.playerss)
 				//TimerService.countDown();
 				gameStateRef.set(1);
@@ -1525,9 +1530,17 @@ angular.module('cardsAgainstHumanity')
 			}
 	});
 
-	playersRef.on("child_removed", function(snap) {
-		console.log("PLAYER QUIT", snap.val())
-		//put a popup here. 
+playersRef.on("child_removed", function(snap) {
+		alert("PLAYER QUIT", snap.val())
+		if ($scope.playerss.length === 0 ){
+			GameService.gameInstance.set(null);
+		} else if ( $scope.playerss.length ===1){
+			GameService.gameInstance.set(null);
+			$timeout(function() {
+				location.reload(true);
+			}, 500);
+		}
+		return; 
 	});
 
 	$scope.removePlayer = function(){
