@@ -5,22 +5,23 @@ angular.module('cardsAgainstHumanity')
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
-	this.whiteCardRef = this.gameInstance.child("whiteCards")
-	this.blackCardRef = this.gameInstance.child("blackCards")
-	this.scenarioCard = this.gameInstance.child("scenarioCard")
-	this.exampleHand = this.gameInstance.child("exampleHand")
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/");
+	var whiteCardRef = this.gameInstance.child("whiteCards")
+	var blackCardRef = this.gameInstance.child("blackCards")
+	//this.exampleHand = this.gameInstance.child("exampleHand")
+	this.scenarioCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/scenarioCard")
+	this.whiteCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/whiteCards");
+	this.blackCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/blackCards");
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
-
 		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set({array: whiteCards});
-		this.gameInstance.child('blackCards').set(blackCards);
+		this.whiteCard.set(whiteCardRef);
+		this.blackCard.set(blackCardRef);
 	}
 
 	var tempBlackCard = [];
-	this.blackCardRef.on('value', function(snap) {
+	this.blackCard.on('value', function(snap) {
 		tempBlackCard = snap.val();
 		console.log("Black", tempBlackCard)
 	});
@@ -37,7 +38,7 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	var tempWhiteCard = [];
-	this.whiteCardRef.on('value', function(snap) {
+	this.whiteCard.on('value', function(snap) {
 		tempWhiteCard = snap.val();
 		console.log("BASE", tempWhiteCard)
 	});

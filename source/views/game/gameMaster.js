@@ -48,8 +48,8 @@ angular.module('cardsAgainstHumanity')
 	var messageRef = GameService.gameInstance.child("messages")
 	var responseRef = GameService.gameInstance.child("response");
 	$scope.playerss = GameService.playerss
-	$scope.whiteCardRef = CardsService.whiteCardRef;
-	$scope.blackCardRef = CardsService.blackCardRef;
+	$scope.whiteCardRef = CardsService.whiteCard;
+	$scope.blackCardRef = CardsService.blackCard;
 	$scope.timerRef = TimerService.timerRef;
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
@@ -150,8 +150,7 @@ angular.module('cardsAgainstHumanity')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
-				CardsService.startDeck();
+			if ($scope.playerss.length === 3 && !$scope.currentState) {
 				CardsService.dealBlackCard();
 				GameService.pickCards();
 				$scope.counter = 60;

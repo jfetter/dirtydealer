@@ -946,7 +946,7 @@ angular.module('cardsAgainstHumanity')
 	var cookies = $cookies.get('token');
 
 
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cah");
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
@@ -961,7 +961,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://rachdirtydeals.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase("https://rachdirtydeals.firebaseio.com/cah/gamestate");
 	var gameStateRef = this.gameStateRef;
 
 	this.advanceGameState = function(){
@@ -1190,22 +1190,23 @@ angular.module('cardsAgainstHumanity')
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
 
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
-	this.whiteCardRef = this.gameInstance.child("whiteCards")
-	this.blackCardRef = this.gameInstance.child("blackCards")
-	this.scenarioCard = this.gameInstance.child("scenarioCard")
-	this.exampleHand = this.gameInstance.child("exampleHand")
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/");
+	var whiteCardRef = this.gameInstance.child("whiteCards")
+	var blackCardRef = this.gameInstance.child("blackCards")
+	//this.exampleHand = this.gameInstance.child("exampleHand")
+	this.scenarioCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/scenarioCard")
+	this.whiteCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/whiteCards");
+	this.blackCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/blackCards");
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
-
 		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set({array: whiteCards});
-		this.gameInstance.child('blackCards').set(blackCards);
+		this.whiteCard.set(whiteCardRef);
+		this.blackCard.set(blackCardRef);
 	}
 
 	var tempBlackCard = [];
-	this.blackCardRef.on('value', function(snap) {
+	this.blackCard.on('value', function(snap) {
 		tempBlackCard = snap.val();
 		console.log("Black", tempBlackCard)
 	});
@@ -1222,7 +1223,7 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	var tempWhiteCard = [];
-	this.whiteCardRef.on('value', function(snap) {
+	this.whiteCard.on('value', function(snap) {
 		tempWhiteCard = snap.val();
 		console.log("BASE", tempWhiteCard)
 	});
@@ -1308,8 +1309,8 @@ angular.module('cardsAgainstHumanity')
 	var messageRef = GameService.gameInstance.child("messages")
 	var responseRef = GameService.gameInstance.child("response");
 	$scope.playerss = GameService.playerss
-	$scope.whiteCardRef = CardsService.whiteCardRef;
-	$scope.blackCardRef = CardsService.blackCardRef;
+	$scope.whiteCardRef = CardsService.whiteCard;
+	$scope.blackCardRef = CardsService.blackCard;
 	$scope.timerRef = TimerService.timerRef;
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
@@ -1410,8 +1411,7 @@ angular.module('cardsAgainstHumanity')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
-				CardsService.startDeck();
+			if ($scope.playerss.length === 3 && !$scope.currentState) {
 				CardsService.dealBlackCard();
 				GameService.pickCards();
 				$scope.counter = 60;
@@ -1634,7 +1634,7 @@ angular.module('cardsAgainstHumanity')
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
-	this.timerRef = new Firebase("https://rachdirtydeals.firebaseio.com/timer");
+	this.timerRef = new Firebase("https://rachdirtydeals.firebaseio.com/cah/timer");
 
 	var timerRef = this.timerRef;
 	var counter = 61;
