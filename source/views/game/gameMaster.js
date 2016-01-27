@@ -150,7 +150,7 @@ angular.module('cardsAgainstHumanity')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 3 && !$scope.gameState) {
+			if ($scope.playerss.length === 3 && !$scope.currentState) {
 				CardsService.startDeck();
 				CardsService.dealBlackCard();
 				GameService.pickCards();
@@ -339,7 +339,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.gameInstance.set(null);
 				$timeout(function() {
 					$scope.removePlayer()
-					
+
 					// GameService.removePlayer();
 					$state.go('userPage', {"username": username})
 					console.log("REMOVED PLAYER");
