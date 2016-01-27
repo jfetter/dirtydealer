@@ -6,12 +6,19 @@ angular.module('cardsAgainstHumanity')
 
 
 	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/");
+
 	var whiteCardRef = this.gameInstance.child("whiteCards")
 	var blackCardRef = this.gameInstance.child("blackCards")
 	//this.exampleHand = this.gameInstance.child("exampleHand")
 	this.scenarioCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/scenarioCard")
 	this.whiteCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/whiteCards");
 	this.blackCard = new Firebase("https://rachdirtydeals.firebaseio.com/cah/blackCards");
+// =======
+// 	this.whiteCardRef = this.gameInstance.child("whiteCards")
+// 	this.blackCardRef = this.gameInstance.child("blackCards")
+// 	this.scenarioCard = this.gameInstance.child("scenarioCard")
+// 	this.exampleHand = this.gameInstance.child("exampleHand")
+// >>>>>>> f4b24e27166110cc95e3afcc65649ae818604d77
 
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){

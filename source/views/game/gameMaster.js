@@ -338,7 +338,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.gameInstance.set(null);
 				$timeout(function() {
 					$scope.removePlayer()
-					
+				
 					// GameService.removePlayer();
 					$state.go('userPage', {"username": username})
 					console.log("REMOVED PLAYER");
