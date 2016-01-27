@@ -1471,7 +1471,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer();
 				return;
 			}
-			//$scope.counter === TimerService.counter;
+			$scope.counter === TimerService.counter;
 			$scope.playerss = [];
 			for (var player in players){
 				$scope.playerss.push(player);
@@ -1517,10 +1517,10 @@ angular.module('cardsAgainstHumanity')
 			var players = snap.val();
 			var numPlayers = snap.numChildren();
 			console.log("playas gonna play play play play play", players)
-			if (numPlayers === 3 && !$scope.gameState) {
-				//$scope.counter = 60;
+			if (numPlayers === 3 && !$scope.currentState) {
+				$scope.counter = 60;
 				console.log("STARTING GAME", $scope.playerss)
-				//TimerService.countDown();
+				TimerService.countDown();
 				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
@@ -1531,7 +1531,7 @@ angular.module('cardsAgainstHumanity')
 	});
 
 playersRef.on("child_removed", function(snap) {
-		alert("PLAYER QUIT", snap.val())
+		//alert("PLAYER QUIT", snap.val())
 		if ($scope.playerss.length === 0 ){
 			GameService.gameInstance.set(null);
 		} else if ( $scope.playerss.length ===1){
@@ -1612,8 +1612,8 @@ playersRef.on("child_removed", function(snap) {
 		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
 		//start timer for next round;
-			//TimerService.counter = 61;
-			//TimerService.countDown();
+			TimerService.counter = 61;
+			TimerService.countDown();
 			gameStateRef.set(2);
 		}
 	});
