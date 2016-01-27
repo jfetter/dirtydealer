@@ -104,6 +104,7 @@ angular.module('cardsAgainstHumanity')
 				scenarioCardRef.remove();
 				myRef.child('voted').remove();
 				myRef.child('submittedResponse').remove();
+				myRef.child('tempHand').remove();
 				GameService.drawOneCard();
 				CardsService.dealBlackCard();
 				gameStateRef.set(1)
@@ -215,6 +216,10 @@ angular.module('cardsAgainstHumanity')
 			if (players.hasOwnProperty(myId) === false){
 				GameService.addPlayer();
 				return;
+			}
+			$scope.playerss = [];
+			for (var player in players){
+				$scope.playerss.push(player);
 			}
 			console.log(players[myId].cards);
 			$scope.myHand = players[myId].cards;
@@ -439,25 +444,50 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 	thisGame.child('winner').on('child_added', function(snap){
-		//need to set up play again / quit options
-		//quit redirects to profile page view and play again does
-		// location.reload();
 		var winner = snap.val();
-		console.log("WINNER", snap.val().winnerName);
+		// var winningBlackCard = thisGame.child('scenarioCard').text();
+		// var winningWhiteCard = thisGame.child()
+		console.log("Announcing the winner", snap.val().winnerName);
 
+		//Play Again refreshes game page & clears out old data.
+		//Quit Game redirects to userpages & removes player from game.
 		swal({
-			type: "error",
-			title: "And the winner is...",
+			title: "<b> And the winner is... </b>",
 			text: winner,
+			html: true,
+
+			type: "success",
+			animation: "slide-from-top",
 			showCancelButton: true,
-			confirmButtonColor: "#DD6B55",
-			confirmButtonText: "Now let's destroy the world together!",
-			closeOnConfirm: false
-		},function(){
-			$scope.selfDestruct();
-		}
-	);
-})
+			cancelButtonText: "Play Again",
+			closeOnConfirm: true,
+			showLoaderOnConfirm: true,
+			showConfirmButton: true,
+			confirmButtonText: "Cool. I'm done."
+		}, function(isConfirm) {
+			if (isConfirm) {
+				var cookies = $cookies.get('token');
+				var username;
+				if(cookies){
+					$scope.userInfo = (jwtHelper.decodeToken(cookies))
+				}
+				GameService.gameInstance.set(null);
+				$timeout(function() {
+					$scope.removePlayer()
+
+					// GameService.removePlayer();
+					$state.go('userPage', {"username": username})
+					console.log("REMOVED PLAYER");
+					// }
+				}, 500)
+			} else {
+				$timeout(function() {
+					location.reload(true);
+				}, 500)
+			};
+		});
+		return;
+	});
 
 
 
