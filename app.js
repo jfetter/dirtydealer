@@ -11,7 +11,7 @@ var app = express();
 var cookieParser = require("cookie-parser");
 
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/cardsagainsthumanity');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/dirtydealer');
 
 app.set('views', 'templates');
 app.set('view engine', 'ejs');

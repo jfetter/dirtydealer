@@ -177,40 +177,37 @@ angular.module('cardsAgainstHumanity')
 			myRef.child('gamePoints').set(myNewPoints)
 			if (myNewPoints >= 0){
 				winnerName = winnerName + "!";
-				console.log('we have a winner')
+				console.log('we have a winner', player)
+				updateMongoWins(player);
 				this.gameInstance.child('winner').set({
 					userId: player,
 					winnerName: winnerName,
 					winningWhiteCard: winningWhiteCard
 				});
-				updateMongoWins(player, myId);
 			}
 			playersRef.child(player).update({gamePoints: myNewPoints})
 			console.log(player, 'got a win point');
 			// this code is not tested and not finished !!!!!
 			gameStateRef.set(3)
-		}
+		} //end if me
 		return;
-	}
+	} // end add win point
 
 	/* ______________
 	|              |
 	| update MONGO |
 	|______________| */
 
-	function updateMongoWins(winner, me){
-		console.log("set up route etc to add win point to mongo")
-		//var winner = snap.val().userId;
-		//if (winner === myInfo._id){
-		//$http.put("/dirtyWin", {id: winner})
-		//.then(function (res){
-		// console.log(res);
-		//}, function(err){
-		//console.log(err)
-		//})
-		//}
+	function updateMongoWins(winner){
+		console.log("OFF TO MOGO DB TO LOOK FOR", winner)
+		//var winner = winner.userId;
+		$http.post("user/dirtyWin", {userId: winner})
+		.then(function (res){
+		console.log(res);
+		}, function(err){
+		console.error(err);
+		})
 	}
-
 
 
 	/* ______________

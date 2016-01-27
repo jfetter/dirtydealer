@@ -11,8 +11,7 @@ var userSchema = Schema({
 	username: { type: String, required: true, unique: true},
 	password: { type: String, required: true },
 	avatar: {type: String, data:Buffer, default: ''},
-	cards: [{type: Schema.Types.ObjectId, ref: "WhiteCards"}],
-	isPlaying: {type: Boolean, default: false}
+	ddWins: {type: Number, default: 0}
 });
 
 
