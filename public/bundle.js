@@ -1350,10 +1350,10 @@ angular.module('cardsAgainstHumanity')
 
 			console.log("HERE I AM!", myId);
 
-			if(!playersRef.child(myId).hasOwnProperty('cards')){
-				console.log("DREW A HAND!")
-			// GameService.pickCards();
-			}
+			// if(!playersRef.child(myId).hasOwnProperty('cards')){
+			// 	console.log("DREW A HAND!")
+			// // GameService.pickCards();
+			// }
 
 			$rootScope.voted = false;
 			if ($scope.counter === 60){
@@ -1464,18 +1464,19 @@ angular.module('cardsAgainstHumanity')
 			return;
 		} else{
 			console.log("THERE ARE CARDS!");
-			if(!players.child(myId).hasOwnProperty('cards')){
-				console.log("YOU DONT HAVE ANY CARDS");
-			}
 			return;
 		}
 	})
 
-	// playersRef.once('child_added', function() {
-	// 	CardsService.startDeck();
-	// 	CardsService.dealBlackCard();
-	// })
-	// GameService.pickCards();
+
+	playersRef.once('child_added', function(snap) {
+		if(!snap.val().cards){
+			GameService.pickCards();
+			console.log("You have cards now");
+		} else {
+			console.log("You already have cards");
+		}
+	})
 
 	//Add player to waiting room when they click join.
 
@@ -1517,7 +1518,6 @@ angular.module('cardsAgainstHumanity')
 
 	myRef.child('cards').on('value', function(snap){
 		$scope.myHand = snap.val();
-		//console.log("MY SCOPE CARDS ARE", $scope.myHand);
 	});
 
 	scenarioCardRef.on("value", function(snap) {
@@ -1554,10 +1554,6 @@ angular.module('cardsAgainstHumanity')
 			return;
 		}
 		console.log("IN VOTECARD", card)
-		// votesRef.on("child_added", function(snap){
-		// var card = snap.val();
-		// console.log("CARD ",card);
-		// console.log("my ID", myId);
 		if (card.player === myId){
 			console.log('YOU CANNOT VOTE FOR YOURSELF');
 			votesRef.child(myId).remove();
@@ -1573,9 +1569,6 @@ angular.module('cardsAgainstHumanity')
 			console.log("I AM ROOT:", $rootScope.voted)
 			GameService.voteCard(card);
 		}
-		// })
-		//console.log("YOU voted for:", card)
-		//$rootScope.voted = true;
 	}
 
 	$scope.addToResponseCards = function(cardClicked, index) {
@@ -1587,7 +1580,6 @@ angular.module('cardsAgainstHumanity')
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-		//console.log(votesLength, "VOTES CHILDREN")
 		if (votesLength === $scope.playerss.length && votesLength > 0) {
 			var votesCast = {};
 			for(var player in votes){
