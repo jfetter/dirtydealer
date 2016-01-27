@@ -60,7 +60,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-	$scope.timerRef = TimerService.timerRef;
+	//$scope.timerRef = TimerService.timerRef;
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
@@ -151,9 +151,9 @@ angular.module('cardsAgainstHumanity')
 	| Timer:       |
 	|______________| */
 
-	$scope.timerRef.on("value", function(snap){
-		$scope.counter = snap.val();
-	})
+	//$scope.timerRef.on("value", function(snap){
+		// $scope.counter = snap.val();
+	//})
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
@@ -184,7 +184,7 @@ angular.module('cardsAgainstHumanity')
 					winVotes.$add(spliced)
 					console.log("YOU VOTE FOR", spliced)
 			}
-			$scope.counter = 60;
+			// $scope.counter = 60;
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
@@ -218,7 +218,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer();
 				return;
 			}
-			$scope.counter === TimerService.counter;
+			// $scope.counter === TimerService.counter;
 			$scope.playerss = [];
 			for (var player in players){
 				$scope.playerss.push(player);
@@ -265,7 +265,7 @@ angular.module('cardsAgainstHumanity')
 			var numPlayers = snap.numChildren();
 			console.log("playas gonna play play play play play", players)
 			if (numPlayers === 3 && !$scope.currentState) {
-				$scope.counter = 60;
+				// $scope.counter = 60;
 				console.log("STARTING GAME", $scope.playerss)
 				TimerService.countDown();
 				gameStateRef.set(1);
@@ -401,12 +401,15 @@ playersRef.on("child_removed", function(snap) {
 	}
 
 	votesRef.on("value", function(snap) {
-		//$scope.haveVoted = true;
+
+
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
 		if (votesLength == $scope.playerss.length && votesLength > 0) {
-			console.log("INSIDE VOTES")
+			//console.log("INSIDE VOTES")
+			
+			//create a dictionary of players who received votes
 			var votesCast = {};
 			for(var player in votes){
 				player = votes[player];

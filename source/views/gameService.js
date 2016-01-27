@@ -168,7 +168,7 @@ angular.module('cardsAgainstHumanity')
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 0){
+			if (myNewPoints >= 3){
 				winnerName = winnerName + "!";
 				console.log('we have a winner', player)
 				updateMongoWins(player);

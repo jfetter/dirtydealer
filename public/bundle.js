@@ -1112,7 +1112,7 @@ angular.module('cardsAgainstHumanity')
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 0){
+			if (myNewPoints >= 3){
 				winnerName = winnerName + "!";
 				console.log('we have a winner', player)
 				updateMongoWins(player);
@@ -1175,6 +1175,130 @@ angular.module('cardsAgainstHumanity')
 angular.module('cardsAgainstHumanity')
 .controller('homeCtrl', function($scope){
 })
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+.controller('registerCtrl', function($scope, $state, UserService){
+	$scope.submit = function(user){
+		if(user.password !== user.password2){
+			swal({
+				type: "warning",
+				title: "Passwords don't match!",
+				text: "Matching passwords only please",
+				showConfirmButton: true,
+				confirmButtonText: "Gotcha.",
+			});
+			return;
+		}
+
+		UserService.register(user)
+		.then(function(data){
+			swal({
+				type: "success",
+				title: "Successful registration!",
+				text: "Hurray. You're a User!",
+				imageUrl: "images/thumbs-up.jpg"
+			});
+			$state.go('login');
+		}, function(err){
+			console.log(err);
+		});
+	}
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+
+
+.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
+	$scope.user = {};
+	$scope.editPayload = {};
+	var cookies = $cookies.get('token');
+	var token = jwtHelper.decodeToken(cookies)
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		 if (res.data === "authRequired"){
+			 $location.path('/login')
+		 } else{$scope.isLoggedIn = true;}
+	})
+
+	UserService.page($state.params.username)
+	.then(function(res) {
+		$scope.user = res.data;
+		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
+		$scope.isEditing = false;
+		$scope.editPayload.username = $scope.user.username;
+		$scope.editPayload._id = $scope.user._id
+		console.log('scope user username: ', $scope.user.username);
+    if(res.data.avatar){
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
+    } else {
+      $scope.profileImageSrc = 'http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg'
+    }
+
+	}, function(err) {
+		console.error(err)
+	});
+
+	$scope.toggleEdit = function(){
+		$scope.isEditing = !$scope.isEditing
+	}
+
+	$scope.saveEdits = function(){
+		UserService.editAccount($scope.editPayload)
+		.then(function(response){
+			$scope.$emit('edit', response.data)
+			$scope.user = response.data;
+			$scope.isEditing = !$scope.isEditing;
+		})
+	}
+
+  $scope.uploadImage = function(image){
+    UserService.uploadImage(image, $scope.user._id)
+    .then(function(res){
+      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
+    })
+  }
+
+	$scope.exposeData = function(){console.log($scope.myFile)}
+	UserService.isAuthed(cookies)
+	.then(function(res , err){
+		 if (res.data === "authRequired"){$location.path('/login')}
+		 else{$scope.isLoggedIn = true;}
+	})
+});
 
 'use strict';
 
@@ -1316,7 +1440,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-	$scope.timerRef = TimerService.timerRef;
+	//$scope.timerRef = TimerService.timerRef;
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
@@ -1407,9 +1531,9 @@ angular.module('cardsAgainstHumanity')
 	| Timer:       |
 	|______________| */
 
-	$scope.timerRef.on("value", function(snap){
-		$scope.counter = snap.val();
-	})
+	//$scope.timerRef.on("value", function(snap){
+		// $scope.counter = snap.val();
+	//})
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
@@ -1440,7 +1564,7 @@ angular.module('cardsAgainstHumanity')
 					winVotes.$add(spliced)
 					console.log("YOU VOTE FOR", spliced)
 			}
-			$scope.counter = 60;
+			// $scope.counter = 60;
 			swal({
 				type: "error",
 				title: "Uh-Oh!",
@@ -1474,7 +1598,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer();
 				return;
 			}
-			$scope.counter === TimerService.counter;
+			// $scope.counter === TimerService.counter;
 			$scope.playerss = [];
 			for (var player in players){
 				$scope.playerss.push(player);
@@ -1521,7 +1645,7 @@ angular.module('cardsAgainstHumanity')
 			var numPlayers = snap.numChildren();
 			console.log("playas gonna play play play play play", players)
 			if (numPlayers === 3 && !$scope.currentState) {
-				$scope.counter = 60;
+				// $scope.counter = 60;
 				console.log("STARTING GAME", $scope.playerss)
 				TimerService.countDown();
 				gameStateRef.set(1);
@@ -1657,12 +1781,15 @@ playersRef.on("child_removed", function(snap) {
 	}
 
 	votesRef.on("value", function(snap) {
-		//$scope.haveVoted = true;
+
+
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
 		if (votesLength == $scope.playerss.length && votesLength > 0) {
-			console.log("INSIDE VOTES")
+			//console.log("INSIDE VOTES")
+			
+			//create a dictionary of players who received votes
 			var votesCast = {};
 			for(var player in votes){
 				player = votes[player];
@@ -1810,128 +1937,4 @@ angular.module('cardsAgainstHumanity')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-
-.controller('registerCtrl', function($scope, $state, UserService){
-	$scope.submit = function(user){
-		if(user.password !== user.password2){
-			swal({
-				type: "warning",
-				title: "Passwords don't match!",
-				text: "Matching passwords only please",
-				showConfirmButton: true,
-				confirmButtonText: "Gotcha.",
-			});
-			return;
-		}
-
-		UserService.register(user)
-		.then(function(data){
-			swal({
-				type: "success",
-				title: "Successful registration!",
-				text: "Hurray. You're a User!",
-				imageUrl: "images/thumbs-up.jpg"
-			});
-			$state.go('login');
-		}, function(err){
-			console.log(err);
-		});
-	}
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-
-
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
-	$scope.user = {};
-	$scope.editPayload = {};
-	var cookies = $cookies.get('token');
-	var token = jwtHelper.decodeToken(cookies)
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		 if (res.data === "authRequired"){
-			 $location.path('/login')
-		 } else{$scope.isLoggedIn = true;}
-	})
-
-	UserService.page($state.params.username)
-	.then(function(res) {
-		$scope.user = res.data;
-		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
-		$scope.isEditing = false;
-		$scope.editPayload.username = $scope.user.username;
-		$scope.editPayload._id = $scope.user._id
-		console.log('scope user username: ', $scope.user.username);
-    if(res.data.avatar){
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`
-    } else {
-      $scope.profileImageSrc = 'http://gitrnl.networktables.com/resources/userfiles/nopicture.jpg'
-    }
-
-	}, function(err) {
-		console.error(err)
-	});
-
-	$scope.toggleEdit = function(){
-		$scope.isEditing = !$scope.isEditing
-	}
-
-	$scope.saveEdits = function(){
-		UserService.editAccount($scope.editPayload)
-		.then(function(response){
-			$scope.$emit('edit', response.data)
-			$scope.user = response.data;
-			$scope.isEditing = !$scope.isEditing;
-		})
-	}
-
-  $scope.uploadImage = function(image){
-    UserService.uploadImage(image, $scope.user._id)
-    .then(function(res){
-      $scope.profileImageSrc = `data:image/jpeg;base64,${res.data.avatar}`;
-    })
-  }
-
-	$scope.exposeData = function(){console.log($scope.myFile)}
-	UserService.isAuthed(cookies)
-	.then(function(res , err){
-		 if (res.data === "authRequired"){$location.path('/login')}
-		 else{$scope.isLoggedIn = true;}
-	})
 });
