@@ -32,6 +32,7 @@ angular.module('cardsAgainstHumanity')
 	});
 
 	this.dealBlackCard = function(){
+
 		this.gameInstance.child("scenarioCard").set(null);
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
 		var takenCard = tempBlackCard[rando];
@@ -42,12 +43,13 @@ angular.module('cardsAgainstHumanity')
 		return takenCard;
 	}
 
-	var tempWhiteCard;
+var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val().array;
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
+
 
 	this.startingHand = function(){
 		var fullHand = [];
@@ -65,9 +67,15 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.draw = function(){
-		if(tempWhiteCard === null) {
-			console.log("TEMP WHITE CARD IS NULLLLLLLLLLLL");
-		}
+		this.whiteCardRef.on('value', function(snap) {
+		tempWhiteCard = snap.val().array;
+
+		console.log("Temp white card updated", tempWhiteCard)
+		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
+	});
+		whiteCardRef.update("forceSnap");
+		whiteCardRef.child('forceSnap').remove();
+
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
 		var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);

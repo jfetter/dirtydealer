@@ -1204,6 +1204,7 @@ angular.module('cardsAgainstHumanity')
 	});
 
 	this.dealBlackCard = function(){
+
 		this.gameInstance.child("scenarioCard").set(null);
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
 		var takenCard = tempBlackCard[rando];
@@ -1214,12 +1215,13 @@ angular.module('cardsAgainstHumanity')
 		return takenCard;
 	}
 
-	var tempWhiteCard;
+var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val().array;
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
+
 
 	this.startingHand = function(){
 		var fullHand = [];
@@ -1237,9 +1239,15 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.draw = function(){
-		if(tempWhiteCard === null) {
-			console.log("TEMP WHITE CARD IS NULLLLLLLLLLLL");
-		}
+		this.whiteCardRef.on('value', function(snap) {
+		tempWhiteCard = snap.val().array;
+
+		console.log("Temp white card updated", tempWhiteCard)
+		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
+	});
+		whiteCardRef.update("forceSnap");
+		whiteCardRef.child('forceSnap').remove();
+
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
 		var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
@@ -1522,7 +1530,7 @@ angular.module('cardsAgainstHumanity')
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
 				console.log("STARTING GAME", $scope.playerss)
-				TimerService.countDown();
+				//TimerService.countDown();
 				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
@@ -1614,8 +1622,8 @@ playersRef.on("child_removed", function(snap) {
 		if (numResponses === $scope.playerss.length && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
 		//start timer for next round;
-			TimerService.counter = 61;
-			TimerService.countDown();
+			//TimerService.counter = 61;
+			//TimerService.countDown();
 			gameStateRef.set(2);
 		}
 	});
