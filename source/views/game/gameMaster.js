@@ -212,11 +212,11 @@ angular.module('cardsAgainstHumanity')
 	playersRef.on("child_added", function() {
 		$timeout(function() {
 			//&& $scope.currentState === undefined
-			if ($scope.playerss.length === 2 && !$scope.gameState) {
+			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				$scope.counter = 60;
 				gameStateRef.set(1);
 				console.log("THE Playas:", $scope.playerss)
-			} else if ($scope.playerss.length < 2){
+			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
 				return;
 			} else {
