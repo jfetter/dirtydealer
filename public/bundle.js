@@ -971,17 +971,6 @@ angular.module('cardsAgainstHumanity')
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
-	this.advanceGameState = function(){
-		var next = "sad clown";
-		gameStateRef.once('value', function(snap){
-			next = snap.val() + 1;
-			if ( next > 3){
-				next = 1;
-			}
-			gameStateRef.set(next);
-		})
-	}
-
 	this.killAll = function(){
 		playersRef.remove();
 	}
@@ -1009,7 +998,7 @@ angular.module('cardsAgainstHumanity')
 		this.playersRef.child(myId).update({
 			cards: myHand
 		});
-		//return myHand;
+		return myHand;
 	}
 
 	// this.drawCard = function(){
@@ -1025,11 +1014,11 @@ angular.module('cardsAgainstHumanity')
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
-		var cards = [];
+		//var cards = CardsService.startingHand();
 		playersRef.child(myId).set({
 			playerId: myInfo._id,
 			username: myInfo.username,
-			cards: cards,
+			cards: CardsService.startingHand(),
 			gamePoints: 0
 		});
 	}
@@ -1184,12 +1173,6 @@ angular.module('cardsAgainstHumanity')
 	}
 
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-})
 
 'use strict';
 
@@ -1483,7 +1466,11 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer()
 			},100)
 		} else {
-			GameService.addPlayer()
+			if (playersRef.hasOwnProperty(myId) === false){
+				GameService.addPlayer();
+				return;
+			}
+			console.log("ALREAYD LOGGED IN")
 		}
 	})
 	// GameService.addPlayer();
@@ -1491,7 +1478,7 @@ angular.module('cardsAgainstHumanity')
 
 	playersRef.child(myId).once('child_added', function(snap) {
 		if(!snap.val().cards){
-			GameService.pickCards();
+			//GameService.pickCards();
 			console.log("You have cards now");
 		} else {
 			console.log("You already have cards");
@@ -1525,7 +1512,6 @@ thisGame.once('value', function(snap){
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				$scope.counter = 60;
-
 
 				console.log("STARTING GAME", $scope.playerss)
 				TimerService.countDown();
@@ -1778,6 +1764,12 @@ angular.module('cardsAgainstHumanity')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+})
 
 'use strict';
 

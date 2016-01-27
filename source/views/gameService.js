@@ -27,17 +27,6 @@ angular.module('cardsAgainstHumanity')
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
-	this.advanceGameState = function(){
-		var next = "sad clown";
-		gameStateRef.once('value', function(snap){
-			next = snap.val() + 1;
-			if ( next > 3){
-				next = 1;
-			}
-			gameStateRef.set(next);
-		})
-	}
-
 	this.killAll = function(){
 		playersRef.remove();
 	}
@@ -65,7 +54,7 @@ angular.module('cardsAgainstHumanity')
 		this.playersRef.child(myId).update({
 			cards: myHand
 		});
-		//return myHand;
+		return myHand;
 	}
 
 	// this.drawCard = function(){
@@ -81,11 +70,11 @@ angular.module('cardsAgainstHumanity')
 		//initialize test 'children'
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id;
-		var cards = [];
+		//var cards = CardsService.startingHand();
 		playersRef.child(myId).set({
 			playerId: myInfo._id,
 			username: myInfo.username,
-			cards: cards,
+			cards: CardsService.startingHand(),
 			gamePoints: 0
 		});
 	}

@@ -212,7 +212,11 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer()
 			},100)
 		} else {
-			GameService.addPlayer()
+			if (playersRef.hasOwnProperty(myId) === false){
+				GameService.addPlayer();
+				return;
+			}
+			console.log("ALREAYD LOGGED IN")
 		}
 	})
 	// GameService.addPlayer();
@@ -220,7 +224,7 @@ angular.module('cardsAgainstHumanity')
 
 	playersRef.child(myId).once('child_added', function(snap) {
 		if(!snap.val().cards){
-			GameService.pickCards();
+			//GameService.pickCards();
 			console.log("You have cards now");
 		} else {
 			console.log("You already have cards");
@@ -254,7 +258,6 @@ thisGame.once('value', function(snap){
 			//&& $scope.currentState === undefined
 			if ($scope.playerss.length === 3 && !$scope.gameState) {
 				$scope.counter = 60;
-
 
 				console.log("STARTING GAME", $scope.playerss)
 				TimerService.countDown();
