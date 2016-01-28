@@ -87,7 +87,10 @@
     <p ng-show="currentState === 1">click a card to vote once all responses are submitted</p>
     <div ng-repeat="response in responses track by $index">
       <p ng-class="isMyCard(response.player)" ng-click="voteCard(response)">
-        <span ng-show="currentState === 2">{{response.text}}</span>
+        <span ng-show="currentState === 2">{{response.text}}
+          <br>
+          <span class="yours" ng-if="userInfo._id === response.player">This is your card</span>
+        </span>
        </p>
     </div>
 

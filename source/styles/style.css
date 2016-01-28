@@ -238,6 +238,12 @@ h1, p, .navbar, div, button, .modal, li, a {
   background-color: white;
 }
 
+.yours{
+  color: orange;
+  vertical-align: text-bottom;
+  bottom: 0;
+}
+
 .selectedCard{
   color: black;
   border: 5px solid orange;

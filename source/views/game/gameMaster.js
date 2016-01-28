@@ -27,6 +27,7 @@ angular.module('cardsAgainstHumanity')
 		}
 	}
 
+
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
 		if (res.data === "authRequired"){
