@@ -1,7 +1,7 @@
 
 /* ______________
 |              |
-| Game Page:   |
+| Scrolling    |
 |______________| */
 
 .scrollWrap{
@@ -9,44 +9,27 @@
   text-align: center;
   width: 100%;
   padding: 5%;
+/*    display:inline-block;
+    *display:inline;
+}*/
 }
-
 .vertScroll{
   overflow-y: scroll;
   height: 100%;
+  /*white-space:nowrap;*/
+      display:inline-block;
+    *display:inline;
 }
 
 .horzScroll{
   overflow-x: scroll;
   height: 100%;
+  /*white-space:nowrap;*/
+      display:inline-block;
+    *display:inline;
 }
 
-/* ______________
-|              |
-|  Messages:   |
-|______________| */
 
-#messageContainer {
-  text-align: center;
-}
-
-#playerMessageName {
-  color: lightblue;
-  font-size: 30px;
-}
-
-#messageSent {
-  color: darkblue;
-}
-
-#addMessageInput {
-  text-align: center;
-}
-
-.chatBox{
-  height: 10vw;
-  width: 50vw;
-}
 /* ______________
 |              |
 |  Profile:    |
@@ -179,9 +162,31 @@ h1, p, .navbar, div, button, .modal, li, a {
 
 
 /* ______________
-|                |
-|  Messages:     |
-|________________| */
+|              |
+|  Messages:   |
+|______________| */
+
+#messageContainer {
+  text-align: center;
+}
+
+#playerMessageName {
+  color: lightblue;
+  font-size: 30px;
+}
+
+#messageSent {
+  color: darkblue;
+}
+
+#addMessageInput {
+  text-align: center;
+}
+
+.chatBox{
+  height: 10vw;
+  width: 50vw;
+}
 
 #messageDiv {
   margin-right: auto;
@@ -229,13 +234,13 @@ h1, p, .navbar, div, button, .modal, li, a {
 |  Response:     |
 |________________| */
 
-#responseDiv {
+/*#responseDiv {
   margin-left: auto;
   margin-right: auto;
   margin-top: 20px;
   margin-bottom: 10px;
   text-align: center;
-}
+}*/
 /* ______________
 |                |
 |  White Deck:   |
