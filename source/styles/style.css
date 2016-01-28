@@ -246,7 +246,6 @@ h1, p, .navbar, div, button, .modal, li, a {
   display: inline-block;
   float: left;
   background-color: white;
-  font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 #userImage {

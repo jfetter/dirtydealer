@@ -405,6 +405,10 @@ angular.module('cardsAgainstHumanity')
 				$scope.isMyCard = function(card){
 					if(thisCard === card){
 						return "selectedCard";
+					} else if(thisCard === myId){
+						return "myCard";
+					} else {
+						return "whiteCard";
 					}
 				}
 				$rootScope.voted = true;
