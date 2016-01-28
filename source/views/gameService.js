@@ -91,13 +91,19 @@ angular.module('cardsAgainstHumanity')
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
 		var tempHand;
+		var fullHand;
 		console.log(cardClicked, "BEGINNNING");
 		this.playersRef.child(myId).on('value', function(snap) {
-			//console.log(snap.val().cards, "IN SNAP.VAL");
 			tempHand = (snap.val().cards);
-			//console.log("Temporary hand", tempHand);
+			if(snap.val().tempHand){
+				fullHand = (snap.val().tempHand);
+			}
 		})
 		if(tempHand.length < 10){
+			playersRef.child(myId).update({cards: fullHand})
+			fullHand.splice(index, 1);
+			playersRef.child(myId).update({cards: tempHand})
+			responseRef.child(myId).set({text: cardClicked, player: myId})
 			return tempHand
 		}
 		playersRef.child(myId).update({tempHand: tempHand})
