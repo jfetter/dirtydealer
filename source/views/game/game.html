@@ -32,7 +32,9 @@
   |              |
   |   Messages:  |
   |______________| */ -->
-    <div class="container col-sm-3 col-md-3" id="messageDiv">
+
+
+    <!-- <div class="container col-sm-3 col-md-3" id="messageDiv">
       <div id="addMessageInput">
         <h1>Chat Zone</h1>
         <form ng-submit="addMessage(newMessageText)">
@@ -44,11 +46,10 @@
         <div ng-repeat="message in messages.slice().reverse() track by $index">
           <p id="messageSent">{{message.player}}</p>
           <p id="playerMessageName">{{message.username}}</p>
-          <!-- <p id="playerMessageName">{{message.timestamp}}</p> -->
           <input ng-model="message.text" ng-change="messages.$save(message)" />
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- <h5>Voting time</h5>
     <div ng-repeat="voteCard in voteCards track by $index">
