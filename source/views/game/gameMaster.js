@@ -387,10 +387,6 @@ angular.module('cardsAgainstHumanity')
 				return;
 			}
 			console.log("IN VOTECARD", card)
-			// votesRef.on("child_added", function(snap){
-			// var card = snap.val();
-			// console.log("CARD ",card);
-			// console.log("my ID", myId);
 			if (card.player === myId){
 				votesRef.child(myId).remove();
 				swal({
@@ -402,22 +398,19 @@ angular.module('cardsAgainstHumanity')
 				});
 			} else {
 				var thisCard = card.player
-				$scope.isMyCard = function(card){
-					if(thisCard === card){
-						return "selectedCard";
-					} else if(thisCard === myId){
-						return "myCard";
-					} else {
-						return "whiteCard";
-					}
-				}
+				// $scope.isMyCard = function(card){
+				// 	if(thisCard === card){
+				// 		return "selectedCard";
+				// 	} else if(thisCard === myId){
+				// 		return "myCard";
+				// 	} else {
+				// 		return "whiteCard";
+				// 	}
+				// }
 				$rootScope.voted = true;
 				console.log("I AM ROOT:", $rootScope.voted)
 				GameService.voteCard(card);
 			}
-			// })
-			//console.log("YOU voted for:", card)
-			//$rootScope.voted = true;
 		}
 
 		votesRef.on("value", function(snap) {
