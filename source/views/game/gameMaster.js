@@ -451,7 +451,7 @@ playersRef.on("child_removed", function(snap) {
 					console.log("PERSON IN GREATER THAN" ,person, "PREV", prev)
 				} else if (votesCast[player] == prev){
 					winner.push(person);
-					console.log("PERSON IN LESS THAN" ,person, "PREV", prev)
+					console.log("PERSON IN EQUAL TO", person, "PREV", prev)
 				}
 				})
 

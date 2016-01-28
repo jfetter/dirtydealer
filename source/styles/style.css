@@ -1,3 +1,26 @@
+
+/* ______________
+|              |
+| Game Page:   |
+|______________| */
+
+.scrollWrap{
+  margin-top: 5%;
+  text-align: center;
+  width: 100%;
+  padding: 5%;
+}
+
+.vertScroll{
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.horzScroll{
+  overflow-x: scroll;
+  height: 100%;
+}
+
 /* ______________
 |              |
 |  Messages:   |
@@ -20,6 +43,10 @@
   text-align: center;
 }
 
+.chatBox{
+  height: 10vw;
+  width: 50vw;
+}
 /* ______________
 |              |
 |  Profile:    |
@@ -227,7 +254,9 @@ h1, p, .navbar, div, button, .modal, li, a {
   font-size: 40px;
 }
 
-
+.whiteText{
+  margin-top: 25%;
+}
 
 
 #userImage {
