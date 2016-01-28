@@ -1153,18 +1153,16 @@ angular.module('cardsAgainstHumanity')
 
 	this.addMessage = function(message, player) {
 		if(!message) return;
-
-		var cookies = $cookies.get('token');
-		var token = jwtHelper.decodeToken(cookies);
+		var myInfo = this.identifyPlayer();
+		var username = myInfo.username; 
+		var time = Date.now();
 		console.log(message, "MESSAGE I TYPE WHOO");
 
-		var myId = localStorage.player;
-		var thisPlayer = token._id;
 
 		this.messages.$add({
 			text: message,
-			username: token.username,
-			timestamp: Date.now()
+			username: username,
+			timestamp: time
 		});
 	}
 
@@ -1737,7 +1735,7 @@ angular.module('cardsAgainstHumanity')
 					console.log("PERSON IN GREATER THAN" ,person, "PREV", prev)
 				} else if (votesCast[player] == prev){
 					winner.push(person);
-					console.log("PERSON IN LESS THAN" ,person, "PREV", prev)
+					console.log("PERSON IN EQUAL TO", person, "PREV", prev)
 				}
 				})
 
