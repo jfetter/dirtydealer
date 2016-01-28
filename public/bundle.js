@@ -1173,6 +1173,12 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+})
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
@@ -1189,7 +1195,7 @@ angular.module('cardsAgainstHumanity')
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set({array: whiteCards});
+		this.gameInstance.child('whiteCards').set(whiteCards);
 		this.gameInstance.child('blackCards').set(blackCards);
 	}
 	this.killCards = function(){
@@ -1217,7 +1223,7 @@ angular.module('cardsAgainstHumanity')
 
 var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val()
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
@@ -1231,7 +1237,7 @@ var tempWhiteCard;
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').set({array: tempWhiteCard})
+			this.gameInstance.child('whiteCards').set(tempWhiteCard)
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)
@@ -1240,13 +1246,13 @@ var tempWhiteCard;
 
 	this.draw = function(){
 		this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val();
 
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
-		whiteCardRef.update("forceSnap");
-		whiteCardRef.child('forceSnap').remove();
+		this.whiteCardRef.update({forcesnap: "forcesnap"});
+		this.whiteCardRef.child('forcesnap').remove();
 
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
@@ -1695,26 +1701,18 @@ playersRef.on("child_removed", function(snap) {
 					prev = votesCast[player];
 				}
 			}
-			console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
 
+		$timeout( function(){
+			console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
 			winner.forEach(function(player){
 				var player = player.player;
 				console.log(player, "GETS A POINT !!!!")
 				GameService.addWinPoint(player);
-				// playersRef.child(player).on('value', function(snap){
-				// 	var thisPlayer = snap.val()
-				// 	swal({
-				// 		type: "error",
-				// 		title: "this round goes to",
-				// 		text: thisPlayer.username,
-				// 		showConfirmButton: true,
-				// 		confirmButtonText: "sweet!",
-				// 	});
-				//})
 			})
+		},50)
+
 		} // end votes === playerss length
 	});
-
 
 
 	/* ______________
@@ -1821,12 +1819,6 @@ angular.module('cardsAgainstHumanity')
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
 
 });
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-})
 
 'use strict';
 

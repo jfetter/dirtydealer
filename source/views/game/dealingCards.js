@@ -17,7 +17,7 @@ angular.module('cardsAgainstHumanity')
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set({array: whiteCards});
+		this.gameInstance.child('whiteCards').set(whiteCards);
 		this.gameInstance.child('blackCards').set(blackCards);
 	}
 	this.killCards = function(){
@@ -45,7 +45,7 @@ angular.module('cardsAgainstHumanity')
 
 var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val()
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
@@ -59,7 +59,7 @@ var tempWhiteCard;
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').set({array: tempWhiteCard})
+			this.gameInstance.child('whiteCards').set(tempWhiteCard)
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)
@@ -68,13 +68,13 @@ var tempWhiteCard;
 
 	this.draw = function(){
 		this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val();
 
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
-		whiteCardRef.update("forceSnap");
-		whiteCardRef.child('forceSnap').remove();
+		this.whiteCardRef.update({forcesnap: "forcesnap"});
+		this.whiteCardRef.child('forcesnap').remove();
 
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);

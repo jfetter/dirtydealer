@@ -432,26 +432,18 @@ playersRef.on("child_removed", function(snap) {
 					prev = votesCast[player];
 				}
 			}
-			console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
 
+		$timeout( function(){
+			console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
 			winner.forEach(function(player){
 				var player = player.player;
 				console.log(player, "GETS A POINT !!!!")
 				GameService.addWinPoint(player);
-				// playersRef.child(player).on('value', function(snap){
-				// 	var thisPlayer = snap.val()
-				// 	swal({
-				// 		type: "error",
-				// 		title: "this round goes to",
-				// 		text: thisPlayer.username,
-				// 		showConfirmButton: true,
-				// 		confirmButtonText: "sweet!",
-				// 	});
-				//})
 			})
+		},50)
+
 		} // end votes === playerss length
 	});
-
 
 
 	/* ______________
