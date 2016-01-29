@@ -448,6 +448,7 @@ playersRef.on("child_removed", function(snap) {
 				GameService.voteCard(card);
 			}
 		}
+
 		votesRef.on("value", function(snap) {
 
 
@@ -468,6 +469,8 @@ playersRef.on("child_removed", function(snap) {
 					}
 					console.log(votesCast, "*.*. VOTES CAST *,*,");
 				}
+				console.log(votesCast, "*.*. VOTES CAST *,*,");
+			}
 
 			//create an array of objects from the votesCast dictionary
 			var victors = Object.keys(votesCast).map(function(key) {
