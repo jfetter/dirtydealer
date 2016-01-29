@@ -56,13 +56,13 @@
   |__________________________________| -->
 
   <div ng-hide="!currentState" class="row" id="row3">
-    <div class="container" id="whiteCardDiv" style="overflow-x: scroll">
+    <div class="row" id="whiteCardDiv">
       <h1>Your Deck</h1>
-      <div  ng-repeat="card in myHand track by $index">
-        <div ng-click="addToResponseCards(card, $index)" class="whiteCard">
+      <span ng-repeat="card in myHand track by $index">
+        <span ng-click="addToResponseCards(card, $index)" class="whiteDeck">
           {{card}}
-        </div>
-      </div>
+        </span>
+      </span>
     </div>
   </div>
 
@@ -72,34 +72,38 @@
   |	ROW 4: Leaderboard & Messages    |
   |__________________________________| -->
 
-  <div class="container col-sm-3 col-md-3" id="leaderBoardDiv">
-    <h2>Leaderboard</h2>
-    <div class="row" ng-repeat="player in playerss track by $index">
-      <div class="col-sm-12">
-        <p> player: {{player.username}} points: {{player.gamePoints}}  </p>
+  <div class="row" id="row4">
+
+    <div class="container col-sm-7" id="leaderBoardDiv">
+      <h1>Leaderboard</h1>
+      <div class="row" ng-repeat="player in playerss track by $index">
+        <div class="col-sm-12">
+          <p> Player: {{player.username}} Points: {{player.gamePoints}}  </p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="container col-sm-5" id="messageDiv">
+      <div id="addMessageInput">
+        <h1>Chat Zone</h1>
+        <form ng-submit="addMessage(newMessageText)">
+          <input ng-model="newMessageText" type="text" />
+          <button type="submit">Post Comment</button>
+        </form>
+      </div>
+      <div id="messageContainer">
+        <div ng-repeat="message in messages.slice().reverse() track by $index">
+          <p id="messageSent">{{message.player}}</p>
+          <p id="playerMessageName">{{message.username}}</p>
+          <!-- <p id="playerMessageName">{{message.timestamp}}</p> -->
+          <input ng-model="message.text" ng-change="messages.$save(message)" />
+        </div>
       </div>
     </div>
+
   </div>
-
-
-  <div class="container col-sm-3 col-md-3" id="messageDiv">
-    <div id="addMessageInput">
-      <h1>Chat Zone</h1>
-      <form ng-submit="addMessage(newMessageText)">
-        <input ng-model="newMessageText" type="text" />
-        <button type="submit">Post Comment</button>
-      </form>
-    </div>
-    <div id="messageContainer">
-      <div ng-repeat="message in messages.slice().reverse() track by $index">
-        <p id="messageSent">{{message.player}}</p>
-        <p id="playerMessageName">{{message.username}}</p>
-        <!-- <p id="playerMessageName">{{message.timestamp}}</p> -->
-        <input ng-model="message.text" ng-change="messages.$save(message)" />
-      </div>
-    </div>
-  </div>
-
 
   <!-- _____________________
   |	                        |
@@ -107,7 +111,7 @@
   |________________________ | -->
   <div class="row">
     <div class="col-sm-12">
-      <button ng-click="removePlayer()">Quit Game</button>
+      <button ng-click="removePlayer()" id="quitGameButton">Quit Game</button>
     </div>
   </div>
 </div>

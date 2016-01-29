@@ -301,22 +301,45 @@ body {
 #row3 {
   width: 70%;
   margin: 0 auto;
-  background-color: red;
 }
 
 #whiteCardDiv {
-  /*margin-left: auto;*/
-  /*margin-right: auto;*/
-  /*margin-top: 20px;*/
-  /*margin-bottom: 10px;*/
-  width: 70%;
+  width: 90%;
   position: relative;
   margin: 0 auto;
   text-align: center;
-  background-color: blue;
   /*display: inline-block;*/
   overflow-x: scroll;
-  max-height: 280px;
+  overflow-y: hidden;
+  max-height: 450px;
+}
+
+.whiteDeck{
+  color: black;
+  background-color: white;
+  border: 3px solid black;
+  height: 188px;
+  width: 150px;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ______________
+|                |
+|  LeaderBoard:  |
+|________________| */
+
+#row4 {
+  width: 95%;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+#leaderBoardDiv {
+  margin-right: auto;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 /* ______________
@@ -330,16 +353,7 @@ body {
   text-align: center;
 }
 
-/* ______________
-|                |
-|  LeaderBoard:  |
-|________________| */
 
-#leaderBoardDiv {
-  margin-right: auto;
-  margin-bottom: 20px;
-  text-align: center;
-}
 
 /* ______________
 |                |
