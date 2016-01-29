@@ -272,8 +272,11 @@ angular.module('cardsAgainstHumanity')
 				return;
 			} else {
 				//if there are more than 3 players start a new game instance:
+				playersRef.child(myId).remove()
 				$rootScope.myGame ++; 
-
+				GameService.gameInstance.push($rootScope.myGame);
+				$timeout(function(){$state.go('game')},500);
+				console.log("MY GAME REF IS", $rootScope.myGame)
 				return;
 			}
 	});

@@ -10,7 +10,9 @@ angular.module('cardsAgainstHumanity')
 
 	this.gameInstance = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}`);
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-
+	this.gameInstance.on('value', function(snap){
+		console.log(snap.val())
+	})
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages");
