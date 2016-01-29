@@ -1492,6 +1492,9 @@ angular.module('cardsAgainstHumanity')
 
 		// upon login or refresh page
 		thisGame.once('value', function(snap){
+			if(snap.val().gamestate){
+				$scope.currentState = snap.val().gamestate;
+			}
 
 			if(snap.val() == null){
 				CardsService.startDeck();
@@ -1514,79 +1517,14 @@ angular.module('cardsAgainstHumanity')
 				}
 				console.log(players[myId].cards);
 				$scope.myHand = players[myId].cards;
+
 			}
 		})
 
 
-		// playersRef.child(myId).once('child_added', function(snap) {
-		// 	if(!snap.val().cards){
-		// 		console.log("You have cards now");
-		// 	} else {
-		// 		console.log("You already have cards");
-		// 	}
-		// })
-		//Will not reset your player info by logging you in if you are already in
-		// thisGame.once('value', function(snap){
-		// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
-		// 	// if (snap.val() === null){
-		// 	// 	GameService.addPlayer();
-		// 	// 	return;
-		// 	// }
-		// 		var players = snap.val().players;
-		// 		console.log("PLAYERS", players);
-		// 	if (players.hasOwnProperty(myId) === false){
-		// 		GameService.addPlayer();
-		// 		console.log("LOGGING IN ONCE")
-		// 		return;
-		// 	} else{
-		// 		console.log("NOT LOGGING IN TWICE")
-		// 		return;
-		// 	}
-
-		// })
-
-		//Add player to waiting room when they click join.
-
-
-	// 	playersRef.on("value", function(snap) {
-	// 		console.log(players[myId].cards);
-	// 		$scope.myHand = players[myId].cards;
-	// 	}
-	// })
-
-
-	// playersRef.child(myId).once('child_added', function(snap) {
-	// 	if(!snap.val().cards){
-	// 		console.log("You have cards now");
-	// 	} else {
-	// 		console.log("You already have cards");
-	// 	}
-	// })
-//Will not reset your player info by logging you in if you are already in
-// thisGame.once('value', function(snap){
-// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
-// 	// if (snap.val() === null){
-// 	// 	GameService.addPlayer();
-// 	// 	return;
-// 	// }
-// 		var players = snap.val().players;
-// 		console.log("PLAYERS", players);
-// 	if (players.hasOwnProperty(myId) === false){
-// 		GameService.addPlayer();
-// 		console.log("LOGGING IN ONCE")
-// 		return;
-// 	} else{
-// 		console.log("NOT LOGGING IN TWICE")
-// 		return;
-// 	}
-
-// })
-
-	//Add player to waiting room when they click join.
-
-
 	playersRef.on("value", function(snap) {
 			//&& $scope.currentState === undefined
+			$scope.playerss = 
 			var players = snap.val();
 			var numPlayers = snap.numChildren();
 			console.log("playas gonna play play play play play", players)
@@ -1827,15 +1765,14 @@ playersRef.on("child_removed", function(snap) {
 				confirmButtonText: "Cool. I'm done."
 			}, function(isConfirm) {
 				if (isConfirm) {
-						GameService.removePlayer();
+					$scope.removePlayer
 				} else {
 					cardsRef.remove();
-					winnerRef.remove();
+					thisGame.child('winner').remove();
 					votesRef.remove();
 					responseRef.remove();
 					scenarioCardRef.remove();
 					myRef.remove();
-
 					$timeout(function() {
 						location.reload(true);
 					}, 500)
@@ -1900,12 +1837,6 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
-.controller('homeCtrl', function($scope){
-})
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
 .controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
 	$scope.submit = function(user){
 		UserService.login(user)
@@ -1931,6 +1862,12 @@ angular.module('cardsAgainstHumanity')
 	}
 
 });
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('homeCtrl', function($scope){
+})
 
 'use strict';
 
