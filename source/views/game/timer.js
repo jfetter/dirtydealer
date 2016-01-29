@@ -3,7 +3,7 @@ angular.module('cardsAgainstHumanity')
 
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
-	var myGame = $rootScope.myGame;
+	var myGame = $rootScope.myGame ? $rootScope.mygame : 1; 
 
 	this.timerRef = new Firebase(`https://rachdirtydeals.firebaseio.com/games/${myGame}/timer`);
 	var timerRef = this.timerRef;

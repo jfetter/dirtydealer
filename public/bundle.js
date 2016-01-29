@@ -126,8 +126,9 @@ angular.module('cardsAgainstHumanity')
 
 	var cookies = $cookies.get('token');
 
+	var myGame = $rootScope.myGame ? $rootScope.mygame : 1; 
 
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com");
+	this.gameInstance = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}`);
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	this.playersRef = this.gameInstance.child("players");
@@ -143,7 +144,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://mycah.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}/gamestate/`);
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
@@ -1178,10 +1179,18 @@ var whiteCards = [
 angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
-
+	
+	var myGame = $rootScope.myGame ? $rootScope.mygame : 1; 
 
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
+
+	//only keep starter deck here:
+	this.sourceDeck = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+
+	this.sourceDeck.set({whiteDeck: whiteCards, blackDeck: blackCards});
+
+	//local cards
+	this.gameInstance = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}/cards`);
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
@@ -1192,7 +1201,7 @@ angular.module('cardsAgainstHumanity')
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set({array: whiteCards});
+		this.gameInstance.child('whiteCards').set(whiteCards);
 		this.gameInstance.child('blackCards').set(blackCards);
 	}
 	this.killCards = function(){
@@ -1220,7 +1229,7 @@ angular.module('cardsAgainstHumanity')
 
 var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val()
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
@@ -1234,7 +1243,7 @@ var tempWhiteCard;
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').set({array: tempWhiteCard})
+			this.gameInstance.child('whiteCards').set(tempWhiteCard)
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)
@@ -1243,13 +1252,13 @@ var tempWhiteCard;
 
 	this.draw = function(){
 		this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val();
 
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
-		this.whiteCardRef.update("forceSnap");
-		this.whiteCardRef.child('forceSnap').remove();
+		this.whiteCardRef.update({forcesnap: "forcesnap"});
+		this.whiteCardRef.child('forcesnap').remove();
 
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
@@ -1537,6 +1546,9 @@ angular.module('cardsAgainstHumanity')
 				console.log("THE current Playas:", $scope.playerss)
 				return;
 			} else {
+				//if there are more than 3 players start a new game instance:
+				$rootScope.myGame ++; 
+
 				return;
 			}
 	});
@@ -1792,7 +1804,7 @@ angular.module('cardsAgainstHumanity')
 
 
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
-	var myGame = $rootScope.myGame;
+	var myGame = $rootScope.myGame ? $rootScope.mygame : 1; 
 
 	this.timerRef = new Firebase(`https://rachdirtydeals.firebaseio.com/games/${myGame}/timer`);
 	var timerRef = this.timerRef;
@@ -1833,35 +1845,6 @@ angular.module('cardsAgainstHumanity')
 'use strict';
 
 angular.module('cardsAgainstHumanity')
-.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
-	$scope.submit = function(user){
-		UserService.login(user)
-		.then(function(res){
-			if(res.data=="login succesfull"){
-				UserService.loggedIn = 'true';
-				$scope.$emit('loggedIn');
-				$state.go('userPage', {"username": user.username})
-			} else if (res.data === "Incorrect Username or Password!"){
-				swal({
-					type: "error",
-					title: "Uh-Oh!",
-					text: res.data,
-					showConfirmButton: true,
-					confirmButtonText: "I hear ya.",
-				});
-			}
-			var token = $cookies.get('token');
-			var decoded = jwtHelper.decodeToken(token);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-});
-
-'use strict';
-
-angular.module('cardsAgainstHumanity')
 
 .controller('registerCtrl', function($scope, $state, UserService){
 	$scope.submit = function(user){
@@ -1889,6 +1872,35 @@ angular.module('cardsAgainstHumanity')
 			console.log(err);
 		});
 	}
+});
+
+'use strict';
+
+angular.module('cardsAgainstHumanity')
+.controller('loginCtrl', function($scope, $state, $rootScope, UserService, jwtHelper, $cookies){
+	$scope.submit = function(user){
+		UserService.login(user)
+		.then(function(res){
+			if(res.data=="login succesfull"){
+				UserService.loggedIn = 'true';
+				$scope.$emit('loggedIn');
+				$state.go('userPage', {"username": user.username})
+			} else if (res.data === "Incorrect Username or Password!"){
+				swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: res.data,
+					showConfirmButton: true,
+					confirmButtonText: "I hear ya.",
+				});
+			}
+			var token = $cookies.get('token');
+			var decoded = jwtHelper.decodeToken(token);
+		}, function(err) {
+			console.error(err);
+		});
+	}
+
 });
 
 'use strict';

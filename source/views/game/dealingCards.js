@@ -3,10 +3,18 @@
 angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
-
+	
+	var myGame = $rootScope.myGame ? $rootScope.mygame : 1; 
 
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
-	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
+
+	//only keep starter deck here:
+	this.sourceDeck = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
+
+	this.sourceDeck.set({whiteDeck: whiteCards, blackDeck: blackCards});
+
+	//local cards
+	this.gameInstance = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}/cards`);
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
@@ -17,7 +25,7 @@ angular.module('cardsAgainstHumanity')
 	//******DEALING BOTH DECKS:
 	this.startDeck = function(){
 		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set({array: whiteCards});
+		this.gameInstance.child('whiteCards').set(whiteCards);
 		this.gameInstance.child('blackCards').set(blackCards);
 	}
 	this.killCards = function(){
@@ -45,7 +53,7 @@ angular.module('cardsAgainstHumanity')
 
 var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val()
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
@@ -59,7 +67,7 @@ var tempWhiteCard;
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').set({array: tempWhiteCard})
+			this.gameInstance.child('whiteCards').set(tempWhiteCard)
 			console.log("card exchange")
 		}
 		console.log('MY FULL HAND IS', fullHand)
@@ -68,13 +76,13 @@ var tempWhiteCard;
 
 	this.draw = function(){
 		this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val().array;
+		tempWhiteCard = snap.val();
 
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
-		this.whiteCardRef.update("forceSnap");
-		this.whiteCardRef.child('forceSnap').remove();
+		this.whiteCardRef.update({forcesnap: "forcesnap"});
+		this.whiteCardRef.child('forcesnap').remove();
 
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);

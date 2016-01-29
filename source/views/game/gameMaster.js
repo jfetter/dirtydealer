@@ -271,6 +271,9 @@ angular.module('cardsAgainstHumanity')
 				console.log("THE current Playas:", $scope.playerss)
 				return;
 			} else {
+				//if there are more than 3 players start a new game instance:
+				$rootScope.myGame ++; 
+
 				return;
 			}
 	});
