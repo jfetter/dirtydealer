@@ -309,12 +309,14 @@ body {
   /*margin-right: auto;*/
   /*margin-top: 20px;*/
   /*margin-bottom: 10px;*/
+  width: 70%;
+  position: relative;
   margin: 0 auto;
   text-align: center;
   background-color: blue;
-  display: inline-block;
-  overflow-y: scroll;
-  max-height: 70px;
+  /*display: inline-block;*/
+  overflow-x: scroll;
+  max-height: 280px;
 }
 
 /* ______________

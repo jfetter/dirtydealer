@@ -38,12 +38,12 @@
     <div ng-hide="!currentState" class="container col-sm-8" id="responseDiv">
       <h1>Responses</h1>
       <!-- <div id="responseDiv"> -->
-        <div ng-show="currentState === 1" class="row">Click to vote for a card once all responses are submitted!</div>
-        <div ng-repeat="response in responses track by $index" id="responseCards" class="row">
-          <p class="whiteCard" ng-click="voteCard(response)">
-            <span ng-show="currentState === 2">{{response.text}} </span>
-          </p>
-        </div>
+      <div ng-show="currentState === 1" class="row">Click to vote for a card once all responses are submitted!</div>
+      <div ng-repeat="response in responses track by $index" id="responseCards" class="row">
+        <p class="whiteCard" ng-click="voteCard(response)">
+          <span ng-show="currentState === 2">{{response.text}} </span>
+        </p>
+      </div>
       <!-- </div> -->
     </div>
 
@@ -56,14 +56,15 @@
   |__________________________________| -->
 
   <div ng-hide="!currentState" class="row" id="row3">
-    <h1>Your Deck</h1>
-    <div  ng-repeat="card in myHand track by $index" id="whiteCardDiv">
-      <div ng-click="addToResponseCards(card, $index)" class="whiteCard">
-        {{card}}
+    <div class="container" id="whiteCardDiv" style="overflow-x: scroll">
+      <h1>Your Deck</h1>
+      <div  ng-repeat="card in myHand track by $index">
+        <div ng-click="addToResponseCards(card, $index)" class="whiteCard">
+          {{card}}
+        </div>
       </div>
     </div>
   </div>
-
 
 
   <!-- ______________________________
