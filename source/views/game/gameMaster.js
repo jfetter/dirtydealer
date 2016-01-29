@@ -212,9 +212,7 @@ angular.module('cardsAgainstHumanity')
 
 		// upon login or refresh page
 		thisGame.once('value', function(snap){
-			if(snap.val().gamestate){
-				$scope.currentState = snap.val().gamestate;
-			}
+			console.log("snippy snap was an angry turtle");
 
 			if(snap.val() == null){
 				CardsService.startDeck();
@@ -222,7 +220,9 @@ angular.module('cardsAgainstHumanity')
 				$timeout(function(){
 					GameService.addPlayer()
 				},100)
-			} else {
+			if( snap.val().gamestate != null){
+				$scope.currentState = snap.gamestate;
+			}
 				var players = snap.val().players;
 				console.log("PLAYERS", players);
 				if (players.hasOwnProperty(myId) === false){
@@ -244,7 +244,6 @@ angular.module('cardsAgainstHumanity')
 
 	playersRef.on("value", function(snap) {
 			//&& $scope.currentState === undefined
-			$scope.playerss = 
 			var players = snap.val();
 			var numPlayers = snap.numChildren();
 			console.log("playas gonna play play play play play", players)
