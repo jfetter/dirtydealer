@@ -27,8 +27,8 @@
 
 #userHeader {
   text-align: center;
-  font-size: 35px;
-  color: lightblue;
+  font-size: 45px;
+  color: #286090;
   font-weight: bold;
   margin-top: 30px;
   margin-bottom: 30px;
@@ -41,7 +41,7 @@
   border: 5px solid black;
   width: 100%;
   height: 650px;
-  margin-top: -30px;
+  margin-top: -18px;
   z-index: 5000;
   background-color: black;
   position: absolute;
@@ -92,6 +92,10 @@
   text-align: center;
 }
 
+#profile {
+  margin-top: 50px;
+}
+
 /* ______________
 |              |
 |  Navbar:     |
@@ -102,6 +106,15 @@ a.navbar-brand {
   color: white;
 }
 
+#navTitle {
+  font-size: 50px;
+  color: white;
+}
+
+#navMenu {
+  font-size: 20px;
+  color: lightblue;
+}
 
 /* ______________
 |              |
@@ -110,6 +123,10 @@ a.navbar-brand {
 
 h1, p, .navbar, div, button, .modal, li, a {
   font-family: 'Righteous', cursive;
+}
+
+body {
+  background-color: black;
 }
 
 #backgroundGif {
@@ -195,9 +212,110 @@ h1, p, .navbar, div, button, .modal, li, a {
 |  GameBoard:    |
 |________________| */
 #gameBoard {
-  background-color: lightblue;
+  text-align: center;
+  border: 5px solid black;
+  width: 100%;
+  height: 850px;
+  margin-top: -18px;
+  z-index: 5000;
+  position: absolute;
+  color: white;
 }
 
+#gameBackgroundGif {
+  z-index: -9999;
+  background-size: cover;
+  position: absolute;
+  display: block;
+  width: 1000px;
+  height: 515px;
+  margin-left: 100px;
+  margin-top: 30px;
+  opacity: 0.8;
+}
+
+/* ______________
+|                |
+|  Black Card:   |
+|________________| */
+
+#blackCardDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  float: left;
+}
+
+.blackCard{
+  color: white;
+  border: 1px solid black;
+  background-color: black;
+  height: 250px;
+  width: 200px;
+  display: inline-block;
+}
+
+/* ___________________
+|                     |
+|  Response/Vote:     |
+|____________________ | */
+
+#row2 {
+  width: 70%;
+  margin: 0 auto;
+}
+
+#responseDiv {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  float: right;
+}
+
+#responseCards {
+  margin: 0 auto;
+  display: inline-block;
+  padding-right: 15px;
+  padding-top: 15px;
+}
+
+.whiteCard{
+  color: black;
+  background-color: white;
+  border: 3px solid black;
+  height: 188px;
+  width: 150px;
+  display: inline-block;
+}
+
+/* ________________
+|                  |
+|  Your Card Deck: |
+|__________________| */
+
+
+#row3 {
+  width: 70%;
+  margin: 0 auto;
+  background-color: red;
+}
+
+#whiteCardDiv {
+  /*margin-left: auto;*/
+  /*margin-right: auto;*/
+  /*margin-top: 20px;*/
+  /*margin-bottom: 10px;*/
+  margin: 0 auto;
+  text-align: center;
+  background-color: blue;
+  display: inline-block;
+  overflow-y: scroll;
+  max-height: 70px;
+}
 
 /* ______________
 |                |
@@ -232,43 +350,7 @@ h1, p, .navbar, div, button, .modal, li, a {
   text-align: center;
 }
 
-/* ______________
-|                |
-|  Black Card:   |
-|________________| */
 
-#blackCardDiv {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-/* ______________
-|                |
-|  Response:     |
-|________________| */
-
-#responseDiv {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  text-align: center;
-}
-/* ______________
-|                |
-|  White Deck:   |
-|________________| */
-
-#whiteCardDiv {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  text-align: center;
-}
 
 #counter {
   text-align: center;
@@ -282,25 +364,8 @@ h1, p, .navbar, div, button, .modal, li, a {
   max-height: 50vh;
   max-width: 50vh;
 }
-.blackVote{
-  display: inline-block;
-}
-.whiteCard{
-  color: black;
-  border: 1px solid black;
-  height: 250px;
-  width: 200px;
-  display: inline-block;
-  float: left;
-}
-.blackCard{
-  color: white;
-  border: 1px solid black;
-  background-color: black;
-  height: 250px;
-  width: 200px;
-  display: inline-block;
-}
+
+
 
 
 #profile {
@@ -321,27 +386,6 @@ h1, p, .navbar, div, button, .modal, li, a {
   font-size: 20px;
   text-align: left;
 }
-
-#favoritesHeader {
-  text-align: center;
-  font-size: 35px;
-  color: lightblue;
-  font-weight: bold;
-}
-
-#favoriteImage {
-  max-height: 25vh;
-  max-width: 25vh;
-  padding: 5px;
-}
-
-#unfavoriteButton {
-  padding: 5px;
-}
-
-/*.thumbnail {
-  margin: 2px 20px 0 0;
-}*/
 
 .btn-file {
   position: relative;
@@ -364,7 +408,7 @@ h1, p, .navbar, div, button, .modal, li, a {
 }
 
 input[readonly] {
-  background-color: white !important;
+  background-color: black !important;
   cursor: text !important;
 }
 
@@ -372,11 +416,6 @@ input[readonly] {
   border: 1px solid #d3d3d3;
   min-height: 20vh;
 }
-
-.userContainer:hover{
-  background-color: #d3d3d3
-}
-
 
 .userContainer{
   border:1px solid #d3d3d3;

@@ -4,7 +4,6 @@ angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
-	// var currentState = '';
 
 	/* ______________
 	|              |
@@ -46,7 +45,6 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	|Utility Functs|
 	|______________| */
-
 
 
 	/* ______________
@@ -199,7 +197,7 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	| Players:     |
 	|______________|
-	*/	
+	*/
 
 // upon login or refresh page
 	thisGame.once('value', function(snap){
@@ -259,7 +257,7 @@ angular.module('cardsAgainstHumanity')
 	//Add player to waiting room when they click join.
 
 
-	playersRef.on("value", function(snap) {		
+	playersRef.on("value", function(snap) {
 			//&& $scope.currentState === undefined
 			var players = snap.val();
 			var numPlayers = snap.numChildren();
@@ -287,7 +285,7 @@ playersRef.on("child_removed", function(snap) {
 				location.reload(true);
 			}, 500);
 		}
-		return; 
+		return;
 	});
 
 	$scope.removePlayer = function(){
@@ -408,7 +406,7 @@ playersRef.on("child_removed", function(snap) {
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
 		if (votesLength == $scope.playerss.length && votesLength > 0) {
 			//console.log("INSIDE VOTES")
-			
+
 			//create a dictionary of players who received votes
 			var votesCast = {};
 			for(var player in votes){
