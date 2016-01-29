@@ -6,7 +6,7 @@ angular.module('cardsAgainstHumanity')
 
 
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")

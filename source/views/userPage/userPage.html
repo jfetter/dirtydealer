@@ -1,62 +1,65 @@
 <div class="container col-xs-12" id="mainProfileContainer">
-
+	<img src="http://cdn.playbuzz.com/cdn/1c6eb15f-28d0-4150-8ee6-152f39f2dbd4/ea64f2f4-e12b-4f05-86e3-61c52b8cae25.gif" alt="profile gif" id="profileGif">
 	<div class="row"  id="userHeader">
 		<div ng-if="isLoggedIn" class="col-xs-12">
-		<h1>User: {{user.username}} </h1>
+			<h1>Welcome {{user.username}}!</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-8 col-sm-offset-2" id="profile">
+
+			<div class="col-sm-4 col-xs-12 imageDiv">
+				<div class="row">
+					<div id="imageHolder">
+						<div>
+							<img class="img-rounded col-sm-12" src={{profileImageSrc}} id="userImage"></img>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div ng-show="isOwnPage" >
+						<div class="input-group">
+							<span class="input-group-btn">
+								<button class="btn btn-primary btn-file">
+									Browse Files<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
+								</button>
+							</span>
+							<input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
+						</div>
+						<button class="btn btn-primary"ng-disabled="!user.uploadedImage" ng-click="uploadImage(user.uploadedImage)" id="uploadPic">Upload</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- <div class="col-sm-4 col-xs-12 thumbnail" >
+			<div ng-if="isOwnPage" id="profile">
+			<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
+			<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
+			<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
+			<div class="row">
+			<label ng-if="isEditing" class="col-xs-4" for="username" id="profileHeader">New Username:</label>
+			<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.username" value="{{user.username}}" />
+		</div>
+	</div>
+	<div id="profileDetails" class="col-xs-12">
+	<h2>Profile Details</h2>
+	<br>
+	<h2 ng-if="!isEditing" id="profileDetails">Username:    {{user.username}}</h2>
+</div>
+</div> -->
+
+<div class="col-sm-5 col-xs-12" id="leaderBoardDiv">
+	<div ng-show="isOwnPage" >
+		<div class="row" id="leaderBoardHeader">
+			<h3>Gamepoints</h3>
+		</div>
+		<div class="row" id="leaderBoardScore">
+			<h4>Number of games won:      {{user.gamePoints}}</h4>
+		</div>
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-md-12" id="profile">
-
-		<div class="col-sm-3 col-xs-12 thumbnail">
-			<div class="row">
-				<div id="imageHolder">
-					<div>
-						<img class="img-rounded col-xs-6 col-sm-12"
-						src={{profileImageSrc}} id="userImage"></img>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div ng-show="isOwnPage" >
-					<div class="input-group">
-						<span class="input-group-btn">
-							<button class="btn btn-primary btn-file">
-								Browse Files<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
-							</button>
-						</span>
-						<input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
-					</div>
-					<button class="btn btn-primary"ng-disabled="!user.uploadedImage" ng-click="uploadImage(user.uploadedImage)">Upload</button>
-				</div>
-			</div>
-		</div>
-
-		<div class="col-sm-4 col-xs-12 thumbnail" >
-			<div ng-if="isOwnPage" id="profile">
-				<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
-				<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
-				<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
-				<div class="row">
-					<label ng-if="isEditing" class="col-xs-4" for="username" id="profileHeader">New Username:</label>
-					<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.username" value="{{user.username}}" />
-				</div>
-			</div>
-			<div id="profileDetails" class="col-xs-12">
-				<h2>Profile Details</h2>
-				<br>
-				<h2 ng-if="!isEditing" id="profileDetails">Username:    {{user.username}}</h2>
-			</div>
-		</div>
-
-		<div class="col-sm-3 col-xs-12 thumbnail">
-			<div ng-show="isOwnPage" >
-				<h3>LeaderBoard</h3>
-			</div>
-		</div>
-
-	</div>
 </div>
 </div>
 </div>

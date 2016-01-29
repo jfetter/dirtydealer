@@ -4,7 +4,6 @@ angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
-	// var currentState = '';
 
 	/* ______________
 	|              |
@@ -41,7 +40,6 @@ angular.module('cardsAgainstHumanity')
 				return (false)
 			} else {return true}
 		}
-
 
 		if($scope.isLoggedIn){
 			var cookies = $cookies.get('token');
@@ -84,6 +82,7 @@ angular.module('cardsAgainstHumanity')
 		// })
 		var winVotes = GameService.votes;
 		// $scope.blackCard = scenarioCardRef
+
 
 		/* ______________
 		|              |
@@ -205,11 +204,11 @@ angular.module('cardsAgainstHumanity')
 			}
 		});
 
-		/* ______________
-		|              |
-		| Players:     |
-		|______________|
-		*/
+	/* ______________
+	|              |
+	| Players:     |
+	|______________|
+	*/
 
 		// upon login or refresh page
 		thisGame.once('value', function(snap){
@@ -269,7 +268,44 @@ angular.module('cardsAgainstHumanity')
 		//Add player to waiting room when they click join.
 
 
-		playersRef.on("value", function(snap) {
+	// 	playersRef.on("value", function(snap) {
+	// 		console.log(players[myId].cards);
+	// 		$scope.myHand = players[myId].cards;
+	// 	}
+	// })
+
+
+	// playersRef.child(myId).once('child_added', function(snap) {
+	// 	if(!snap.val().cards){
+	// 		console.log("You have cards now");
+	// 	} else {
+	// 		console.log("You already have cards");
+	// 	}
+	// })
+//Will not reset your player info by logging you in if you are already in
+// thisGame.once('value', function(snap){
+// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
+// 	// if (snap.val() === null){
+// 	// 	GameService.addPlayer();
+// 	// 	return;
+// 	// }
+// 		var players = snap.val().players;
+// 		console.log("PLAYERS", players);
+// 	if (players.hasOwnProperty(myId) === false){
+// 		GameService.addPlayer();
+// 		console.log("LOGGING IN ONCE")
+// 		return;
+// 	} else{
+// 		console.log("NOT LOGGING IN TWICE")
+// 		return;
+// 	}
+
+// })
+
+	//Add player to waiting room when they click join.
+
+
+	playersRef.on("value", function(snap) {
 			//&& $scope.currentState === undefined
 			var players = snap.val();
 			var numPlayers = snap.numChildren();
@@ -287,18 +323,18 @@ angular.module('cardsAgainstHumanity')
 			}
 		});
 
-		playersRef.on("child_removed", function(snap) {
-			//alert("PLAYER QUIT", snap.val())
-			if ($scope.playerss.length === 0 ){
-				GameService.gameInstance.set(null);
-			} else if ( $scope.playerss.length ===1){
-				GameService.gameInstance.set(null);
-				$timeout(function() {
-					location.reload(true);
-				}, 500);
-			}
-			return;
-		});
+playersRef.on("child_removed", function(snap) {
+		//alert("PLAYER QUIT", snap.val())
+		if ($scope.playerss.length === 0 ){
+			GameService.gameInstance.set(null);
+		} else if ( $scope.playerss.length ===1){
+			GameService.gameInstance.set(null);
+			$timeout(function() {
+				location.reload(true);
+			}, 500);
+		}
+		return;
+	});
 
 		$scope.removePlayer = function(){
 			GameService.removePlayer();
@@ -412,7 +448,6 @@ angular.module('cardsAgainstHumanity')
 				GameService.voteCard(card);
 			}
 		}
-
 		votesRef.on("value", function(snap) {
 
 

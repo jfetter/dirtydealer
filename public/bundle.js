@@ -84,6 +84,9 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 	this.page = function(username){
 		return $http.get(`${ENV.API_URL}/user/page/${username}`)
 	}
+	this.gamePoints = function(ddWins) {
+		return $http.ge(`${ENV.API_URL}/user/page/${dirtyWin}`);
+	};
 	this.auth = function(){
 		return $http.get(`${ENV.API_URL}/auth`)
 	};
@@ -91,14 +94,14 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/user/edit`, data)
 	}
 	this.loggedIn = function(isLoggedIn){
-			if(isLoggedIn){ return true }
+		if(isLoggedIn){ return true }
 	};
-  this.uploadImage = function(image, userId){
-    return $http.post(`${ENV.API_URL}/imageUpload`, {
-      userId: userId,
-      image: image
-    })
-  }
+	this.uploadImage = function(image, userId){
+		return $http.post(`${ENV.API_URL}/imageUpload`, {
+			userId: userId,
+			image: image
+		})
+	}
 	this.isAuthed = function(token){
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
 	};
@@ -1184,7 +1187,7 @@ angular.module('cardsAgainstHumanity')
 
 
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
@@ -1273,7 +1276,6 @@ angular.module('cardsAgainstHumanity')
 
 
 .controller('gameMasterCtrl', function(TimerService, $timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, CardsService, $http){
-	// var currentState = '';
 
 	/* ______________
 	|              |
@@ -1310,7 +1312,6 @@ angular.module('cardsAgainstHumanity')
 				return (false)
 			} else {return true}
 		}
-
 
 		if($scope.isLoggedIn){
 			var cookies = $cookies.get('token');
@@ -1353,6 +1354,7 @@ angular.module('cardsAgainstHumanity')
 		// })
 		var winVotes = GameService.votes;
 		// $scope.blackCard = scenarioCardRef
+
 
 		/* ______________
 		|              |
@@ -1474,11 +1476,11 @@ angular.module('cardsAgainstHumanity')
 			}
 		});
 
-		/* ______________
-		|              |
-		| Players:     |
-		|______________|
-		*/
+	/* ______________
+	|              |
+	| Players:     |
+	|______________|
+	*/
 
 		// upon login or refresh page
 		thisGame.once('value', function(snap){
@@ -1538,7 +1540,44 @@ angular.module('cardsAgainstHumanity')
 		//Add player to waiting room when they click join.
 
 
-		playersRef.on("value", function(snap) {
+	// 	playersRef.on("value", function(snap) {
+	// 		console.log(players[myId].cards);
+	// 		$scope.myHand = players[myId].cards;
+	// 	}
+	// })
+
+
+	// playersRef.child(myId).once('child_added', function(snap) {
+	// 	if(!snap.val().cards){
+	// 		console.log("You have cards now");
+	// 	} else {
+	// 		console.log("You already have cards");
+	// 	}
+	// })
+//Will not reset your player info by logging you in if you are already in
+// thisGame.once('value', function(snap){
+// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
+// 	// if (snap.val() === null){
+// 	// 	GameService.addPlayer();
+// 	// 	return;
+// 	// }
+// 		var players = snap.val().players;
+// 		console.log("PLAYERS", players);
+// 	if (players.hasOwnProperty(myId) === false){
+// 		GameService.addPlayer();
+// 		console.log("LOGGING IN ONCE")
+// 		return;
+// 	} else{
+// 		console.log("NOT LOGGING IN TWICE")
+// 		return;
+// 	}
+
+// })
+
+	//Add player to waiting room when they click join.
+
+
+	playersRef.on("value", function(snap) {
 			//&& $scope.currentState === undefined
 			var players = snap.val();
 			var numPlayers = snap.numChildren();
@@ -1556,18 +1595,18 @@ angular.module('cardsAgainstHumanity')
 			}
 		});
 
-		playersRef.on("child_removed", function(snap) {
-			//alert("PLAYER QUIT", snap.val())
-			if ($scope.playerss.length === 0 ){
-				GameService.gameInstance.set(null);
-			} else if ( $scope.playerss.length ===1){
-				GameService.gameInstance.set(null);
-				$timeout(function() {
-					location.reload(true);
-				}, 500);
-			}
-			return;
-		});
+playersRef.on("child_removed", function(snap) {
+		//alert("PLAYER QUIT", snap.val())
+		if ($scope.playerss.length === 0 ){
+			GameService.gameInstance.set(null);
+		} else if ( $scope.playerss.length ===1){
+			GameService.gameInstance.set(null);
+			$timeout(function() {
+				location.reload(true);
+			}, 500);
+		}
+		return;
+	});
 
 		$scope.removePlayer = function(){
 			GameService.removePlayer();
@@ -1681,7 +1720,6 @@ angular.module('cardsAgainstHumanity')
 				GameService.voteCard(card);
 			}
 		}
-
 		votesRef.on("value", function(snap) {
 
 
@@ -1826,8 +1864,8 @@ angular.module('cardsAgainstHumanity')
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 	var myGame = $rootScope.myGame;
 
-	this.timerRef = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}/timer`);
-	var timerRef = this.timerRef; 
+	this.timerRef = new Firebase(`https://rachdirtydeals.firebaseio.com/games/${myGame}/timer`);
+	var timerRef = this.timerRef;
 	this.counter = 61;
 	var counter = this.counter;
 	var mytimeout = null;
@@ -1849,6 +1887,7 @@ angular.module('cardsAgainstHumanity')
 		};
 
 })
+
 angular.module('cardsAgainstHumanity')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){
@@ -1941,7 +1980,9 @@ angular.module('cardsAgainstHumanity')
 
 	UserService.page($state.params.username)
 	.then(function(res) {
+		console.log(res.data.ddWins);
 		$scope.user = res.data;
+		$scope.user.gamePoints = res.data.ddWins;
 		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
 		$scope.isEditing = false;
 		$scope.editPayload.username = $scope.user.username;
