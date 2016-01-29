@@ -1054,7 +1054,7 @@ angular.module('cardsAgainstHumanity')
 		this.gameStateRef.push({temp: "temp"});
 		this.gameStateRef.child("temp").remove();
 
-		if(tempHand.length < 10 && state === 1){
+		if(tempHand.length < 10){
 			// playersRef.child(myId).update({cards: fullHand})
 			// fullHand.splice(index, 1);
 			// playersRef.child(myId).update({cards: tempHand})
