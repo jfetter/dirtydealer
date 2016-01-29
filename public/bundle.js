@@ -84,6 +84,9 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 	this.page = function(username){
 		return $http.get(`${ENV.API_URL}/user/page/${username}`)
 	}
+	this.gamePoints = function(ddWins) {
+		return $http.ge(`${ENV.API_URL}/user/page/${dirtyWin}`);
+	};
 	this.auth = function(){
 		return $http.get(`${ENV.API_URL}/auth`)
 	};
@@ -101,9 +104,6 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 	}
 	this.isAuthed = function(token){
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
-	};
-	this.gamePoints = function(ddWins) {
-		return $http.ge(`${ENV.API_URL}/user/dirtyWin`);
 	};
 })
 
@@ -1912,7 +1912,9 @@ angular.module('cardsAgainstHumanity')
 
 	UserService.page($state.params.username)
 	.then(function(res) {
+		console.log(res.data.ddWins);
 		$scope.user = res.data;
+		$scope.user.gamePoints = res.data.ddWins;
 		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
 		$scope.isEditing = false;
 		$scope.editPayload.username = $scope.user.username;

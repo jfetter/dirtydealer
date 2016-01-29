@@ -40,10 +40,11 @@
   text-align: center;
   border: 5px solid black;
   width: 100%;
-  height: 100%;
+  height: 650px;
   margin-top: -30px;
   z-index: 5000;
   background-color: black;
+  position: absolute;
 }
 
 #profileGif {
@@ -51,9 +52,10 @@
   background-size: cover;
   position: absolute;
   display: block;
-  width: 800px;
-  height: 447px;
-  margin-left: 180px;
+  width: 1000px;
+  height: 515px;
+  margin-left: 100px;
+  margin-top: 30px;
 }
 
 .thumbnail {
@@ -62,6 +64,7 @@
 
 #imageDiv {
   background-color: transparent;
+  float: left;
 }
 
 #userImage {
@@ -70,6 +73,23 @@
 
 #uploadPic {
   margin-top: 10px;
+}
+
+#leaderBoardDiv {
+  float: right;
+  margin-right: 100px;
+}
+
+#leaderBoardHeader {
+  background-color: #286090;
+  color: white;
+  text-align: center;
+}
+
+#leaderBoardScore {
+  background-color: white;
+  color: black;
+  text-align: center;
 }
 
 /* ______________
@@ -281,11 +301,7 @@ h1, p, .navbar, div, button, .modal, li, a {
   width: 200px;
   display: inline-block;
 }
-/*.userThumbnail {
-  max-height: 8vh;
-  max-width: 8vh;
-  border-radius: 7px;
-}*/
+
 
 #profile {
   text-align: center;
@@ -351,30 +367,7 @@ input[readonly] {
   background-color: white !important;
   cursor: text !important;
 }
-#user-list-container{
-  border:1px solid #313131;
 
-}
-
-.userListProfilePicDiv{
-  border-right: 1px solid #d3d3d3;
-  margin-top: 3vh;
-  text-align: center;
-}
-
-.userList-titleHeader, .userList-titleSearch{
-  text-align: center;
-  margin: 0px auto;
-  display; block;
-}
-
-.userList-EmailAndName{
-  margin-top: 4vh;
-}
-
-.userListInfoContainer{
-  min-height: 20vh;
-}
 .userContainer{
   border: 1px solid #d3d3d3;
   min-height: 20vh;
@@ -394,17 +387,6 @@ input[readonly] {
   border:1px solid #d3d3d3;
   border-bottom: 1px solid  #d3d3d3;
 }
-#userList-favoriteButton{
-  margin-top: 6vh;
-  margin-right: 10px;
-}
-
-
 #home-link, #logout{
   cursor: pointer;
-}
-
-#userList-unFavoriteButton{
-  margin-top: 6vh;
-  margin-right: 10px;
 }
