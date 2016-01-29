@@ -547,21 +547,15 @@ playersRef.on("child_removed", function(snap) {
 				confirmButtonText: "Cool. I'm done."
 			}, function(isConfirm) {
 				if (isConfirm) {
-					var cookies = $cookies.get('token');
-					var username;
-					if(cookies){
-						$scope.userInfo = (jwtHelper.decodeToken(cookies))
-					}
-					GameService.gameInstance.set(null);
-					$timeout(function() {
-						$scope.removePlayer()
-
-						// GameService.removePlayer();
-						$state.go('userPage', {"username": username})
-						console.log("REMOVED PLAYER");
-						// }
-					}, 500)
+						GameService.removePlayer();
 				} else {
+					cardsRef.remove();
+					winnerRef.remove();
+					votesRef.remove();
+					responseRef.remove();
+					scenarioCardRef.remove();
+					myRef.remove();
+
 					$timeout(function() {
 						location.reload(true);
 					}, 500)

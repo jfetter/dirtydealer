@@ -1054,7 +1054,7 @@ angular.module('cardsAgainstHumanity')
 		this.gameStateRef.push({temp: "temp"});
 		this.gameStateRef.child("temp").remove();
 
-		if(tempHand.length < 10 && state === 1){
+		if(tempHand.length < 10){
 			// playersRef.child(myId).update({cards: fullHand})
 			// fullHand.splice(index, 1);
 			// playersRef.child(myId).update({cards: tempHand})
@@ -1827,21 +1827,15 @@ playersRef.on("child_removed", function(snap) {
 				confirmButtonText: "Cool. I'm done."
 			}, function(isConfirm) {
 				if (isConfirm) {
-					var cookies = $cookies.get('token');
-					var username;
-					if(cookies){
-						$scope.userInfo = (jwtHelper.decodeToken(cookies))
-					}
-					GameService.gameInstance.set(null);
-					$timeout(function() {
-						$scope.removePlayer()
-
-						// GameService.removePlayer();
-						$state.go('userPage', {"username": username})
-						console.log("REMOVED PLAYER");
-						// }
-					}, 500)
+						GameService.removePlayer();
 				} else {
+					cardsRef.remove();
+					winnerRef.remove();
+					votesRef.remove();
+					responseRef.remove();
+					scenarioCardRef.remove();
+					myRef.remove();
+
 					$timeout(function() {
 						location.reload(true);
 					}, 500)
