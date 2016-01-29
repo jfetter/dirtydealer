@@ -99,7 +99,15 @@ angular.module('cardsAgainstHumanity')
 				fullHand = (snap.val().tempHand);
 			}
 		})
-		if(tempHand.length < 10){
+		var state; 
+		this.gameStateRef.on('value', function(snap){
+
+			state = snap.val();
+		})
+		this.gameStateRef.push({temp: "temp"});
+		this.gameStateRef.child("temp").remove();
+
+		if(tempHand.length < 10 && state === 1){
 			playersRef.child(myId).update({cards: fullHand})
 			fullHand.splice(index, 1);
 			playersRef.child(myId).update({cards: tempHand})
