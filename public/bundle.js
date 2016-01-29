@@ -91,16 +91,19 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/user/edit`, data)
 	}
 	this.loggedIn = function(isLoggedIn){
-			if(isLoggedIn){ return true }
+		if(isLoggedIn){ return true }
 	};
-  this.uploadImage = function(image, userId){
-    return $http.post(`${ENV.API_URL}/imageUpload`, {
-      userId: userId,
-      image: image
-    })
-  }
+	this.uploadImage = function(image, userId){
+		return $http.post(`${ENV.API_URL}/imageUpload`, {
+			userId: userId,
+			image: image
+		})
+	}
 	this.isAuthed = function(token){
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
+	};
+	this.gamePoints = function(ddWins) {
+		return $http.ge(`${ENV.API_URL}/user/dirtyWin`);
 	};
 })
 
@@ -1178,7 +1181,7 @@ angular.module('cardsAgainstHumanity')
 
 
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
@@ -1245,8 +1248,8 @@ var tempWhiteCard;
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
-		whiteCardRef.update("forceSnap");
-		whiteCardRef.child('forceSnap').remove();
+		this.whiteCardRef.update("forceSnap");
+		this.whiteCardRef.child('forceSnap').remove();
 
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
@@ -1793,8 +1796,8 @@ angular.module('cardsAgainstHumanity')
 .service('TimerService', function($http, $firebaseObject, $interval, $timeout, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 	var myGame = $rootScope.myGame;
 
-	this.timerRef = new Firebase(`https://cardsagainsthumanity-ch.firebaseio.com/games/${myGame}/timer`);
-	var timerRef = this.timerRef; 
+	this.timerRef = new Firebase(`https://rachdirtydeals.firebaseio.com/games/${myGame}/timer`);
+	var timerRef = this.timerRef;
 	this.counter = 61;
 	var counter = this.counter;
 	var mytimeout = null;
@@ -1816,6 +1819,7 @@ angular.module('cardsAgainstHumanity')
 		};
 
 })
+
 angular.module('cardsAgainstHumanity')
 
 .controller('voteCardsCtrl', function($timeout, $scope, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, GameService, $http){

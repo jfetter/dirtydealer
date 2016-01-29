@@ -23,15 +23,18 @@ app.service('UserService', function($http, $firebaseObject, $firebaseArray, ENV,
 		return $http.post(`${ENV.API_URL}/user/edit`, data)
 	}
 	this.loggedIn = function(isLoggedIn){
-			if(isLoggedIn){ return true }
+		if(isLoggedIn){ return true }
 	};
-  this.uploadImage = function(image, userId){
-    return $http.post(`${ENV.API_URL}/imageUpload`, {
-      userId: userId,
-      image: image
-    })
-  }
+	this.uploadImage = function(image, userId){
+		return $http.post(`${ENV.API_URL}/imageUpload`, {
+			userId: userId,
+			image: image
+		})
+	}
 	this.isAuthed = function(token){
 		return $http.post(`${ENV.API_URL}/auth`, {token:token})
+	};
+	this.gamePoints = function(ddWins) {
+		return $http.ge(`${ENV.API_URL}/user/dirtyWin`);
 	};
 })

@@ -6,7 +6,7 @@ angular.module('cardsAgainstHumanity')
 
 
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/cards");
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com/cards");
+	this.gameInstance = new Firebase("https://rachdirtydeals.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
 	this.scenarioCard = this.gameInstance.child("scenarioCard")
@@ -73,8 +73,8 @@ var tempWhiteCard;
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
-		whiteCardRef.update("forceSnap");
-		whiteCardRef.child('forceSnap').remove();
+		this.whiteCardRef.update("forceSnap");
+		this.whiteCardRef.child('forceSnap').remove();
 
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
