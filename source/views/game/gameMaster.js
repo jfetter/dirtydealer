@@ -31,6 +31,17 @@ angular.module('cardsAgainstHumanity')
 		} else {return true}
 	}
 
+	$scope.isMyCard = function(card){
+		console.log("MyId", myId)
+		console.log("thisCard", card)
+		if($scope.thisCard === card){
+			return "selectedCard";
+		} else if(card === myId){
+			return "myCard";
+		} else {
+			return "whiteCard";
+		}
+	}
 
 	if($scope.isLoggedIn){
 		var cookies = $cookies.get('token');
@@ -83,7 +94,7 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
-				
+
 
 				//ng-hide all the cards submitted for vote
 				break;
@@ -96,11 +107,11 @@ angular.module('cardsAgainstHumanity')
 				break;
 
 				case 3:
-				
+
 				break;
 			}
 	}
-		
+
 
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
@@ -112,7 +123,7 @@ angular.module('cardsAgainstHumanity')
 
 		$scope.currentState = thisState;
 		//gameState(thisState);
-	
+
 		if (thisState === 3){
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
@@ -303,15 +314,15 @@ angular.module('cardsAgainstHumanity')
 			}
 	});
 
-// if someone leaves alert everyone 
+// if someone leaves alert everyone
 playersRef.on("child_removed", function(snap) {
 		//alert("PLAYER QUIT", snap.val())
 
-	// if the game is over, reset the game	
+	// if the game is over, reset the game
 		if ($scope.playerss.length === 0 ){
 			GameService.gameInstance.set(null);
 
-		// if only 1 person remains reset game but then log the person back in	
+		// if only 1 person remains reset game but then log the person back in
 		} else if ( $scope.playerss.length ===1){
 			GameService.gameInstance.set(null);
 			$timeout(function() {
@@ -404,7 +415,7 @@ playersRef.on("child_removed", function(snap) {
 		}
 			console.log("IN VOTECARD", card)
 		// votesRef.on("child_added", function(snap){
-			// var card = snap.val();
+			$scope.thisCard = card;
 			// console.log("CARD ",card);
 			// console.log("my ID", myId);
 			if (card.player === myId){

@@ -40,7 +40,7 @@
       <h1>Responses</h1>
       <div ng-show="currentState === 1" class="row">Click to vote for a card once all responses are submitted!</div>
       <div ng-repeat="response in responses track by $index" id="responseCards" class="row">
-        <p class="whiteCard" ng-click="voteCard(response)">
+        <p ng-class="isMyCard(response.player)" ng-click="voteCard(response)">
           <span ng-show="currentState === 2">{{response.text}} </span>
         </p>
       </div>
