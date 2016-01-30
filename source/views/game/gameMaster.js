@@ -90,7 +90,7 @@ angular.module('cardsAgainstHumanity')
 				break;
 
 				case 2:
-					thisGame.child('dealBlackCard').remove();	
+					thisGame.child('dealBlackCard').remove();
 					console.log("STATE 2 VOTE !!!!!")
 
 				// ng-show all the cards that are submitted for voting
@@ -111,13 +111,13 @@ angular.module('cardsAgainstHumanity')
 				break;
 			}
 	}
-		// $scope.dealNumber; 
+		// $scope.dealNumber;
 		// thisGame.child('dealBlackCard').on('child_changed', function(snap){
 		// 	var snappy = snap.val();
 		// 	console.log("snappy1", snappy);
-		// 	snappy ++; 
+		// 	snappy ++;
 		// 	console.log("snappy2", snappy);
-		// 	$scope.dealNumber = snappy; 
+		// 	$scope.dealNumber = snappy;
 		// 		if ( $scope.currentState === 1 && snappy === $scope.playerss.length ){
 		// 	CardsService.dealBlackCard();
 		// }
@@ -130,7 +130,7 @@ angular.module('cardsAgainstHumanity')
 		var thisState = snap.val();
 
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
-		
+
 		$scope.currentState = thisState;
 		gameState(thisState);
 	})
@@ -214,7 +214,9 @@ angular.module('cardsAgainstHumanity')
 
 // upon login or refresh page
 	thisGame.once('value', function(snap){
-
+		// if(snap.val().cards.scenarioCard === null){
+		// 	console.log("THERE IS NO SCENARIO CARD NOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+		// }
 		if(snap.val() == null){
 			CardsService.startDeck();
 			$timeout(function(){
@@ -226,6 +228,9 @@ angular.module('cardsAgainstHumanity')
 			}
 			if (!snap.val().players){
 				GameService.addPlayer();
+			}
+			if(!snap.val().cards.scenarioCard){
+					CardsService.dealBlackCard();
 			}
 			var players = snap.val().players;
 			console.log("PLAYERS", players);
@@ -279,10 +284,10 @@ angular.module('cardsAgainstHumanity')
 			var players = snap.val();
 			console.log("playas gonna play play play play play", players)
 			var numPlayers = snap.numChildren();
-			
-			if (numPlayers === 1 && !$scope.currentState){
-				CardsService.dealBlackCard();
-			}
+
+			// if (numPlayers === 1 && !$scope.currentState){
+			// 	CardsService.dealBlackCard();
+			// }
 			//&& $scope.currentState === undefined
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
@@ -455,9 +460,9 @@ playersRef.on("child_removed", function(snap) {
 
 		console.log("WINNER ARRAY PHASE 2.0", victors);
 		 	var winner = [];
-		 	var prev = 0; 
+		 	var prev = 0;
 		 	var person = {};
-		 	//compare each of the victors in the sorted array 
+		 	//compare each of the victors in the sorted array
 			victors.forEach(function(victor, index, all){
 				var player = victor[0];
 				var votesWon = victor[1];
