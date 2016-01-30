@@ -213,6 +213,8 @@ angular.module('cardsAgainstHumanity')
 	|______________|
 	*/
 
+	$scope.playerss = [];
+
 // anytime something changes... check in with the scope
 	thisGame.once('value', function(snap){
 // start the game if it hasnt started
@@ -249,19 +251,20 @@ angular.module('cardsAgainstHumanity')
 
 // each time timer ticks firebase will check on game
 thisGame.on('value', function(snap){
-	if (snap.val() === null){
+	console.log(snap.val())
+	var snap = snap.val()''
+	if (snap === null){
 		return;
 	} 
-	if (snap.val().players != null){
-	var players = snap.val().players;
+	if (snap.players != null){
+	var players = snap.players;
 		//make sure the leaderboard sees all the players
-		$scope.playerss = [];
 		for (var player in players){
 			$scope.playerss.push(player);
 		}
 	}
 	//make sure you can see	response cards 
-	if (snap.val().response != null){
+	if (snap.response != null){
 		var responses = snap.val().response;
 		$scope.responses = [];
 		for (var response in responses){

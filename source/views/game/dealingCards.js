@@ -83,7 +83,7 @@ var tempWhiteCard;
 
 
 		// for(var i=0; i<n; i++){
-		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
+		//console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
 		var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
 		var takenCard = tempWhiteCard[rando];
 		//console.log("TAKEN", takenCard);
