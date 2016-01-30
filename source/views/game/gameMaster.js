@@ -105,6 +105,7 @@ angular.module('cardsAgainstHumanity')
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
 		var thisState = snap.val();
+		$rootScope.voted = false;
 
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 
@@ -113,7 +114,6 @@ angular.module('cardsAgainstHumanity')
 	
 		if (thisState === 3){
 				console.log("!!!! POSTVOTE !!!!")
-				$rootScope.voted = false;
 				votesRef.remove();
 				responseRef.remove();
 				myRef.child('voted').remove();
@@ -219,7 +219,7 @@ angular.module('cardsAgainstHumanity')
 			CardsService.startDeck();
 			$timeout(function(){
 				GameService.addPlayer()
-			},100)
+			}, 100)
 		} else {
 			// if( snap.val().gamestate != null){
 				$scope.currentState = snap.val().gamestate;
