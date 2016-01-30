@@ -221,9 +221,9 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer()
 			},100)
 		} else {
-			if( snap.val().gamestate != null){
-				$scope.currentState = snap.gamestate;
-			}
+			// if( snap.val().gamestate != null){
+				$scope.currentState = snap.val().gamestate;
+			// }
 			if (!snap.val().players){
 				GameService.addPlayer();
 			}
@@ -392,7 +392,8 @@ playersRef.on("child_removed", function(snap) {
 
 
 	$scope.voteCard = function(card){
-		if ($rootScope.voted != false || $scope.currentState !== 2){
+		console.log("THIS IS A NEW CONSOLE LOG ")
+		if ($rootScope.voted != false || $scope.currentState != 2){
 			console.log("YOU ALREADY VOTED")
 			return;
 		}
