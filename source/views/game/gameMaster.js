@@ -117,10 +117,10 @@ angular.module('cardsAgainstHumanity')
 				responseRef.remove();
 				myRef.child('voted').remove();
 				myRef.child('submittedResponse').remove();
-				myRef.child('tempHand').remove();
+				//myRef.child('tempHand').remove();
 				var player1 = $scope.playerss[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1){
+				if (myId === player1.$id){
 					scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();

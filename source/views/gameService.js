@@ -98,7 +98,7 @@ angular.module('cardsAgainstHumanity')
 			//console.log("Temporary hand", tempHand);
 		})
 		if(tempHand.length < 10){
-			return tempHand
+			return tempHand;
 		}
 		playersRef.child(myId).update({tempHand: tempHand})
 		tempHand.splice(index, 1);
