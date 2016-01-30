@@ -466,59 +466,52 @@ playersRef.on("child_removed", function(snap) {
 	});
 
 
-	/* ______________
-	|              |
-	| Winner!			 |
-	|______________| */
+		/* ______________
+		|              |
+		| Winner!			 |
+		|______________| */
 
-	thisGame.child('winner').on('child_added', function(snap){
-		var winner = snap.val();
-		// var winningBlackCard = thisGame.child('scenarioCard').text();
-		// var winningWhiteCard = thisGame.child()
+		thisGame.child('winner').on('child_added', function(snap){
+			var winner = snap.val();
+			// var winningBlackCard = thisGame.child('scenarioCard').text();
+			// var winningWhiteCard = thisGame.child()
 
-		//console.log("Announcing the winner", snap.val().winnerName);
-		console.log("Announcing the winner", snap.val());
+			//console.log("Announcing the winner", snap.val().winnerName);
+			console.log("Announcing the winner", snap.val());
 
-		//Play Again refreshes game page & clears out old data.
-		//Quit Game redirects to userpages & removes player from game.
-		swal({
-			title: "<b> And the winner is... </b>",
-			text: winner,
-			html: true,
+			//Play Again refreshes game page & clears out old data.
+			//Quit Game redirects to userpages & removes player from game.
+			swal({
+				title: "<b> And the winner is... </b>",
+				text: winner,
+				html: true,
 
-			type: "success",
-			animation: "slide-from-top",
-			showCancelButton: true,
-			cancelButtonText: "Play Again",
-			closeOnConfirm: true,
-			showLoaderOnConfirm: true,
-			showConfirmButton: true,
-			confirmButtonText: "Cool. I'm done."
-		}, function(isConfirm) {
-			if (isConfirm) {
-				var cookies = $cookies.get('token');
-				var username;
-				if(cookies){
-					$scope.userInfo = (jwtHelper.decodeToken(cookies))
-				}
-				GameService.gameInstance.set(null);
-				$timeout(function() {
-					$scope.removePlayer()
+				type: "success",
+				animation: "slide-from-top",
+				showCancelButton: true,
+				cancelButtonText: "Play Again",
+				closeOnConfirm: true,
+				showLoaderOnConfirm: true,
+				showConfirmButton: true,
+				confirmButtonText: "Cool. I'm done."
+			}, function(isConfirm) {
+				if (isConfirm) {
+						GameService.removePlayer();
+				} else {
+					cardsRef.remove();
+					thisGame.child("winner").remove();
+					votesRef.remove();
+					responseRef.remove();
+					scenarioCardRef.remove();
+					myRef.remove();
 
-					// GameService.removePlayer();
-					$state.go('userPage', {"username": username})
-					console.log("REMOVED PLAYER");
-					// }
-				}, 500)
-			} else {
-				$timeout(function() {
-					location.reload(true);
-				}, 500)
-			};
+					$timeout(function() {
+						location.reload(true);
+					}, 500)
+				};
+			});
+			return;
 		});
-		return;
-	});
-
 
 
 /* _____________
