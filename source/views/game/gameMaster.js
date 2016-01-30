@@ -106,6 +106,7 @@ angular.module('cardsAgainstHumanity')
 	gameStateRef.on('value', function(snap) {
 		var thisState = snap.val();
 		$rootScope.voted = false;
+		console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
 
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 
