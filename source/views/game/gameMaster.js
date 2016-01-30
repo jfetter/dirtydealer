@@ -102,38 +102,7 @@ angular.module('cardsAgainstHumanity')
 	}
 		
 
-	//connect with firebase game states
-	gameStateRef.on('value', function(snap) {
-		var thisState = snap.val();
-		$rootScope.voted = false;
-		console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
-		console.log("GAME REF JUST CHANGED TO: ", thisState)
 
-		// have one player initiate the dealing of the black card
-		if (thisState === 1){
-				var player1 = $scope.playerss[0];
-				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1.$id){
-					scenarioCardRef.remove();
-					console.log("I AM PLAYER ONE!!!!", player1)
-					CardsService.dealBlackCard();
-				}
-		}
-		$scope.currentState = thisState;
-		//gameState(thisState);
-	
-		if (thisState === 3){
-				console.log("!!!! POSTVOTE !!!!")
-				votesRef.remove();
-				responseRef.remove();
-				//myRef.child('voted').remove();
-				myRef.child('submittedResponse').remove();
-				//myRef.child('tempHand').remove();
-				GameService.drawOneCard();
-				gameStateRef.set(1);
-		}
-
-	})
 
 	// 	_______________
 	// |	             |
@@ -169,7 +138,7 @@ angular.module('cardsAgainstHumanity')
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		//TIMER IF STATMENT DISCONNECTED
-		//if(remaining === 0) {
+		if(remaining === 0) {
 			if ($scope.haveSubmitted != true && $scope.currentState === 1){
 				//console.log("you should have submitted by now")
 				//console.log("My hand", $scope.myHand )
@@ -204,7 +173,7 @@ angular.module('cardsAgainstHumanity')
 				showConfirmButton: true,
 				confirmButtonText: "GET GOIN' ",
 			});
-		//}
+		}
 	});
 
 	/* ______________
@@ -258,7 +227,6 @@ thisGame.on('value', function(snap){
 	} 
 	if (snap.players != null){
 		console.log("$scope.playerss", $scope.playerss)
-		//make sure the leaderboard sees all the players
 		
 			$scope.playerss = snap.players;
 	}
@@ -268,7 +236,7 @@ thisGame.on('value', function(snap){
 	}
 	// make sure yuo can see your hand
 		$scope.myHand = snap.players[myId].cards;
-		console.log("MY HAND", $scope.myHand);
+		//console.log("MY HAND", $scope.myHand);
 	//make sure you can see the black card
 		$scope.blackCard = snap.cards.scenarioCard;
 })
@@ -303,7 +271,8 @@ thisGame.on('value', function(snap){
 
 	//Any time someone leaves or joins the game check in with F.B.
 	playersRef.on("value", function(snap) {
-			console.log("playas gonna play play play play play", $scope.players)
+		  $scope.playerss = snap.val();
+			console.log("playas gonna play play play play play", $scope.playerss)
 			var numPlayers = snap.numChildren();
 			// when the first player joins the game generate a black card
 			//if (numPlayers === 1 && !$scope.currentState){
@@ -312,7 +281,7 @@ thisGame.on('value', function(snap){
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
-				TimerService.countDown();
+				//TimerService.countDown();
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
 			} else if ($scope.playerss.length < 3){
@@ -343,6 +312,50 @@ playersRef.on("child_removed", function(snap) {
 		GameService.removePlayer();
 		$state.go("userPage");
 	}
+
+	/* _____________
+	|              |
+	| GAME STATE   |
+	|______________| */
+
+
+	//connect with firebase game states
+	gameStateRef.on('value', function(snap) {
+		var thisState = snap.val();
+		$rootScope.voted = false;
+		console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
+		console.log("GAME REF JUST CHANGED TO: ", thisState)
+
+		// have one player initiate the dealing of the black card
+		if (thisState === 1){
+			var playas = []
+			 for(var player in $scope.playerss){
+			 	playas.push(player);
+			}
+				var player1 = playas[0];
+				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
+				if (myId === player1.$id){
+					scenarioCardRef.remove();
+					console.log("I AM PLAYER ONE!!!!", player1)
+					CardsService.dealBlackCard();
+				}
+		}
+		$scope.currentState = thisState;
+		//gameState(thisState);
+	
+		if (thisState === 3){
+				console.log("!!!! POSTVOTE !!!!")
+				votesRef.remove();
+				responseRef.remove();
+				//myRef.child('voted').remove();
+				myRef.child('submittedResponse').remove();
+				//myRef.child('tempHand').remove();
+				GameService.drawOneCard();
+				gameStateRef.set(1);
+		}
+
+	})
+
 
 	/* _____________
 	|              |
