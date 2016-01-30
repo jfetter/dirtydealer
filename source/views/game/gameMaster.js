@@ -398,7 +398,7 @@ playersRef.on("child_removed", function(snap) {
 		var numResponses = snap.numChildren();
 		$scope.responses = allResponses;
 
-		var numPlayers = Object.keys($scope.playerss.keys).length
+		var numPlayers = Object.keys($scope.playerss).length
 		console.log("NUM PLAYAS", numPlayers)
 
 		console.log("RESPONSE REF IS NOW",allResponses)
@@ -465,12 +465,13 @@ playersRef.on("child_removed", function(snap) {
 	}
 
 	votesRef.on("value", function(snap) {
-
+		var numPlayers = Object.keys($scope.playerss).length
+		console.log("NUM PLAYAS in voted", numPlayers)
 
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-		if (votesLength == $scope.playerss.length && votesLength > 0) {
+		if (votesLength == numPlayers) {
 			//console.log("INSIDE VOTES")
 
 			//create a dictionary of players who received votes
