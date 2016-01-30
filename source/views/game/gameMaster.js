@@ -244,7 +244,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer();
 				console.log("I JUST GOT ADDED");
 			}
-			make sure the scope sees all the players
+			//make sure the scope sees all the players
 			$scope.playerss = [];
 			for (var player in players){
 				$scope.playerss.push(player);
