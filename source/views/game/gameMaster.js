@@ -244,16 +244,35 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer();
 				console.log("I JUST GOT ADDED");
 			}
-			//make sure the scope sees all the players
-			$scope.playerss = [];
-			for (var player in players){
-				$scope.playerss.push(player);
-			}
-			// make sure the scope sees your hand
-			console.log("MY STARTING HAND", players[myId].cards);
-			$scope.myHand = players[myId].cards;
-		}
 	})
+
+// each time timer ticks firebase will check on game
+gameRef.on('value', function(snap){
+	if (snap.val() === null){
+		return;
+	} 
+	if (snap.val().players 1= null){
+	var players = snap.val().players;
+		//make sure the leaderboard sees all the players
+		$scope.playerss = [];
+		for (var player in players){
+			$scope.playerss.push(player);
+		}
+	}
+	//make sure you can see	response cards 
+	if (snap.val().response != null){
+		var responses = snap.val().response;
+		$scope.responses = [];
+		for (var response in responses){
+			$scope.responses.push(response);
+		}
+	}
+	// make sure yuo can see your hand
+		console.log("MY HAND", players[myId].cards);
+		$scope.myHand = players[myId].cards;
+	//make sure you can see the black card
+		$scope.blackCard = snap.val().scenarioCard;
+})
 
 
 	// playersRef.child(myId).once('child_added', function(snap) {
