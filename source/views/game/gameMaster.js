@@ -162,9 +162,11 @@ angular.module('cardsAgainstHumanity')
 	| Timer:       |
 	|______________| */
 
-	//$scope.timerRef.on("value", function(snap){
+	$scope.timerRef.on("value", function(snap){
+		thisGame.child('ping').update({ping: "ping"});
+		thisGame.child('ping').remove();
 		//$scope.counter = snap.val();	
-	//})
+	})
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
@@ -250,7 +252,7 @@ angular.module('cardsAgainstHumanity')
 	})
 
 // each time timer ticks firebase will check on game
-thisGame.on('value', function(snap){
+thisGame.on('child_added', function(snap){
 	console.log(snap.val())
 	var snap = snap.val();
 	if (snap === null){
@@ -258,7 +260,6 @@ thisGame.on('value', function(snap){
 	} 
 	if (snap.players != null){
 		console.log("$scope.playerss", $scope.playerss)
-		//make sure the leaderboard sees all the players
 		
 			$scope.playerss = snap.players;
 	}
@@ -268,7 +269,7 @@ thisGame.on('value', function(snap){
 	}
 	// make sure yuo can see your hand
 		$scope.myHand = snap.players[myId].cards;
-		console.log("MY HAND", $scope.myHand);
+		//console.log("MY HAND", $scope.myHand);
 	//make sure you can see the black card
 		$scope.blackCard = snap.cards.scenarioCard;
 })
