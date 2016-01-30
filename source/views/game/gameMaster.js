@@ -31,17 +31,6 @@ angular.module('cardsAgainstHumanity')
 		} else {return true}
 	}
 
-	$scope.isMyCard = function(card){
-		console.log("MyId", myId)
-		console.log("thisCard", card)
-		if($scope.thisCard === card){
-			return "selectedCard";
-		} else if(card === myId){
-			return "myCard";
-		} else {
-			return "whiteCard";
-		}
-	}
 
 	if($scope.isLoggedIn){
 		var cookies = $cookies.get('token');
@@ -94,7 +83,7 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
-
+				
 
 				//ng-hide all the cards submitted for vote
 				break;
@@ -107,42 +96,13 @@ angular.module('cardsAgainstHumanity')
 				break;
 
 				case 3:
-
+				
 				break;
 			}
 	}
+		
 
 
-	//connect with firebase game states
-	gameStateRef.on('value', function(snap) {
-		var thisState = snap.val();
-		$rootScope.voted = false;
-		console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
-		console.log("GAME REF JUST CHANGED TO: ", thisState)
-
-		// have one player initiate the dealing of the black card
-		if (thisState === 1){
-				var player1 = $scope.playerss[0];
-				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1.$id){
-					scenarioCardRef.remove();
-					console.log("I AM PLAYER ONE!!!!", player1)
-					CardsService.dealBlackCard();
-				}
-		}
-		$scope.currentState = thisState;
-		if (thisState === 3){
-				console.log("!!!! POSTVOTE !!!!")
-				votesRef.remove();
-				responseRef.remove();
-				//myRef.child('voted').remove();
-				myRef.child('submittedResponse').remove();
-				//myRef.child('tempHand').remove();
-				GameService.drawOneCard();
-				gameStateRef.set(1);
-		}
-
-	})
 
 	// 	_______________
 	// |	             |
@@ -171,9 +131,9 @@ angular.module('cardsAgainstHumanity')
 	| Timer:       |
 	|______________| */
 
-	// $scope.timerRef.on("value", function(snap){
-	// 	//$scope.counter = snap.val();
-	// })
+	//$scope.timerRef.on("value", function(snap){
+		//$scope.counter = snap.val();	
+	//})
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
@@ -260,17 +220,20 @@ angular.module('cardsAgainstHumanity')
 
 // each time timer ticks firebase will check on game
 thisGame.on('value', function(snap){
+
 	console.log(snap.val())
 	var snap = snap.val();
+	$scope.currentState = snap.gamestate;
+	
 	if (snap === null){
 		return;
-	}
+	} 
 	if (snap.players != null){
 		console.log("$scope.playerss", $scope.playerss)
-
+		
 			$scope.playerss = snap.players;
 	}
-	//make sure you can see	response cards
+	//make sure you can see	response cards 
 	if (snap.response != null){
 		$scope.responses = snap.response
 	}
@@ -311,9 +274,9 @@ thisGame.on('value', function(snap){
 
 	//Any time someone leaves or joins the game check in with F.B.
 	playersRef.on("value", function(snap) {
-			console.log("playas gonna play play play play play", $scope.players)
+		  $scope.playerss = snap.val();
+			console.log("playas gonna play play play play play", $scope.playerss)
 			var numPlayers = snap.numChildren();
-			$scope.playerss = snap.val();
 			// when the first player joins the game generate a black card
 			//if (numPlayers === 1 && !$scope.currentState){
 				//CardsService.dealBlackCard();
@@ -331,15 +294,15 @@ thisGame.on('value', function(snap){
 			}
 	});
 
-// if someone leaves alert everyone
+// if someone leaves alert everyone 
 playersRef.on("child_removed", function(snap) {
 		//alert("PLAYER QUIT", snap.val())
 
-	// if the game is over, reset the game
+	// if the game is over, reset the game	
 		if ($scope.playerss.length === 0 ){
 			GameService.gameInstance.set(null);
 
-		// if only 1 person remains reset game but then log the person back in
+		// if only 1 person remains reset game but then log the person back in	
 		} else if ( $scope.playerss.length ===1){
 			GameService.gameInstance.set(null);
 			$timeout(function() {
@@ -352,6 +315,50 @@ playersRef.on("child_removed", function(snap) {
 		GameService.removePlayer();
 		$state.go("userPage");
 	}
+
+	/* _____________
+	|              |
+	| GAME STATE   |
+	|______________| */
+
+
+	//connect with firebase game states
+	gameStateRef.on('value', function(snap) {
+		var thisState = snap.val();
+		$rootScope.voted = false;
+		console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
+		console.log("GAME REF JUST CHANGED TO: ", thisState)
+
+		// have one player initiate the dealing of the black card
+		if (thisState === 1){
+			var playas = []
+			 for(var player in $scope.playerss){
+			 	playas.push(player);
+			} 
+				var player1 = playas[0];
+				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
+				if (myId === player1){
+					scenarioCardRef.remove();
+					console.log("I AM PLAYER ONE!!!!", player1)
+					CardsService.dealBlackCard();
+				}
+		}
+		$scope.currentState = thisState;
+		//gameState(thisState);
+	
+		if (thisState === 3){
+				console.log("!!!! POSTVOTE !!!!")
+				votesRef.remove();
+				responseRef.remove();
+				//myRef.child('voted').remove();
+				myRef.child('submittedResponse').remove();
+				//myRef.child('tempHand').remove();
+				GameService.drawOneCard();
+				gameStateRef.set(1);
+		}
+
+	})
+
 
 	/* _____________
 	|              |
@@ -389,9 +396,12 @@ playersRef.on("child_removed", function(snap) {
 	responseRef.on("value", function(snap) {
 		var allResponses = snap.val();
 		var numResponses = snap.numChildren();
-		$scope.responses = snap.val();
+		$scope.responses = allResponses;
+
+		var numPlayers = Object.keys($scope.playerss).length
+		console.log("NUM PLAYAS", numPlayers)
+
 		console.log("RESPONSE REF IS NOW",allResponses)
-		console.log("$scope.playerss.length", $scope.playerss.length)
 		if (allResponses != null){
 			if(allResponses.hasOwnProperty(myId)){
 				console.log("I SUBMITTED A RESPONSE!")
@@ -408,7 +418,7 @@ playersRef.on("child_removed", function(snap) {
 		// 		// a key in the player schema;
 		// 	}
 		//console.log(snap.val(), "OUTSIDE THE IF");
-		if (numResponses === $scope.playerss.length && numResponses > 0) {
+		if (numResponses === numPlayers) {
 			console.log(snap.val(), "INSIDE");
 		//start timer for next round;
 			//TimerService.counter = 61;
@@ -432,7 +442,7 @@ playersRef.on("child_removed", function(snap) {
 		}
 			console.log("IN VOTECARD", card)
 		// votesRef.on("child_added", function(snap){
-			$scope.thisCard = card;
+			// var card = snap.val();
 			// console.log("CARD ",card);
 			// console.log("my ID", myId);
 			if (card.player === myId){
@@ -455,12 +465,13 @@ playersRef.on("child_removed", function(snap) {
 	}
 
 	votesRef.on("value", function(snap) {
-
+		var numPlayers = Object.keys($scope.playerss).length
+		console.log("NUM PLAYAS in voted", numPlayers)
 
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-		if (votesLength == $scope.playerss.length && votesLength > 0) {
+		if (votesLength == numPlayers) {
 			//console.log("INSIDE VOTES")
 
 			//create a dictionary of players who received votes
@@ -552,7 +563,7 @@ playersRef.on("child_removed", function(snap) {
 				confirmButtonText: "Cool. I'm done."
 			}, function(isConfirm) {
 				if (isConfirm) {
-						GameService.removePlayer();
+						$scope.removePlayer();
 				} else {
 					cardsRef.remove();
 					thisGame.child("winner").remove();
