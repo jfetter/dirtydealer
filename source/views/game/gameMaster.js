@@ -244,6 +244,7 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer();
 				console.log("I JUST GOT ADDED");
 			}
+		}
 	})
 
 // each time timer ticks firebase will check on game
