@@ -14,7 +14,7 @@ angular.module('cardsAgainstHumanity')
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages");
 	var messageRef = this.messageRef
-	//this.playerss = $firebaseArray(playersRef);
+	this.playerss = $firebaseArray(playersRef);
 	this.messages = $firebaseArray(messageRef);
 	this.responseRef = this.gameInstance.child("response");
 	var responseRef = this.responseRef

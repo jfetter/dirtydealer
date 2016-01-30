@@ -55,7 +55,7 @@ angular.module('cardsAgainstHumanity')
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	var responseRef = GameService.gameInstance.child("response");
-	//$scope.playerss = GameService.playerss
+	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	//$scope.timerRef = TimerService.timerRef;
@@ -213,7 +213,7 @@ angular.module('cardsAgainstHumanity')
 	|______________|
 	*/
 
-	$scope.playerss = [];
+
 
 // anytime something changes... check in with the scope
 	thisGame.once('value', function(snap){
@@ -252,21 +252,19 @@ angular.module('cardsAgainstHumanity')
 // each time timer ticks firebase will check on game
 thisGame.on('value', function(snap){
 	console.log(snap.val())
-	var snap = snap.val()''
+	var snap = snap.val();
 	if (snap === null){
 		return;
 	} 
 	if (snap.players != null){
-	var players = snap.players;
+		console.log("$scope.playerss", $scope.playerss)
 		//make sure the leaderboard sees all the players
-		for (var player in players){
-			$scope.playerss.push(player);
-		}
+		
+			$scope.playerss = snap.players;
 	}
 	//make sure you can see	response cards 
 	if (snap.response != null){
-		var responses = snap.val().response;
-		$scope.responses = [];
+		var responses = snap.response;
 		for (var response in responses){
 			$scope.responses.push(response);
 		}
