@@ -43,8 +43,11 @@ angular.module('cardsAgainstHumanity')
 		return takenCard;
 	}
 
+
+
 var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
+
 		tempWhiteCard = snap.val()
 		console.log("Temp white card updated", tempWhiteCard)
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
@@ -52,6 +55,8 @@ var tempWhiteCard;
 
 
 	this.startingHand = function(){
+		this.whiteCardRef.update({test: "test"});
+		this.whiteCardRef.child('test').remove();
 		var fullHand = [];
 		for(var i = 0; i<10; i++){
 			console.log("TEMP WHITE CARD IN STARTING HAND", tempWhiteCard);
@@ -67,6 +72,8 @@ var tempWhiteCard;
 	}
 
 	this.draw = function(){
+		this.whiteCardRef.update({test: "test"});
+		this.whiteCardRef.child('test').remove();
 		this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val();
 
@@ -74,8 +81,6 @@ var tempWhiteCard;
 		console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
 
-		this.whiteCardRef.update({forcesnap: "forcesnap"});
-		this.whiteCardRef.child('forcesnap').remove();
 
 		// for(var i=0; i<n; i++){
 		console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
