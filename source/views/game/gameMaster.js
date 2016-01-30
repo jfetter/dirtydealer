@@ -58,7 +58,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-	//$scope.timerRef = TimerService.timerRef;
+	$scope.timerRef = TimerService.timerRef;
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
