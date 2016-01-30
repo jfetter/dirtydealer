@@ -83,8 +83,8 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
-				thisGame.child('dealBlackCard').set($scope.dealNumber);
-				$rootScope.voted = false;
+				// thisGame.child('dealBlackCard').set($scope.dealNumber);
+				// $rootScope.voted = false;
 
 				//ng-hide all the cards submitted for vote
 				break;
@@ -111,18 +111,18 @@ angular.module('cardsAgainstHumanity')
 				break;
 			}
 	}
-		$scope.dealNumber; 
-		thisGame.child('dealBlackCard').on('value', function(snap){
-			var snappy = snap.val();
-			console.log("snappy1", snappy);
-			snappy ++; 
-			console.log("snappy2", snappy);
-			$scope.dealNumber = snappy; 
-				if ( $scope.currentState === 1 && snappy === $scope.playerss.length ){
-			CardsService.dealBlackCard();
-		}
+		// $scope.dealNumber; 
+		// thisGame.child('dealBlackCard').on('child_changed', function(snap){
+		// 	var snappy = snap.val();
+		// 	console.log("snappy1", snappy);
+		// 	snappy ++; 
+		// 	console.log("snappy2", snappy);
+		// 	$scope.dealNumber = snappy; 
+		// 		if ( $scope.currentState === 1 && snappy === $scope.playerss.length ){
+		// 	CardsService.dealBlackCard();
+		// }
 
-		})
+		// })
 
 
 	//connect with firebase game states
@@ -217,7 +217,6 @@ angular.module('cardsAgainstHumanity')
 
 		if(snap.val() == null){
 			CardsService.startDeck();
-			CardsService.dealBlackCard();
 			$timeout(function(){
 				GameService.addPlayer()
 			},100)
@@ -277,15 +276,19 @@ angular.module('cardsAgainstHumanity')
 
 
 	playersRef.on("value", function(snap) {
-			//&& $scope.currentState === undefined
 			var players = snap.val();
-			var numPlayers = snap.numChildren();
 			console.log("playas gonna play play play play play", players)
+			var numPlayers = snap.numChildren();
+			
+			if (numPlayers === 1 && !$scope.currentState){
+				CardsService.dealBlackCard();
+			}
+			//&& $scope.currentState === undefined
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
+				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
 				//TimerService.countDown();
-				gameStateRef.set(1);
 			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
 				return;
