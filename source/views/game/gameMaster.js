@@ -264,16 +264,13 @@ thisGame.on('value', function(snap){
 	}
 	//make sure you can see	response cards 
 	if (snap.response != null){
-		var responses = snap.response;
-		for (var response in responses){
-			$scope.responses.push(response);
-		}
+		$scope.responses = snap.response
 	}
 	// make sure yuo can see your hand
-		console.log("MY HAND", players[myId].cards);
-		$scope.myHand = players[myId].cards;
+		$scope.myHand = snap.players[myId].cards;
+		console.log("MY HAND", $scope.myHand);
 	//make sure you can see the black card
-		$scope.blackCard = snap.val().scenarioCard;
+		$scope.blackCard = snap.cards.scenarioCard;
 })
 
 
