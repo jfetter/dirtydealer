@@ -283,22 +283,6 @@ body {
   width: 120px;
   display: inline-block;
 }
-.myCard{
-  color: black;
-  background-color: white;
-  border: 5px solid cyan;
-  height: 150px;
-  width: 120px;
-  display: inline-block;
-}
-.selectedCard{
-  color: black;
-  background-color: green;
-  border: 5px solid orange;
-  height: 150px;
-  width: 120px;
-  display: inline-block;
-}
 
 /* ________________
 |                  |
