@@ -118,12 +118,19 @@ angular.module('cardsAgainstHumanity')
 		var thisState = snap.val();
 		$rootScope.voted = false;
 		console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
+		console.log("GAME REF JUST CHANGED TO: ", thisState)
 
-		console.log("GAME REF JUST CHANGED TO: ", snap.val())
-
+		// have one player initiate the dealing of the black card
+		if (thisState === 1){
+				var player1 = $scope.playerss[0];
+				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
+				if (myId === player1.$id){
+					scenarioCardRef.remove();
+					console.log("I AM PLAYER ONE!!!!", player1)
+					CardsService.dealBlackCard();
+				}
+		}
 		$scope.currentState = thisState;
-		//gameState(thisState);
-
 		if (thisState === 3){
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
@@ -132,14 +139,6 @@ angular.module('cardsAgainstHumanity')
 				myRef.child('submittedResponse').remove();
 				//myRef.child('tempHand').remove();
 				GameService.drawOneCard();
-				var player1 = $scope.playerss[0];
-				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1.$id){
-					scenarioCardRef.remove();
-					console.log("I AM PLAYER ONE!!!!", player1)
-					CardsService.dealBlackCard();
-				}
-
 				gameStateRef.set(1);
 		}
 
@@ -172,12 +171,13 @@ angular.module('cardsAgainstHumanity')
 	| Timer:       |
 	|______________| */
 
-	//$scope.timerRef.on("value", function(snap){
-		// $scope.counter = snap.val();
-	//})
+	// $scope.timerRef.on("value", function(snap){
+	// 	//$scope.counter = snap.val();
+	// })
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
+		//TIMER IF STATMENT DISCONNECTED
 		if(remaining === 0) {
 			if ($scope.haveSubmitted != true && $scope.currentState === 1){
 				//console.log("you should have submitted by now")
@@ -222,6 +222,8 @@ angular.module('cardsAgainstHumanity')
 	|______________|
 	*/
 
+
+
 // anytime something changes... check in with the scope
 	thisGame.once('value', function(snap){
 // start the game if it hasnt started
@@ -253,16 +255,31 @@ angular.module('cardsAgainstHumanity')
 				GameService.addPlayer();
 				console.log("I JUST GOT ADDED");
 			}
-			// make sure the scope sees all the players
-			$scope.playerss = [];
-			for (var player in players){
-				$scope.playerss.push(player);
-			}
-			// make sure the scope sees your hand
-			console.log("MY STARTING HAND", players[myId].cards);
-			$scope.myHand = players[myId].cards;
 		}
 	})
+
+// each time timer ticks firebase will check on game
+thisGame.on('value', function(snap){
+	console.log(snap.val())
+	var snap = snap.val();
+	if (snap === null){
+		return;
+	}
+	if (snap.players != null){
+		console.log("$scope.playerss", $scope.playerss)
+
+			$scope.playerss = snap.players;
+	}
+	//make sure you can see	response cards
+	if (snap.response != null){
+		$scope.responses = snap.response
+	}
+	// make sure yuo can see your hand
+		$scope.myHand = snap.players[myId].cards;
+		//console.log("MY HAND", $scope.myHand);
+	//make sure you can see the black card
+		$scope.blackCard = snap.cards.scenarioCard;
+})
 
 
 	// playersRef.child(myId).once('child_added', function(snap) {
@@ -294,19 +311,19 @@ angular.module('cardsAgainstHumanity')
 
 	//Any time someone leaves or joins the game check in with F.B.
 	playersRef.on("value", function(snap) {
-			var players = snap.val();
-			console.log("playas gonna play play play play play", players)
+			console.log("playas gonna play play play play play", $scope.players)
 			var numPlayers = snap.numChildren();
+			$scope.playerss = snap.val();
 			// when the first player joins the game generate a black card
-			if (numPlayers === 1 && !$scope.currentState){
-				CardsService.dealBlackCard();
-			}
+			//if (numPlayers === 1 && !$scope.currentState){
+				//CardsService.dealBlackCard();
+			//}
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
+				//TimerService.countDown();
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
-				//TimerService.countDown();
 			} else if ($scope.playerss.length < 3){
 				console.log("THE current Playas:", $scope.playerss)
 			} else {
