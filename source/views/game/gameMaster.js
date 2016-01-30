@@ -83,14 +83,12 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
-				// thisGame.child('dealBlackCard').set($scope.dealNumber);
-				// $rootScope.voted = false;
+				$rootScope.voted = false;
 
 				//ng-hide all the cards submitted for vote
 				break;
 
 				case 2:
-					thisGame.child('dealBlackCard').remove();
 					console.log("STATE 2 VOTE !!!!!")
 
 				// ng-show all the cards that are submitted for voting
@@ -98,32 +96,11 @@ angular.module('cardsAgainstHumanity')
 				break;
 
 				case 3:
-				console.log("!!!! POSTVOTE !!!!")
-				votesRef.remove();
-				responseRef.remove();
-				scenarioCardRef.remove();
-				myRef.child('voted').remove();
-				myRef.child('submittedResponse').remove();
-				myRef.child('tempHand').remove();
-				GameService.drawOneCard();
-				gameStateRef.set(1)
-				thisGame.update({dealBlackCard: 0})
+				
 				break;
 			}
 	}
-		// $scope.dealNumber;
-		// thisGame.child('dealBlackCard').on('child_changed', function(snap){
-		// 	var snappy = snap.val();
-		// 	console.log("snappy1", snappy);
-		// 	snappy ++;
-		// 	console.log("snappy2", snappy);
-		// 	$scope.dealNumber = snappy;
-		// 		if ( $scope.currentState === 1 && snappy === $scope.playerss.length ){
-		// 	CardsService.dealBlackCard();
-		// }
-
-		// })
-
+		
 
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
@@ -132,7 +109,26 @@ angular.module('cardsAgainstHumanity')
 		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 
 		$scope.currentState = thisState;
-		gameState(thisState);
+		//gameState(thisState);
+	
+		if (thisState === 3){
+			console.log("!!!! POSTVOTE !!!!")
+				votesRef.remove();
+				responseRef.remove();
+				myRef.child('voted').remove();
+				myRef.child('submittedResponse').remove();
+				myRef.child('tempHand').remove();
+				GameService.drawOneCard();
+				var player1 = $scope.playerss[0];
+				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
+				if (myId === player1){
+					scenarioCardRef.remove();
+					console.log("I AM PLAYER ONE!!!!", player1)
+					CardsService.dealBlackCard();
+				}
+				gameStateRef.set(1);
+		}
+
 	})
 
 	// 	_______________
@@ -285,10 +281,10 @@ angular.module('cardsAgainstHumanity')
 			console.log("playas gonna play play play play play", players)
 			var numPlayers = snap.numChildren();
 
-			// if (numPlayers === 1 && !$scope.currentState){
-			// 	CardsService.dealBlackCard();
-			// }
-			//&& $scope.currentState === undefined
+			if (numPlayers === 1 && !$scope.currentState){
+				CardsService.dealBlackCard();
+			}
+			// && $scope.currentState === undefined
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
 				gameStateRef.set(1);
@@ -324,10 +320,7 @@ playersRef.on("child_removed", function(snap) {
 	|              |
 	| cards        |
 	|______________| */
-	// maybe need to play around with child_added/ child_removed
-	// to prevent re-deals?
 
-	//$scope.myHand = [];
 
 
 	myRef.child('cards').on('value', function(snap){
