@@ -334,8 +334,7 @@ playersRef.on("child_removed", function(snap) {
 			var playas = []
 			 for(var player in $scope.playerss){
 			 	playas.push(player);
-			}
-			$scope.playerss = playas; 
+			} 
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
 				if (myId === player1){
@@ -398,8 +397,11 @@ playersRef.on("child_removed", function(snap) {
 		var allResponses = snap.val();
 		var numResponses = snap.numChildren();
 		$scope.responses = allResponses;
+
+		var numPlayers = Object.keys($scope.playerss.keys).length
+		console.log("NUM PLAYAS", numPlayers)
+
 		console.log("RESPONSE REF IS NOW",allResponses)
-		console.log("$scope.playerss.length", $scope.playerss.length)
 		if (allResponses != null){
 			if(allResponses.hasOwnProperty(myId)){
 				console.log("I SUBMITTED A RESPONSE!")
@@ -416,7 +418,7 @@ playersRef.on("child_removed", function(snap) {
 		// 		// a key in the player schema;
 		// 	}
 		//console.log(snap.val(), "OUTSIDE THE IF");
-		if (numResponses === $scope.playerss.length && numResponses > 0) {
+		if (numResponses === numPlayers) {
 			console.log(snap.val(), "INSIDE");
 		//start timer for next round;
 			//TimerService.counter = 61;
