@@ -118,7 +118,6 @@ angular.module('cardsAgainstHumanity')
 				myRef.child('voted').remove();
 				myRef.child('submittedResponse').remove();
 				myRef.child('tempHand').remove();
-				GameService.drawOneCard();
 				var player1 = $scope.playerss[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
 				if (myId === player1){

@@ -181,6 +181,7 @@ angular.module('cardsAgainstHumanity')
 			console.log(player, 'got a win point');
 			// this code is not tested and not finished !!!!!
 			gameStateRef.set(3)
+			this.drawOneCard();
 		} //end if me
 		return;
 	} // end add win point
