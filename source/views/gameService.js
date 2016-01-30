@@ -162,6 +162,7 @@ angular.module('cardsAgainstHumanity')
 				myPoints = snap.val().gamePoints;
 				winnerName = snap.val().username;
 			})
+
 			var myNewPoints = myPoints + 1;
 
 			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
