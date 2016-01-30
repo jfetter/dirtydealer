@@ -179,7 +179,7 @@ angular.module('cardsAgainstHumanity')
 				myRef.child('cards').set($scope.myHand);
 				myRef.child('submittedResponse').set(true)
 			}
-			console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
+
 				var otherPlayers = [];
 			if ($rootScope.voted != true && $scope.currentState === 2){
 				console.log($scope.playerss)
@@ -393,8 +393,9 @@ playersRef.on("child_removed", function(snap) {
 
 
 	$scope.voteCard = function(card){
-		console.log("THIS IS A NEW CONSOLE LOG ", $rootScope.vot)
-		if ($rootScope.voted != true || $scope.currentState != 2){
+		//console.log("THIS IS A NEW CONSOLE LOG ", $rootScope.voted)
+	console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
+		if ($rootScope.voted = true || $scope.currentState != 2){
 			console.log("YOU ALREADY VOTED")
 			return;
 		}
