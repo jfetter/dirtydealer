@@ -212,7 +212,7 @@ angular.module('cardsAgainstHumanity')
 	*/
 
 // anytime something changes... check in with the scope
-	thisGame.on('value', function(snap){
+	thisGame.once('value', function(snap){
 // start the game if it hasnt started
 // then add you to waiting state
 		if(snap.val() == null){
