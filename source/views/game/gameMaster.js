@@ -248,7 +248,7 @@ angular.module('cardsAgainstHumanity')
 	})
 
 // each time timer ticks firebase will check on game
-gameRef.on('value', function(snap){
+thisGame.on('value', function(snap){
 	if (snap.val() === null){
 		return;
 	} 
