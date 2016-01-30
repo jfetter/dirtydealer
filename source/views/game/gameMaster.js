@@ -220,8 +220,11 @@ angular.module('cardsAgainstHumanity')
 
 // each time timer ticks firebase will check on game
 thisGame.on('value', function(snap){
+
 	console.log(snap.val())
 	var snap = snap.val();
+	$scope.currentState = snap.gamestate;
+	
 	if (snap === null){
 		return;
 	} 
@@ -332,9 +335,10 @@ playersRef.on("child_removed", function(snap) {
 			 for(var player in $scope.playerss){
 			 	playas.push(player);
 			}
+			$scope.playerss = playas; 
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1.$id){
+				if (myId === player1){
 					scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
@@ -393,7 +397,7 @@ playersRef.on("child_removed", function(snap) {
 	responseRef.on("value", function(snap) {
 		var allResponses = snap.val();
 		var numResponses = snap.numChildren();
-		$scope.responses = snap.val();
+		$scope.responses = allResponses;
 		console.log("RESPONSE REF IS NOW",allResponses)
 		console.log("$scope.playerss.length", $scope.playerss.length)
 		if (allResponses != null){
