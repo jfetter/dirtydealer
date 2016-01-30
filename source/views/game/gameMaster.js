@@ -392,7 +392,7 @@ playersRef.on("child_removed", function(snap) {
 
 
 	$scope.voteCard = function(card){
-		if ($rootScope.voted === true || $scope.currentState !== 2){
+		if ($rootScope.voted != false || $scope.currentState !== 2){
 			console.log("YOU ALREADY VOTED")
 			return;
 		}
