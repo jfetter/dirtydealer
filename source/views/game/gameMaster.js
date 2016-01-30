@@ -103,29 +103,6 @@ angular.module('cardsAgainstHumanity')
 
 
 
-		// have one player initiate the dealing of the black card
-		if (thisState === 1){
-				var player1 = $scope.playerss[0];
-				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1.$id){
-					scenarioCardRef.remove();
-					console.log("I AM PLAYER ONE!!!!", player1)
-					CardsService.dealBlackCard();
-				}
-		}
-		$scope.currentState = thisState;
-		if (thisState === 3){
-				console.log("!!!! POSTVOTE !!!!")
-				votesRef.remove();
-				responseRef.remove();
-				//myRef.child('voted').remove();
-				myRef.child('submittedResponse').remove();
-				//myRef.child('tempHand').remove();
-				GameService.drawOneCard();
-				gameStateRef.set(1);
-		}
-
-	})
 
 	// 	_______________
 	// |	             |
