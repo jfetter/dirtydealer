@@ -146,6 +146,7 @@ angular.module('cardsAgainstHumanity')
 
 	// if you won the round add a point to your score (game state 2)
 	this.addWinPoint = function(player){
+
 		var myInfo = this.identifyPlayer()
 		var myId = myInfo._id
 		var myRef = playersRef.child(myId);
@@ -181,7 +182,6 @@ angular.module('cardsAgainstHumanity')
 			console.log(player, 'got a win point');
 			// this code is not tested and not finished !!!!!
 			gameStateRef.set(3)
-			this.drawOneCard();
 		} //end if me
 		return;
 	} // end add win point
