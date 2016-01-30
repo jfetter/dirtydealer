@@ -563,7 +563,7 @@ playersRef.on("child_removed", function(snap) {
 				confirmButtonText: "Cool. I'm done."
 			}, function(isConfirm) {
 				if (isConfirm) {
-						GameService.removePlayer();
+						$scope.removePlayer();
 				} else {
 					cardsRef.remove();
 					thisGame.child("winner").remove();
