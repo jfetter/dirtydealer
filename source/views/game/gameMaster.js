@@ -83,12 +83,14 @@ angular.module('cardsAgainstHumanity')
 			switch (thisState) {
 
 				case 1:
+				thisGame.child('dealBlackCard').set($scope.dealNumber);
 				$rootScope.voted = false;
 
 				//ng-hide all the cards submitted for vote
 				break;
 
 				case 2:
+					thisGame.child('dealBlackCard').remove();	
 					console.log("STATE 2 VOTE !!!!!")
 
 				// ng-show all the cards that are submitted for voting
@@ -104,20 +106,31 @@ angular.module('cardsAgainstHumanity')
 				myRef.child('submittedResponse').remove();
 				myRef.child('tempHand').remove();
 				GameService.drawOneCard();
-				CardsService.dealBlackCard();
 				gameStateRef.set(1)
+				thisGame.update({dealBlackCard: 0})
 				break;
 			}
 	}
+		$scope.dealNumber; 
+		thisGame.child('dealBlackCard').on('value', function(snap){
+			var snappy = snap.val();
+			console.log("snappy1", snappy);
+			snappy ++; 
+			console.log("snappy2", snappy);
+			$scope.dealNumber = snappy; 
+				if ( $scope.currentState === 1 && snappy === $scope.playerss.length ){
+			CardsService.dealBlackCard();
+		}
+
+		})
 
 
 	//connect with firebase game states
 	gameStateRef.on('value', function(snap) {
-		// if (){
-		// 	return;
-		// }
-		console.log("GAME REF JUST CHANGED TO: ", snap.val())
 		var thisState = snap.val();
+
+		console.log("GAME REF JUST CHANGED TO: ", snap.val())
+		
 		$scope.currentState = thisState;
 		gameState(thisState);
 	})
