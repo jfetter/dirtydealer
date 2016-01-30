@@ -418,38 +418,52 @@ playersRef.on("child_removed", function(snap) {
 				}
 				console.log(votesCast, "*.*. VOTES CAST *,*,");
 			}
-			var winner = [];
-			var prev = 0;
-			for (var player in votesCast){
-				if (votesCast[player] >= prev){
-					var person = {}
-					person.player = player;
-					person.points = votesCast[player];
-					winner.pop();
-					winner.push(person);
-					prev = votesCast[player];
-				}
-			}
-			console.log("*.*.*.* WINNER ARRAY *.*.*.*", winner);
 
+			//create an array of objects from the votesCast dictionary
+			var victors = Object.keys(votesCast).map(function(key) {
+    	return [key, votesCast[key]];
+			});
+			console.log("WINNER ARRAY PHASE 1.0", victors);
+
+		// Sort the victors array based on the points
+		// putting lowest number at 0 position
+		victors.sort(function(a, b) {
+    return a[1] - b[1];
+			});
+
+		console.log("WINNER ARRAY PHASE 2.0", victors);
+		 	var winner = [];
+		 	var prev = 0; 
+		 	var person = {};
+		 	//compare each of the victors in the sorted array 
+			victors.forEach(function(victor, index, all){
+				var player = victor[0];
+				var votesWon = victor[1];
+				var person = {};
+				person.player = player;
+				person.points = votesCast[player];
+				if (votesWon > prev){
+					winner = [];
+					winner.push(person);
+					prev = votesWon;
+					console.log("PERSON IN GREATER THAN" ,person, "PREV", prev)
+				} else if (votesCast[player] == prev){
+					winner.push(person);
+					console.log("PERSON IN LESS THAN" ,person, "PREV", prev)
+				}
+				})
+
+		$timeout( function(){
+			console.log("*.*.*.* WINNER ARRAY PHASE 3*.*.*.*", winner);
 			winner.forEach(function(player){
 				var player = player.player;
 				console.log(player, "GETS A POINT !!!!")
 				GameService.addWinPoint(player);
-				// playersRef.child(player).on('value', function(snap){
-				// 	var thisPlayer = snap.val()
-				// 	swal({
-				// 		type: "error",
-				// 		title: "this round goes to",
-				// 		text: thisPlayer.username,
-				// 		showConfirmButton: true,
-				// 		confirmButtonText: "sweet!",
-				// 	});
-				//})
 			})
+		},50)
+
 		} // end votes === playerss length
 	});
-
 
 
 	/* ______________
