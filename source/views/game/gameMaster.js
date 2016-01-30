@@ -58,7 +58,7 @@ angular.module('cardsAgainstHumanity')
 	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
-	$scope.timerRef = TimerService.timerRef;
+	//$scope.timerRef = TimerService.timerRef;
 	var myRef = playersRef.child(myId);
 	$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
@@ -121,6 +121,7 @@ angular.module('cardsAgainstHumanity')
 		}
 		$scope.currentState = thisState;
 		//gameState(thisState);
+		$timeout(function() {location.reload()}, 10);
 	
 		if (thisState === 3){
 				console.log("!!!! POSTVOTE !!!!")
@@ -163,15 +164,13 @@ angular.module('cardsAgainstHumanity')
 	|______________| */
 
 	$scope.timerRef.on("value", function(snap){
-		thisGame.child('ping').update({ping: "ping"});
-		thisGame.child('ping').remove();
 		//$scope.counter = snap.val();	
 	})
 
 	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
 	$scope.$on('timer-stopped', function(event, remaining) {
 		//TIMER IF STATMENT DISCONNECTED
-		//if(remaining === 0) {
+		if(remaining === 0) {
 			if ($scope.haveSubmitted != true && $scope.currentState === 1){
 				//console.log("you should have submitted by now")
 				//console.log("My hand", $scope.myHand )
@@ -206,7 +205,7 @@ angular.module('cardsAgainstHumanity')
 				showConfirmButton: true,
 				confirmButtonText: "GET GOIN' ",
 			});
-		//}
+		}
 	});
 
 	/* ______________
@@ -252,7 +251,7 @@ angular.module('cardsAgainstHumanity')
 	})
 
 // each time timer ticks firebase will check on game
-thisGame.on('child_added', function(snap){
+thisGame.on('value', function(snap){
 	console.log(snap.val())
 	var snap = snap.val();
 	if (snap === null){
@@ -313,7 +312,7 @@ thisGame.on('child_added', function(snap){
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
-				TimerService.countDown();
+				//TimerService.countDown();
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
 			} else if ($scope.playerss.length < 3){
