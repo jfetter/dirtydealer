@@ -252,7 +252,7 @@ gameRef.on('value', function(snap){
 	if (snap.val() === null){
 		return;
 	} 
-	if (snap.val().players 1= null){
+	if (snap.val().players != null){
 	var players = snap.val().players;
 		//make sure the leaderboard sees all the players
 		$scope.playerss = [];
