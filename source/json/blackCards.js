@@ -244,6 +244,7 @@ pick: 1
 // text: "For my next trick, I will pull _ out of _.",
 // pick: 2
 // },
+
 {
 text: "_: Good to the last drop.",
 pick: 1
@@ -260,6 +261,7 @@ pick: 1
 text: "What gets better with age?",
 pick: 1
 },
+
 // {
 // text: "I never truly understood _ until I encountered _.",
 // pick: 2
@@ -304,6 +306,7 @@ pick: 1
 // text: "What's the next superhero/sidekick duo?",
 // pick: 2
 // },
+
 {
 text: "Dear Abby,<br><br>I'm having some trouble with _ and would like your advice.",
 pick: 1
@@ -332,6 +335,7 @@ pick: 1
 // text: "Step 1: _. Step 2: _. Step 3: Profit.",
 // pick: 2
 // },
+
 {
 text: "Here is the church<br>Here is the steeple<br>Open the doors<br>And there is _.",
 pick: 1
