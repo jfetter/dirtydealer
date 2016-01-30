@@ -395,7 +395,7 @@ playersRef.on("child_removed", function(snap) {
 	$scope.voteCard = function(card){
 		//console.log("THIS IS A NEW CONSOLE LOG ", $rootScope.voted)
 	console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
-		if ($rootScope.voted = true || $scope.currentState != 2){
+		if ($rootScope.voted === true || $scope.currentState != 2){
 			console.log("YOU ALREADY VOTED")
 			return;
 		}
