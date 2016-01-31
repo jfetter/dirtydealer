@@ -296,10 +296,12 @@ thisGame.on('value', function(snap){
 
 // if someone leaves alert everyone
 playersRef.on("child_removed", function(snap) {
-		var assHole = snap.val()
+		var assHole = snap.val();
+
+		var numPlayers = Object.keys($scope.playerss).length;
 
 	// if the game is over, reset the game
-		if ($scope.playerss.length < 3 ){
+		if (numPlayers < 3 ){
 						swal({
 				type: "error",
 				title: "Uh-Oh!",
