@@ -296,19 +296,20 @@ thisGame.on('value', function(snap){
 
 // if someone leaves alert everyone
 playersRef.on("child_removed", function(snap) {
-		//alert("PLAYER QUIT", snap.val())
+		var assHole = snap.val()
 
 	// if the game is over, reset the game
-		if ($scope.playerss.length === 0 ){
+		if ($scope.playerss.length < 3 ){
+						swal({
+				type: "error",
+				title: "Uh-Oh!",
+				text: "some asshole quit !",
+				showConfirmButton: true,
+				confirmButtonText: "CANNOT CONTINUE' ",
+			});
 			GameService.gameInstance.set(null);
-
-		// if only 1 person remains reset game but then log the person back in
-		} else if ( $scope.playerss.length ===1){
-			GameService.gameInstance.set(null);
-			$timeout(function() {
-				location.reload(true);
-			}, 500);
-		}
+			$setTimeout(function() {$state.go('userPage')}, 1000);
+		} 
 	});
 
 	$scope.removePlayer = function(){
