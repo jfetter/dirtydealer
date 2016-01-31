@@ -337,7 +337,7 @@ playersRef.on("child_removed", function(snap) {
 			}
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1){
+				if (myId === player1 && !$scope.blackCard){
 					scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
