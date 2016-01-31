@@ -338,7 +338,6 @@ playersRef.on("child_removed", function(snap) {
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
 				if (myId === player1 && !$scope.blackCard){
-					scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
 				}
@@ -350,6 +349,7 @@ playersRef.on("child_removed", function(snap) {
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
 				responseRef.remove();
+				scenarioCardRef.remove();
 				//myRef.child('voted').remove();
 				myRef.child('submittedResponse').remove();
 				//myRef.child('tempHand').remove();
@@ -465,6 +465,10 @@ playersRef.on("child_removed", function(snap) {
 	}
 
 	votesRef.on("value", function(snap) {
+		if ($scope.currentState != 3){
+			return; 
+		}
+
 		var numPlayers = Object.keys($scope.playerss).length
 		console.log("NUM PLAYAS in voted", numPlayers)
 
