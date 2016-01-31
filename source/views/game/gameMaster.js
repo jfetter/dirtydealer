@@ -465,7 +465,7 @@ playersRef.on("child_removed", function(snap) {
 	}
 
 	votesRef.on("value", function(snap) {
-		if ($scope.currentState != 3){
+		if ($scope.currentState != 2){
 			return; 
 		}
 
