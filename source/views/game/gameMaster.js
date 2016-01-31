@@ -55,7 +55,6 @@ angular.module('cardsAgainstHumanity')
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
 	var responseRef = GameService.gameInstance.child("response");
-	$scope.playerss = GameService.playerss
 	$scope.whiteCardRef = CardsService.whiteCardRef;
 	$scope.blackCardRef = CardsService.blackCardRef;
 	//$scope.timerRef = TimerService.timerRef;
@@ -64,13 +63,23 @@ angular.module('cardsAgainstHumanity')
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
-
 	var cardsRef = GameService.gameInstance.child("cards");
+	var winVotes = GameService.votes;
+	$scope.playerss = GameService.playerss
+	if ($scope.playerss === null || $scope.playerss === undefined ){
+		$scope.playerss = [];
+	} else{
+		var players = [];
+		for (var player in $scope.playerss){
+			players.push(player);
+		}  
+		$scope.playerss = players;
+	}
+
 
 	// playersRef.child(myId).on('value', function(snap){
 	// 	console.log("I EVLOLVED", snap.val().cards.length)
 	// })
-	var winVotes = GameService.votes;
 	// $scope.blackCard = scenarioCardRef
 
 	/* ______________
@@ -228,11 +237,16 @@ thisGame.on('value', function(snap){
 	if (snap === null){
 		return;
 	}
-	if (snap.players != null){
-		console.log("$scope.playerss", $scope.playerss)
-
-			$scope.playerss = snap.players;
+	if ($scope.playerss === null || $scope.playerss === undefined ){
+		$scope.playerss = [];
+	} else{
+		var players = [];
+		for (var player in $scope.playerss){
+			players.push(player);
+		}  
+		$scope.playerss = players;
 	}
+	console.log($scope.playerss)
 	//make sure you can see	response cards
 	if (snap.response != null){
 		$scope.responses = snap.response
@@ -244,33 +258,6 @@ thisGame.on('value', function(snap){
 		$scope.blackCard = snap.cards.scenarioCard;
 })
 
-
-	// playersRef.child(myId).once('child_added', function(snap) {
-	// 	if(!snap.val().cards){
-	// 		console.log("You have cards now");
-	// 	} else {
-	// 		console.log("You already have cards");
-	// 	}
-	// })
-//Will not reset your player info by logging you in if you are already in
-// thisGame.once('value', function(snap){
-// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
-// 	// if (snap.val() === null){
-// 	// 	GameService.addPlayer();
-// 	// 	return;
-// 	// }
-// 		var players = snap.val().players;
-// 		console.log("PLAYERS", players);
-// 	if (players.hasOwnProperty(myId) === false){
-// 		GameService.addPlayer();
-// 		console.log("LOGGING IN ONCE")
-// 		return;
-// 	} else{
-// 		console.log("NOT LOGGING IN TWICE")
-// 		return;
-// 	}
-
-// })
 
 	//Any time someone leaves or joins the game check in with F.B.
 	playersRef.on("value", function(snap) {
@@ -287,18 +274,14 @@ thisGame.on('value', function(snap){
 				//TimerService.countDown();
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
-			} else if ($scope.playerss.length < 3){
-				console.log("THE current Playas:", $scope.playerss)
-			} else {
-				return;
-			}
+			} 
 	});
 
 // if someone leaves alert everyone
 playersRef.on("child_removed", function(snap) {
 		var assHole = snap.val();
 
-		var numPlayers = Object.keys($scope.playerss).length;
+		var numPlayers = $scope.playerss.length;
 
 	// if the game is over, reset the game
 		if (numPlayers < 3 ){
@@ -334,10 +317,7 @@ playersRef.on("child_removed", function(snap) {
 
 		// have one player initiate the dealing of the black card
 		if (thisState === 1){
-			var playas = []
-			 for(var player in $scope.playerss){
-			 	playas.push(player);
-			}
+			var playas = $scope.playerss
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
 				if (myId === player1 && !$scope.blackCard){
@@ -401,7 +381,7 @@ playersRef.on("child_removed", function(snap) {
 		var numResponses = snap.numChildren();
 		$scope.responses = allResponses;
 
-		var numPlayers = Object.keys($scope.playerss).length
+		var numPlayers = $scope.playerss.length
 		console.log("NUM PLAYAS", numPlayers)
 
 		console.log("RESPONSE REF IS NOW",allResponses)
@@ -472,7 +452,7 @@ playersRef.on("child_removed", function(snap) {
 			return; 
 		}
 
-		var numPlayers = Object.keys($scope.playerss).length
+		var numPlayers = $scope.playerss.length
 		console.log("NUM PLAYAS in voted", numPlayers)
 
 		var votes = snap.val();
