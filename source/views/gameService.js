@@ -7,8 +7,22 @@ angular.module('cardsAgainstHumanity')
 	var cookies = $cookies.get('token');
 
 
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com");
+	this.overAllRef = new Firebase("https://mycah.firebaseio.com");	
+	this.gamesList = overAllRef.child('games');
+	this.seedDeck = overAllRef.child('cards');
+	this.overAllRef.on("child_added", function(snap){
+		
+	})
+
+	$rootScope.newGame = function(){
+		this.gamesList.push(myId);
+	}
+
+	var thisGame = "SOMETHING TO CONNECT OTHER PLAYERS TO THIS ID"
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+
+	this.gameInstance = gamesList.child(thisGame);
+
 
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
@@ -23,7 +37,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://mycah.firebaseio.com/gamestate");
+	this.gameStateRef = this.gameInstance.child('gamestate')
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
