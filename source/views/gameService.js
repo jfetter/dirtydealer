@@ -151,11 +151,11 @@ angular.module('cardsAgainstHumanity')
 		var myId = myInfo._id
 		var myRef = playersRef.child(myId);
 
+		console.log("round winner is", player)
 
 		//only add points once per player
 		if (player === myId){
 			var winnerName;
-
 
 			var myPoints;
 			myRef.on('value', function(snap) {
