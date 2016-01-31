@@ -1,5 +1,6 @@
 <div class="container col-xs-12" id="mainProfileContainer">
-	<img src="http://cdn.playbuzz.com/cdn/1c6eb15f-28d0-4150-8ee6-152f39f2dbd4/ea64f2f4-e12b-4f05-86e3-61c52b8cae25.gif" alt="profile gif" id="profileGif">
+	<img src="http://i.imgur.com/4aSkIAh.jpg" alt="profile gif" id="profileGif">
+
 	<div class="row"  id="userHeader">
 		<div ng-if="isLoggedIn" class="col-xs-12">
 			<h1>Welcome {{user.username}}!</h1>
@@ -7,13 +8,13 @@
 	</div>
 
 	<div class="row">
-		<div class="col-md-8 col-sm-offset-2" id="profile">
+		<div class="col-sm-11 col-sm-offset-1" id="profile">
 
-			<div class="col-sm-4 col-xs-12 imageDiv">
+			<div class="col-sm-4 imageDiv">
 				<div class="row">
 					<div id="imageHolder">
 						<div>
-							<img class="img-rounded col-sm-12" src={{profileImageSrc}} id="userImage"></img>
+							<img class="img-rounded" src={{profileImageSrc}} id="userImage"></img>
 						</div>
 					</div>
 				</div>
@@ -21,16 +22,34 @@
 					<div ng-show="isOwnPage" >
 						<div class="input-group">
 							<span class="input-group-btn">
-								<button class="btn btn-primary btn-file">
+								<button class="btn btn-primary btn-file" id="browseButton">
 									Browse Files<input type="file" ng-model="user.uploadedImage" base-sixty-four-input>
 								</button>
 							</span>
-							<input ng-model="user.uploadedImage.filename" class="form-control" type="text" readonly>
+							<input ng-model="user.uploadedImage.filename" id="uploadBox" class="form-control" type="text" readonly>
 						</div>
 						<button class="btn btn-primary"ng-disabled="!user.uploadedImage" ng-click="uploadImage(user.uploadedImage)" id="uploadPic">Upload</button>
 					</div>
 				</div>
 			</div>
+
+
+			<div class="col-sm-2" id="playControlDiv">
+				<div ng-show="isOwnPage" >
+
+					<div class="row" id="joinExistingGame">
+						<button id="joinGameButton">Join An Existing Game!</button>
+					</div>
+
+					<div class="row" id="hostNewGame">
+						<button id="hostGameButton">Host A New Game</button>
+						<br>
+						<input type="number" id="numberPlayerInput" min="3" max="8" placeholder="Number of players"/>
+					</div>
+
+				</div>
+			</div>
+
 
 			<!-- <div class="col-sm-4 col-xs-12 thumbnail" >
 			<div ng-if="isOwnPage" id="profile">
@@ -49,7 +68,7 @@
 </div>
 </div> -->
 
-<div class="col-sm-5 col-xs-12" id="leaderBoardDiv">
+<div class="col-sm-3" id="leaderBoardDiv">
 	<div ng-show="isOwnPage" >
 		<div class="row" id="leaderBoardHeader">
 			<h3>Gamepoints</h3>
