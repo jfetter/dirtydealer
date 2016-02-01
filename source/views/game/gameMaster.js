@@ -324,6 +324,7 @@ playersRef.on("child_removed", function(snap) {
 				if (myId === player1.playerId && !$scope.blackCard){
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
+					console.log($scope.blackCard, "NEW BLACK CARD WOW!")
 				}
 		}
 		$scope.currentState = thisState;
