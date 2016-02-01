@@ -4,12 +4,27 @@ angular.module('cardsAgainstHumanity')
 
 .service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
 
-	var cookies = $cookies.get('token');
+		var cookies = $cookies.get('token');
 
+	this.overAllRef = new Firebase("https://mycah.firebaseio.com");	
+	this.gamesList = this.overAllRef.child('games');
+	this.seedDeck = this.overAllRef.child('cards');
+	// this.overAllRef.on("child_added", function(snap){
+		
+	// })
 
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com");
+	$rootScope.newGame = function(numPlayers){
+		this.gamesList.push(myId);
+		$rootScope.thisGame = myId
+	}
+
+	$rootScope.joinGame = function(gameId){
+		$rootScope.thisGame = gameId;
+	}
+
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-
+	var thisGame = $rootScope.thisGame || "waiting";
+	this.gameInstance = this.gamesList.child(thisGame);
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages");
@@ -26,6 +41,10 @@ angular.module('cardsAgainstHumanity')
 	this.gameStateRef = new Firebase("https://mycah.firebaseio.com/gamestate");
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
+
+
+
+
 
 	this.killAll = function(){
 		playersRef.remove();

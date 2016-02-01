@@ -73,35 +73,6 @@ angular.module('cardsAgainstHumanity')
 	var winVotes = GameService.votes;
 	// $scope.blackCard = scenarioCardRef
 
-	/* ______________
-	|              |
-	|  States:     |
-	|______________| */
-
-
-	var gameState = function(thisState) {
-			switch (thisState) {
-
-				case 1:
-
-
-				//ng-hide all the cards submitted for vote
-				break;
-
-				case 2:
-					console.log("STATE 2 VOTE !!!!!")
-
-				// ng-show all the cards that are submitted for voting
-				// ng-disable clickable cards from your deck
-				break;
-
-				case 3:
-
-				break;
-			}
-	}
-
-
 
 
 	// 	_______________
@@ -232,6 +203,7 @@ thisGame.on('value', function(snap){
 		console.log("$scope.playerss", $scope.playerss)
 
 			$scope.playerss = snap.players;
+			$scope.numPlayers = Object.keys($scope.playerss).length
 	}
 	//make sure you can see	response cards
 	if (snap.response != null){
