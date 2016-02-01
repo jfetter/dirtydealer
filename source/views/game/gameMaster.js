@@ -277,7 +277,7 @@ playersRef.on("child_removed", function(snap) {
 						swal({
 				type: "error",
 				title: "Uh-Oh!",
-				text: "some asshole quit !",
+				text: "some asshole quit and there are no longer enough players!",
 				showConfirmButton: true,
 				confirmButtonText: "CANNOT CONTINUE' ",
 			});

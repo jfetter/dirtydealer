@@ -2,20 +2,30 @@
 angular.module('cardsAgainstHumanity')
 
 
-.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper, $state){
 
 		var cookies = $cookies.get('token');
 
+		var identifyPlayer = function(){
+		var cookies = $cookies.get('token');
+		var myInfo = jwtHelper.decodeToken(cookies)
+		return myInfo;
+	}
+
 	this.overAllRef = new Firebase("https://mycah.firebaseio.com");	
-	this.gamesList = this.overAllRef.child('games');
+	var gamesList = this.overAllRef.child('games');
 	this.seedDeck = this.overAllRef.child('cards');
 	// this.overAllRef.on("child_added", function(snap){
 		
 	// })
 
-	$rootScope.newGame = function(numPlayers){
-		this.gamesList.push(myId);
-		$rootScope.thisGame = myId
+	$rootScope.newGame = function(gameSize){
+		var myInfo = identifyPlayer();
+		var myId = myInfo._id
+		gamesList.push(myId);
+		$rootScope.thisGame = myId;
+		console.log(`creating a new game with ${gameSize} players`);
+		$state.go('game')
 	}
 
 	$rootScope.joinGame = function(gameId){
@@ -24,7 +34,7 @@ angular.module('cardsAgainstHumanity')
 
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 	var thisGame = $rootScope.thisGame || "waiting";
-	this.gameInstance = this.gamesList.child(thisGame);
+	this.gameInstance = gamesList.child(thisGame);
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages");
@@ -52,21 +62,15 @@ angular.module('cardsAgainstHumanity')
 
 	//remove players
 	this.removePlayer = function(){
-		var myInfo = this.identifyPlayer()
+		var myInfo = identifyPlayer()
 		var myId = myInfo._id
 
 		playersRef.child(myId).remove();
 		console.log("PLAYER QUIT", myId)
 	}
 
-	this.identifyPlayer = function(){
-		var cookies = $cookies.get('token');
-		var myInfo = jwtHelper.decodeToken(cookies)
-		return myInfo;
-	}
-
 	this.pickCards = function(){
-		var myInfo = this.identifyPlayer()
+		var myInfo = identifyPlayer()
 		var myId = myInfo._id
 		console.log(myId, "IS IN THE HIZOUSE");
 		var myHand = CardsService.startingHand();
@@ -87,7 +91,7 @@ angular.module('cardsAgainstHumanity')
 
 	this.addPlayer = function(){
 		//initialize test 'children'
-		var myInfo = this.identifyPlayer()
+		var myInfo = identifyPlayer()
 		var myId = myInfo._id;
 		//var cards = CardsService.startingHand();
 		playersRef.child(myId).set({
@@ -107,7 +111,7 @@ angular.module('cardsAgainstHumanity')
 
 	//submit response card (game state 1)
 	this.addToResponseCards = function(cardClicked, index) {
-		var myInfo = this.identifyPlayer()
+		var myInfo = identifyPlayer()
 		var myId = myInfo._id
 		var tempHand;
 		console.log(cardClicked, "BEGINNNING");
@@ -126,7 +130,7 @@ angular.module('cardsAgainstHumanity')
 		return tempHand
 	}
 	this.drawOneCard = function() {
-		var myInfo = this.identifyPlayer()
+		var myInfo = identifyPlayer()
 		var myId = myInfo._id
 		var tempHand;
 		var newCard = CardsService.draw();
@@ -166,7 +170,7 @@ angular.module('cardsAgainstHumanity')
 	// if you won the round add a point to your score (game state 2)
 	this.addWinPoint = function(player){
 
-		var myInfo = this.identifyPlayer()
+		var myInfo = identifyPlayer()
 		var myId = myInfo._id
 		var myRef = playersRef.child(myId);
 

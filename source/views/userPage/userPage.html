@@ -42,9 +42,10 @@
 					</div>
 
 					<div class="row" id="hostNewGame">
-						<button id="hostGameButton">Host A New Game</button>
+						<input type="number" id="numberPlayerInput" ng-model="gameSize" min="3" max="8" placeholder="Number of players"/>
 						<br>
-						<input type="number" id="numberPlayerInput" min="3" max="8" placeholder="Number of players"/>
+						<!-- <p ng-show="!gameSize">input number of players</p> -->
+						<button id="hostGameButton" ng-disabled="!gameSize" ng-click="newGame(gameSize)">Host A New Game</button>
 					</div>
 
 				</div>
