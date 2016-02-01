@@ -266,9 +266,9 @@ thisGame.on('value', function(snap){
 			console.log("playas gonna play play play play play", $scope.playerss)
 			var numPlayers = snap.numChildren();
 			// when the first player joins the game generate a black card
-			if (numPlayers === 1 && !$scope.currentState){
-				CardsService.dealBlackCard();
-			}
+			// if (numPlayers === 1 && !$scope.currentState){
+			// 	CardsService.dealBlackCard();
+			// }
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
@@ -322,6 +322,7 @@ playersRef.on("child_removed", function(snap) {
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
 				if (myId === player1.playerId){
+					scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
 					console.log($scope.blackCard, "NEW BLACK CARD WOW!")
