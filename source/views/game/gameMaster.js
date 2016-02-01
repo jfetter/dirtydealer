@@ -240,13 +240,9 @@ thisGame.on('value', function(snap){
 	if ($scope.playerss === null || $scope.playerss === undefined ){
 		$scope.playerss = [];
 	} else{
-		var players = [];
-		for (var player in $scope.playerss){
-			players.push(player);
-		}  
-		$scope.playerss = players;
+		//$scope.playerss = players;
 	}
-	console.log($scope.playerss)
+	console.log("PLAYERSSSSSSSSSS",  $scope.playerss)
 	//make sure you can see	response cards
 	if (snap.response != null){
 		$scope.responses = snap.response
@@ -261,7 +257,12 @@ thisGame.on('value', function(snap){
 
 	//Any time someone leaves or joins the game check in with F.B.
 	playersRef.on("value", function(snap) {
-		  $scope.playerss = snap.val();
+			var players = [];
+			snap.forEach (function(player){
+			players.push(player.val());
+			console.log("pushing", player.val(), "into the game")
+		}); 
+		  $scope.playerss = players;
 			console.log("playas gonna play play play play play", $scope.playerss)
 			var numPlayers = snap.numChildren();
 			// when the first player joins the game generate a black card
@@ -401,7 +402,7 @@ playersRef.on("child_removed", function(snap) {
 		// 		// a key in the player schema;
 		// 	}
 		//console.log(snap.val(), "OUTSIDE THE IF");
-		if (numResponses === numPlayers) {
+		if (numResponses === numPlayers && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
 		//start timer for next round;
 			//TimerService.counter = 61;
@@ -458,7 +459,7 @@ playersRef.on("child_removed", function(snap) {
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-		if (votesLength == numPlayers) {
+		if (votesLength == numPlayers && votes.Length > 0) {
 			//console.log("INSIDE VOTES")
 
 			//create a dictionary of players who received votes
