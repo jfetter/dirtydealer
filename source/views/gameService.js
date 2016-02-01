@@ -22,32 +22,27 @@ angular.module('cardsAgainstHumanity')
 	var gamesArray = $rootScope.gamesArray || null;
 	gamesList.on('value', function(snap){
 		var gamesList = snap.val();
-		console.log("GAMES LIST", gamesList);
-		var tempGamesArray = [];
-		for (var game in gamesList){
-			tempGamesArray.push(game);
-		}
-		$rootScope.gamesArray = tempGamesArray;
-		console.log("games Array", gamesArray);
-	})
-
-$rootScope.newGame = function(gameSize){
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id
-		$rootScope.thisGame = myId;
-		if (!gamesArray || gamesArray.indexOf(myId) === -1) {gamesList.child(myId).set(myId)};
-		console.log(`creating a new game with ${gameSize} players`);
-		$state.go('game')
-	}
+		console.log("GAMES LIST", gamesList);
+		var tempGamesArray = [];
+		snap.forEach(function(game){
+			tempGamesArray.push(game.val());
+		})
+		$rootScope.gamesArray = tempGamesArray;
+		console.log("games list waiting players myId",gamesList.waiting.players[myId])
+		//if (gamesList.waiting.players[myId]){
+			//$rootScope.thisGame = gamesList[myId];
+			//console.log("$rootScope.thisGame1", $rootScope.thisGame)
+		//}
 
-	$rootScope.joinGame = function(gameId){
-		$rootScope.thisGame = gameId;
-		this.startGame();
-	}
+		console.log("games Array", $rootScope.gamesArray);
+	})
 
 // this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 	var thisGame = $rootScope.thisGame || "waiting";
 	this.gameInstance = gamesList.child(thisGame);
+	var gameInstance = this.gameInstance;
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
 	this.messageRef = this.gameInstance.child("messages");
@@ -66,10 +61,25 @@ $rootScope.newGame = function(gameSize){
 	var gameStateRef = this.gameStateRef;
 
 
+$rootScope.newGame = function(gameSize){
+		var myInfo = identifyPlayer();
+		var myId = myInfo._id
+		//$rootScope.thisGame = myId;
+		if (!gamesArray || gamesArray.indexOf(myId) === -1) {
+			gamesList.child(myId).set({
+					gameSize: gameSize,
+					title: myId,
+					players: "WORKING ON THIS FIELD"
+			})
 
-
-	
-
+		console.log(`creating a new game with ${gameSize} players`);
+		console.log("$rootScope.myNewGame2", $rootScope.thisGame)
+		$state.go('game')
+	}
+}
+	$rootScope.joinGame = function(gameId){
+		$rootScope.thisGame = gameId;
+	}
 
 	this.killAll = function(){
 		playersRef.remove();

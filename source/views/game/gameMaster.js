@@ -64,9 +64,7 @@ angular.module('cardsAgainstHumanity')
 	var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 	var gameStateRef = GameService.gameStateRef;
 	var votesRef = GameService.gameInstance.child("votes");
-
 	var cardsRef = GameService.gameInstance.child("cards");
-
 	// playersRef.child(myId).on('value', function(snap){
 	// 	console.log("I EVLOLVED", snap.val().cards.length)
 	// })
