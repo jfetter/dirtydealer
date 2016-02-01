@@ -72,7 +72,7 @@ angular.module('cardsAgainstHumanity')
 		var players = [];
 		for (var player in $scope.playerss){
 			players.push(player);
-		}  
+		}
 		$scope.playerss = players;
 	}
 
@@ -261,21 +261,21 @@ thisGame.on('value', function(snap){
 			snap.forEach (function(player){
 			players.push(player.val());
 			console.log("pushing", player.val(), "into the game")
-		}); 
+		});
 		  $scope.playerss = players;
 			console.log("playas gonna play play play play play", $scope.playerss)
 			var numPlayers = snap.numChildren();
 			// when the first player joins the game generate a black card
-			//if (numPlayers === 1 && !$scope.currentState){
-				//CardsService.dealBlackCard();
-			//}
+			if (numPlayers === 1 && !$scope.currentState){
+				CardsService.dealBlackCard();
+			}
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
 				//TimerService.countDown();
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
-			} 
+			}
 	});
 
 // if someone leaves alert everyone
@@ -295,7 +295,7 @@ playersRef.on("child_removed", function(snap) {
 			});
 			GameService.gameInstance.set(null);
 			$setTimeout(function() {$state.go('userPage')}, 1000);
-		} 
+		}
 	});
 
 	$scope.removePlayer = function(){
@@ -321,7 +321,7 @@ playersRef.on("child_removed", function(snap) {
 			var playas = $scope.playerss
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1 && !$scope.blackCard){
+				if (myId === player1.playerId && !$scope.blackCard){
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
 				}
@@ -450,7 +450,7 @@ playersRef.on("child_removed", function(snap) {
 
 	votesRef.on("value", function(snap) {
 		if ($scope.currentState != 2){
-			return; 
+			return;
 		}
 
 		var numPlayers = $scope.playerss.length
@@ -459,7 +459,8 @@ playersRef.on("child_removed", function(snap) {
 		var votes = snap.val();
 		var votesLength = snap.numChildren();
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-		if (votesLength == numPlayers && votes.Length > 0) {
+		console.log("How votes", votes.length)
+		if (votesLength == numPlayers) {
 			//console.log("INSIDE VOTES")
 
 			//create a dictionary of players who received votes
