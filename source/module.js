@@ -3,8 +3,8 @@
 var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'ngCookies','naif.base64', "base64", "firebase"])
 
 app.constant('ENV', {
-   API_URL: 'http://localhost:3000'
-  //API_URL: "https://secure-coast-55324.herokuapp.com"
+   //API_URL: 'http://localhost:3000'
+  API_URL: "https://secure-coast-55324.herokuapp.com"
 
 });
 
