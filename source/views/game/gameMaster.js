@@ -334,7 +334,7 @@ playersRef.on("child_removed", function(snap) {
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
 				responseRef.remove();
-				scenarioCardRef.remove();
+				// scenarioCardRef.remove();
 				//myRef.child('voted').remove();
 				myRef.child('submittedResponse').remove();
 				//myRef.child('tempHand').remove();
