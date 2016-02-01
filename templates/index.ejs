@@ -14,30 +14,21 @@
 
 </head>
 <body ng-app="cardsAgainstHumanity">
-  <div ng-controller="MasterController">
-    <nav class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" ui-sref="home" id="navTitle">Dirty Dealer</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right" ng-if="!isLoggedIn">
-          <li class="text-right"><a ui-sref='register' id="navMenu">Register</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right" ng-if="isLoggedIn">
-          <li><a ng-hide="" ui-sref="userPage" id="navMenu">Profile</a></li>
-          <!-- <li><a ng-show="" id="home-link" ng-click="goHome()">Profile</a></li> -->
-          <!-- <li><a ng-hide="" ui-sref='game' id="navMenu">Play</a></li> -->
-          <li><a id="navMenu" ng-click="logout()">Logout</a></li>
-        </ul>
-      </div>
-    </nav>
+
+    <div ng-controller="MasterController">
+      <nav class="navbar">
+        <a class="navbar-brand" ui-sref="home">Dirty Dealer</a>
+        <a ui-sref='register' ng-if="!isLoggedIn" class="nav_link register">Register</a>
+        <a ng-hide="" ui-sref="userPage"  ng-if="isLoggedIn" class="nav_link profile">Profile</a>
+        <a ng-click="logout()" ng-if="isLoggedIn" class="nav_link logout">Logout</a>
+      </nav>
 
     <div class=="ui-view-container">
       <div ui-view>
       </div>
     </div>
 
-  </di>
+  </div>
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script src="./assets/angular/angular.min.js"></script>
   <script src="./assets/angular-ui-router/release/angular-ui-router.min.js"></script>

@@ -1,24 +1,23 @@
-<div class="container col-xs-12" id="mainProfileContainer">
+<div class="container col-xs-12 col-sm-12 col-md-12" id="mainProfileContainer">
 	<img src="http://i.imgur.com/4aSkIAh.jpg" alt="profile gif" id="profileGif">
 
 	<div class="row"  id="userHeader">
-		<div ng-if="isLoggedIn" class="col-xs-12">
+		<div ng-if="isLoggedIn" class="col-xs-12 col-sm-12 col-md-12" id="greeting">
 			<h1>Welcome {{user.username}}!</h1>
 		</div>
 	</div>
 
 	<div class="row">
-		<div class="col-sm-11 col-sm-offset-1" id="profile">
+		<div class="col-sm-12 col-xs-12 col-md-11 col-md-offset-1" id="profile">
 
-			<div class="col-sm-4 imageDiv">
+			<div class="col-sm-3 col-xs-12 col-md-4 imageDiv">
 				<div class="row">
 					<div id="imageHolder">
 						<div>
 							<img class="img-rounded" src={{profileImageSrc}} id="userImage"></img>
 						</div>
 					</div>
-				</div>
-				<div class="row">
+				<!-- <div class="row"> -->
 					<div ng-show="isOwnPage" >
 						<div class="input-group">
 							<span class="input-group-btn">
@@ -31,10 +30,11 @@
 						<button class="btn btn-primary"ng-disabled="!user.uploadedImage" ng-click="uploadImage(user.uploadedImage)" id="uploadPic">Upload</button>
 					</div>
 				</div>
+				<!-- </div> -->
 			</div>
 
 
-			<div class="col-sm-2" id="playControlDiv">
+			<div class="col-sm-2 col-xs-2 col-md-2" id="playControlDiv">
 				<div ng-show="isOwnPage" >
 
 					<div class="row" id="joinExistingGame">
@@ -51,34 +51,17 @@
 			</div>
 
 
-			<!-- <div class="col-sm-4 col-xs-12 thumbnail" >
-			<div ng-if="isOwnPage" id="profile">
-			<button class="btn btn-primary" ng-if="isEditing" ng-click="saveEdits()">SAVE USER INFO</button>
-			<button  class="btn btn-primary" ng-if="!isEditing" ng-click="toggleEdit()">EDIT USER</button>
-			<button  class="btn btn-primary" ng-if="isEditing" ng-click="toggleEdit()">CANCEL EDITING</button>
-			<div class="row">
-			<label ng-if="isEditing" class="col-xs-4" for="username" id="profileHeader">New Username:</label>
-			<input ng-if="isEditing" class="col-xs-8" ng-model="editPayload.username" value="{{user.username}}" />
+			<div class="col-sm-3 col-xs-3 col-md-3" id="leaderBoardDiv">
+				<div ng-show="isOwnPage" >
+					<div class="row" id="leaderBoardHeader">
+						<h3>Gamepoints</h3>
+					</div>
+					<div class="row" id="leaderBoardScore">
+						<h4>Number of games won:      {{user.gamePoints}}</h4>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
-	<div id="profileDetails" class="col-xs-12">
-	<h2>Profile Details</h2>
-	<br>
-	<h2 ng-if="!isEditing" id="profileDetails">Username:    {{user.username}}</h2>
-</div>
-</div> -->
-
-<div class="col-sm-3" id="leaderBoardDiv">
-	<div ng-show="isOwnPage" >
-		<div class="row" id="leaderBoardHeader">
-			<h3>Gamepoints</h3>
-		</div>
-		<div class="row" id="leaderBoardScore">
-			<h4>Number of games won:      {{user.gamePoints}}</h4>
-		</div>
-	</div>
-</div>
-
-</div>
-</div>
 </div>

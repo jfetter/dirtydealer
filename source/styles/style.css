@@ -16,6 +16,15 @@
   border: 3px solid white;
 }
 
+@media screen and (max-width: 548px){
+  #greeting h1 {
+    font-size: 50%;
+  }
+  #userHeader {
+    min-width: 120px;
+  }
+}
+
 #mainProfileContainer {
   text-align: center;
   border: 5px solid black;
@@ -38,6 +47,27 @@
   margin-top: 30px;
 }
 
+@media screen and (max-width: 876px){
+  #profileGif {
+    width: 90%;
+    height: 90%;
+    max-width: 800px;
+    max-height: 500px;
+    margin-left: 5px;
+  }
+}
+
+@media screen and (max-width: 395px){
+  #profileGif {
+    width: 90%;
+    height: 90%;
+    max-width: 700px;
+    max-height: 400px;
+    margin-left: 5px;
+  }
+}
+}
+
 .thumbnail {
   background-color: transparent;
 }
@@ -46,7 +76,16 @@
   background-color: white;
   border: 5px solid black;
   display: inline-block;
+  margin-right: 50px;
 }
+
+/*@media screen and (max-width: 871px){
+#imageDiv {
+font-size: 217%;
+float:left;
+margin-right: 50px;
+}
+}*/
 
 #browseButton {
   background-color: grey;
@@ -134,430 +173,465 @@
 |  Navbar:     |
 |______________| */
 
-a.navbar-brand {
-  font-size: 30px;
-  color: white;
-}
-
-#navTitle {
-  font-size: 50px;
-  color: white;
-}
-
-#navMenu {
-  font-size: 20px;
-  color: lightblue;
-}
-
-/* ______________
-|              |
-|  Shared:     |
-|______________| */
-
-h1, p, .navbar, div, button, .modal, li, a {
-  font-family: 'Righteous', cursive;
-}
-
-body {
-  background-color: black;
-  text-align: center;
-}
-
-#backgroundGif {
-  z-index: -9999;
-  background-size: cover;
-  position: absolute;
-  display: block;
-  width: 1250px;
-  height: 710px;
-}
-
-#backgroundHomeGif {
-  z-index: -9999;
-  background-size: cover;
-  position: absolute;
-  display: block;
-  width: 1250px;
-  height: 710px;
-  margin-left: 15px;
-}
-
-#quitGameButton {
-  color: white;
-  background-color: black;
-  font-size: 20px;
-  border: 3px solid white;
-}
-
-#row5 {
-  width: 70%;
-  margin: 0 auto;
-  padding-top: 20px;
-}
-
-/* ______________
-|              |
-|  LoginPage:  |
-|______________| */
-
-#loginHolder {
-  z-index: 5000;
-  width: 30%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 30px;
-}
-
-#loginPageContainer {
-  width: 100%;
-  height: 100%;
-}
-
-#loginTitle {
-  text-align: center;
-}
-
-#login {
-  margin-top: 20px;
-  margin-left: 140px;
-}
-
-#homeLabel {
-  font-size: 20px;
-}
-
-/* ______________
-|                |
-|  RegisterPage: |
-|________________| */
-
-#registerHolder {
-  z-index: 5000;
-  width: 30%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 30px;
-}
-
-#registerPageContainer {
-  width: 100%;
-  height: 100%;
-}
-
-#registerTitle {
-  text-align: center;
-}
-
-#register {
-  margin-top: 20px;
-  margin-left: 140px;
-}
-
-/* ______________
-|                |
-|  GameBoard:    |
-|________________| */
-#gameBoard {
-  text-align: center;
-  border: 5px solid black;
-  width: 100%;
-  height: 850px;
-  margin-top: -18px;
-  z-index: 5000;
-  position: absolute;
-  color: white;
-}
-
-#gameBackgroundGif {
-  z-index: -9999;
-  background-size: cover;
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-}
-
-/* ______________
-|                |
-|  Black Card:   |
-|________________| */
-
-#blackCardDiv {
-  /*margin-left: auto;*/
-  /*margin-right: auto;*/
-  margin-top: 20px;
-  margin-bottom: 10px;
-  text-align: center;
-  float: left;
-}
-
-.blackCard{
-  color: white;
-  border: 2px solid white;
-  background-color: black;
-  height: 250px;
-  width: 200px;
-  display: inline-block;
-}
-
-/* ___________________
-|                     |
-|  Response/Vote:     |
-|____________________ | */
-
-#row2 {
-  width: 95%;
-  margin: 0 auto;
-}
-
-#responseDiv {
-  /*margin-left: auto;*/
-  /*margin-right: auto;*/
-  margin-top: 20px;
-  margin-bottom: 10px;
-  text-align: center;
-  max-height: 280px;
-  overflow-x: scroll;
-  /*overflow-y: hidden;*/
-  /*float: right;*/
-}
-
-#responseCards {
-  margin: 0 auto;
-  display: inline-block;
-  padding-right: 15px;
-  padding-top: 15px;
-}
-
-.whiteCard{
-  color: black;
-  background-color: white;
-  border: 3px solid black;
-  height: 150px;
-  width: 120px;
-  display: inline-block;
-}
-
-/* ________________
-|                  |
-|  Your Card Deck: |
-|__________________| */
-
-
-#row3 {
-  width: 85%;
-  margin: 0 auto;
-}
-
-#whiteCardDiv {
-  width: 90%;
+.navbar {
   position: relative;
-  margin: 0 auto;
-  text-align: center;
-  margin-left: 180px;
-  /*display: inline-block;*/
-  overflow-x: scroll;
-  overflow-y: hidden;
-  max-height: 450px;
-  max-width: 700px;
-  padding-bottom: 50px;
-}
-
-.whiteDeck{
-  color: black;
-  background-color: white;
-  border: 3px solid black;
-  height: 150px;
-  width: 120px;
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-}
-
-/* ______________
-|                |
-|  LeaderBoard:  |
-|________________| */
-
-
-#leaderBoardDiv {
-  /*margin-right: auto;*/
-  margin-bottom: 20px;
-  text-align: center;
-  border: 5px black;
-  /*background-color: red;*/
-}
-
-#tableHeader {
-  text-align: center;
-  background-color: grey;
-  font-size: 16px;
-}
-
-th {
-  text-align: center;
-  color: black;
-}
-
-tr {
-  text-align: center;
-}
-
-#leaderTable {
-  border: 4px solid black;
-  text-align: center;
-}
-/* ______________
-|                |
-|  Messages:     |
-|________________| */
-
-#row4 {
-  width: 70%;
-  margin: 0 auto;
-  padding-top: 15px;
-  padding-bottom: 15px;
-}
-
-#messageDiv {
-  margin-right: auto;
-  margin-bottom: 20px;
-  text-align: center;
-  border: 3px white;
-}
-
-#commentButton {
-  color: white;
-  background-color: black;
-  font-size: 13px;
-  border: 2px solid white;
-}
-
-#messageContainer {
-  text-align: center;
-  color: black;
-  font-size: 15px;
-}
-
-#playerMessageName {
-  color: grey;
-  font-size: 20px;
-}
-
-#messageSent {
-  color: white;
-}
-
-#addMessageInput {
-  color: black;
-}
-
-#messageTable {
-  color: white;
-}
-
-#messageHeader {
-  color: white;
-  font-size: 30px;
-  padding-top: 15px;
-}
-
-#messageText {
-  color: black;
-}
-
-#tableHeader {
-  background-color: white;
-  color: black;
-}
-/* ______________
-|                |
-|  Waiting:      |
-|________________| */
-
-#waitingDiv {
-  margin-left: auto;
+  min-height: 50px;
   margin-bottom: 10px;
-  text-align: center;
-}
+  margin-top: 10px;
+  margin-left: 10px;
+  border: 1px solid transparent;
+  
+  a.navbar-brand {
+    font-size: 40px;
+    color: white;
+  }
+
+  .nav_link {
+    position: absolute;
+    top: 8px;
+    right: 5px;
+    font-size: 20px;
+    color: #fff;
+    margin-right: 50px;
+  }
+
+  .nav_link:hover {
+    text-decoration: none;
+    color: lightblue;
+  }
+
+  .nav_link.profile {
+    margin-right: 100px;
+  }
+
+  .nav_link.logout {
+    margin-right: 13px;
+  }
+
+  nav a:hover {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 350px){
+    .navbar-brand {
+      font-size: 217%;
+      float:left;
+    }
+
+    .nav_link {
+      font-size: 127%;
+      margin-top: 6px;
+      float: left;
+    }
+  }
+
+  /* ______________
+  |              |
+  |  Shared:     |
+  |______________| */
+
+  h1, p, .navbar, div, button, .modal, li, a {
+    font-family: 'Righteous', cursive;
+  }
+
+  body {
+    background-color: black;
+    text-align: center;
+  }
+
+  #backgroundGif {
+    z-index: -9999;
+    background-size: cover;
+    position: absolute;
+    display: block;
+    width: 1250px;
+    height: 710px;
+  }
+
+  #backgroundHomeGif {
+    z-index: -9999;
+    background-size: cover;
+    position: absolute;
+    display: block;
+    width: 1250px;
+    height: 710px;
+    margin-left: 15px;
+  }
+
+  #quitGameButton {
+    color: white;
+    background-color: black;
+    font-size: 20px;
+    border: 3px solid white;
+  }
+
+  #row5 {
+    width: 70%;
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+
+  /* ______________
+  |              |
+  |  LoginPage:  |
+  |______________| */
+
+  #loginHolder {
+    z-index: 5000;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+  }
+
+  #loginPageContainer {
+    width: 100%;
+    height: 100%;
+  }
+
+  #loginTitle {
+    text-align: center;
+  }
+
+  #login {
+    margin-top: 20px;
+  }
+
+  #homeLabel {
+    font-size: 20px;
+  }
+
+  /* ______________
+  |                |
+  |  RegisterPage: |
+  |________________| */
+
+  #registerHolder {
+    z-index: 5000;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+  }
+
+  #registerPageContainer {
+    width: 100%;
+    height: 100%;
+  }
+
+  #registerTitle {
+    text-align: center;
+  }
+
+  #register {
+    margin-top: 20px;
+  }
+
+  /* ______________
+  |                |
+  |  GameBoard:    |
+  |________________| */
+  #gameBoard {
+    text-align: center;
+    border: 5px solid black;
+    width: 100%;
+    height: 850px;
+    margin-top: -18px;
+    z-index: 5000;
+    position: absolute;
+    color: white;
+  }
+
+  #gameBackgroundGif {
+    z-index: -9999;
+    background-size: cover;
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+  }
+
+  /* ______________
+  |                |
+  |  Black Card:   |
+  |________________| */
+
+  #blackCardDiv {
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+    float: left;
+  }
+
+  .blackCard{
+    color: white;
+    border: 2px solid white;
+    background-color: black;
+    height: 250px;
+    width: 200px;
+    display: inline-block;
+  }
+
+  /* ___________________
+  |                     |
+  |  Response/Vote:     |
+  |____________________ | */
+
+  #row2 {
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  #responseDiv {
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+    max-height: 280px;
+    overflow-x: scroll;
+    /*overflow-y: hidden;*/
+    /*float: right;*/
+  }
+
+  #responseCards {
+    margin: 0 auto;
+    display: inline-block;
+    padding-right: 15px;
+    padding-top: 15px;
+  }
+
+  .whiteCard{
+    color: black;
+    background-color: white;
+    border: 3px solid black;
+    height: 150px;
+    width: 120px;
+    display: inline-block;
+  }
+
+  /* ________________
+  |                  |
+  |  Your Card Deck: |
+  |__________________| */
+
+
+  #row3 {
+    width: 85%;
+    margin: 0 auto;
+  }
+
+  #whiteCardDiv {
+    width: 90%;
+    position: relative;
+    margin: 0 auto;
+    text-align: center;
+    margin-left: 180px;
+    /*display: inline-block;*/
+    overflow-x: scroll;
+    overflow-y: hidden;
+    max-height: 450px;
+    max-width: 700px;
+    padding-bottom: 50px;
+  }
+
+  .whiteDeck{
+    color: black;
+    background-color: white;
+    border: 3px solid black;
+    height: 150px;
+    width: 120px;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ______________
+  |                |
+  |  LeaderBoard:  |
+  |________________| */
+
+
+  #leaderBoardDiv {
+    /*margin-right: auto;*/
+    margin-bottom: 20px;
+    text-align: center;
+    border: 5px black;
+    /*background-color: red;*/
+  }
+
+  #tableHeader {
+    text-align: center;
+    background-color: grey;
+    font-size: 16px;
+  }
+
+  th {
+    text-align: center;
+    color: black;
+  }
+
+  tr {
+    text-align: center;
+  }
+
+  #leaderTable {
+    border: 4px solid black;
+    text-align: center;
+  }
+  /* ______________
+  |                |
+  |  Messages:     |
+  |________________| */
+
+  #row4 {
+    width: 70%;
+    margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  #messageDiv {
+    margin-right: auto;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 3px white;
+  }
+
+  #commentButton {
+    color: white;
+    background-color: black;
+    font-size: 13px;
+    border: 2px solid white;
+  }
+
+  #messageContainer {
+    text-align: center;
+    color: black;
+    font-size: 15px;
+  }
+
+  #playerMessageName {
+    color: grey;
+    font-size: 20px;
+  }
+
+  #messageSent {
+    color: white;
+  }
+
+  #addMessageInput {
+    color: black;
+  }
+
+  #messageTable {
+    color: white;
+  }
+
+  #messageHeader {
+    color: white;
+    font-size: 30px;
+    padding-top: 15px;
+  }
+
+  #messageText {
+    color: black;
+  }
+
+  #tableHeader {
+    background-color: white;
+    color: black;
+  }
+  /* ______________
+  |                |
+  |  Waiting:      |
+  |________________| */
+
+  #waitingDiv {
+    margin-left: auto;
+    margin-bottom: 10px;
+    text-align: center;
+  }
 
 
 
-#counter {
-  text-align: center;
-  font-size: 40px;
-}
+  #counter {
+    text-align: center;
+    font-size: 40px;
+  }
 
 
 
 
-#userImage {
-  max-height: 50vh;
-  max-width: 50vh;
-}
+  #userImage {
+    max-height: 50vh;
+    max-width: 50vh;
+  }
 
 
 
 
-#profile {
-  text-align: center;
-  font-size: 15px;
-  border: 5px, solid-red;
-}
+  #profile {
+    text-align: center;
+    font-size: 15px;
+    border: 5px, solid-red;
+  }
 
 
 
-#profileHeader {
-  font-size: 15px;
-  color: lightblue;
-  text-align: left;
-}
+  #profileHeader {
+    font-size: 15px;
+    color: lightblue;
+    text-align: left;
+  }
 
-#profileDetails {
-  font-size: 20px;
-  text-align: left;
-}
+  #profileDetails {
+    font-size: 20px;
+    text-align: left;
+  }
 
-.btn-file {
-  position: relative;
-  overflow: hidden;
-}
+  .btn-file {
+    position: relative;
+    overflow: hidden;
+  }
 
-.btn-file input[type=file] {
-  position: absolute;
-  top: 0;
-  right: 0;
-  min-width: 100%;
-  min-height: 100%;
-  font-size: 100px;
-  text-align: right;
-  filter: alpha(opacity=0);
-  opacity: 0;
-  background: red;
-  cursor: inherit;
-  display: block;
-}
+  .btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    background: red;
+    cursor: inherit;
+    display: block;
+  }
 
-input[readonly] {
-  background-color: black !important;
-  cursor: text !important;
-}
+  input[readonly] {
+    background-color: black !important;
+    cursor: text !important;
+  }
 
-.userContainer{
-  border: 1px solid #d3d3d3;
-  min-height: 20vh;
-}
+  .userContainer{
+    border: 1px solid #d3d3d3;
+    min-height: 20vh;
+  }
 
-.userContainer{
-  border:1px solid #d3d3d3;
-  border-bottom: none;
-}
+  .userContainer{
+    border:1px solid #d3d3d3;
+    border-bottom: none;
+  }
 
-.userContainer{
-  border:1px solid #d3d3d3;
-  border-bottom: 1px solid  #d3d3d3;
-}
-#home-link, #logout{
-  cursor: pointer;
-}
+  .userContainer{
+    border:1px solid #d3d3d3;
+    border-bottom: 1px solid  #d3d3d3;
+  }
+  #home-link, #logout{
+    cursor: pointer;
+  }

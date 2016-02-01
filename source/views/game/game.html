@@ -1,14 +1,14 @@
 <div class="container col-xs-12" ng-if="isLoggedIn" id="gameBoard">
 
-  <img src="https://media.giphy.com/media/jp3MHcwvzodGg/giphy.gif" alt="game Background" id="gameBackgroundGif">
-  <img src="https://media.giphy.com/media/jp3MHcwvzodGg/giphy.gif" alt="game Background" id="gameBackgroundGif">
+  <!-- <img src="https://media.giphy.com/media/jp3MHcwvzodGg/giphy.gif" alt="game Background" id="gameBackgroundGif"> -->
+  <!-- <img src="https://media.giphy.com/media/jp3MHcwvzodGg/giphy.gif" alt="game Background" id="gameBackgroundGif"> -->
 
   <!-- _____________________
   |	                        |
   |	ROW 1: Player waiting.  |
   |________________________ | -->
   <div class="row" id="waitingDiv">
-    <div class="col-sm-8">
+    <div class="col-sm-8 ">
       <h3 ng-show="!currentState">Waiting for {{ 3 - playerss.length}} more to join!</h3>
       <br>
     </div>
