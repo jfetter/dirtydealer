@@ -77,114 +77,6 @@ angular.module('cardsAgainstHumanity')
 	}
 
 
-	// playersRef.child(myId).on('value', function(snap){
-	// 	console.log("I EVLOLVED", snap.val().cards.length)
-	// })
-	// $scope.blackCard = scenarioCardRef
-
-	/* ______________
-	|              |
-	|  States:     |
-	|______________| */
-
-
-	var gameState = function(thisState) {
-			switch (thisState) {
-
-				case 1:
-
-
-				//ng-hide all the cards submitted for vote
-				break;
-
-				case 2:
-					console.log("STATE 2 VOTE !!!!!")
-
-				// ng-show all the cards that are submitted for voting
-				// ng-disable clickable cards from your deck
-				break;
-
-				case 3:
-
-				break;
-			}
-	}
-
-
-
-
-	// 	_______________
-	// |	             |
-	// |	Debug:       |
-	// |_______________|
-
-	$scope.summonDeck = function(){
-		console.log("I DID IT, RIGHT?")
-		CardsService.startDeck();
-	}
-	$scope.summonHand = function(){
-		console.log("I DID IT, RIGHT?")
-		GameService.pickCards();
-		console.log("FALSE?", playersRef.child(myId).hasOwnProperty('cards'));
-	}
-
-	$scope.selfDestruct = function(){
-		gameStateRef.remove();
-		GameService.killAll();
-		CardsService.killCards();
-	}
-
-
-	/* ______________
-	|              |
-	| Timer:       |
-	|______________| */
-
-	//$scope.timerRef.on("value", function(snap){
-		//$scope.counter = snap.val();
-	//})
-
-	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
-	$scope.$on('timer-stopped', function(event, remaining) {
-		//TIMER IF STATMENT DISCONNECTED
-		if(remaining === 0) {
-			if ($scope.haveSubmitted != true && $scope.currentState === 1){
-				//console.log("you should have submitted by now")
-				//console.log("My hand", $scope.myHand )
-				var rando = Math.floor((Math.random() * $scope.myHand.length ) + 0);
-				var spliced = $scope.myHand.splice(rando, 1)
-				spliced = spliced[0];
-				//console.log("spliced", spliced, "rando", rando);
-				GameService.addToResponseCards(spliced, rando)
-				myRef.child('cards').set($scope.myHand);
-				myRef.child('submittedResponse').set(true)
-			}
-
-				var otherPlayers = [];
-			if ($rootScope.voted != true && $scope.currentState === 2){
-				console.log($scope.playerss)
-				$scope.playerss.forEach(function(player){
-					if(player != myId){
-						otherPlayers.push(player)
-					}
-				})
-					var rando = Math.floor((Math.random() * otherPlayers.length ) + 0);
-					var spliced = otherPlayers.splice(rando, 1)
-					spliced = spliced[0].playerId;
-					winVotes.$add(spliced)
-					console.log("YOU VOTE FOR", spliced)
-			}
-			// $scope.counter = 60;
-			swal({
-				type: "error",
-				title: "Uh-Oh!",
-				text: "Next Phase is underway!",
-				showConfirmButton: true,
-				confirmButtonText: "GET GOIN' ",
-			});
-		}
-	});
-
 	/* ______________
 	|              |
 	| Players:     |
@@ -202,7 +94,7 @@ angular.module('cardsAgainstHumanity')
 			$timeout(function(){
 				GameService.addPlayer()
 				//DEAL BLACK CARD HERE?
-			},100)
+			},10)
 		} else {
 			// so the game exists...
 			// let the scope know what gamestate it is
@@ -210,10 +102,6 @@ angular.module('cardsAgainstHumanity')
 			if( snap.val().gamestate != null){
 				$scope.currentState = snap.val().gamestate;
 			}
-			// // if there is no black card deal one
-			// if(!snap.val().cards.scenarioCard){
-			// 	CardsService.dealBlackCard();
-			// }
 			if (!snap.val().players){
 				GameService.addPlayer();
 			}
@@ -227,27 +115,26 @@ angular.module('cardsAgainstHumanity')
 		}
 	})
 
-// each time timer ticks firebase will check on game
+// each time something changes
 thisGame.on('value', function(snap){
 
 	console.log(snap.val())
 	var snap = snap.val();
-	$scope.currentState = snap.gamestate;
 
 	if (snap === null){
 		return;
 	}
 	if ($scope.playerss === null || $scope.playerss === undefined ){
 		$scope.playerss = [];
-	} else{
-		//$scope.playerss = players;
-	}
-	console.log("PLAYERSSSSSSSSSS",  $scope.playerss)
+	} 
+
+	$scope.currentState = snap.gamestate;
+
 	//make sure you can see	response cards
 	if (snap.response != null){
 		$scope.responses = snap.response
 	}
-	// make sure yuo can see your hand
+	// make sure you can see your hand
 		$scope.myHand = snap.players[myId].cards;
 		//console.log("MY HAND", $scope.myHand);
 	//make sure you can see the black card
@@ -266,9 +153,9 @@ thisGame.on('value', function(snap){
 			console.log("playas gonna play play play play play", $scope.playerss)
 			var numPlayers = snap.numChildren();
 			// when the first player joins the game generate a black card
-			if (numPlayers === 1 && !$scope.currentState){
-				CardsService.dealBlackCard();
-			}
+			// if (numPlayers === 1 && !$scope.currentState){
+			// 	CardsService.dealBlackCard();
+			// }
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
 				// $scope.counter = 60;
@@ -313,8 +200,9 @@ playersRef.on("child_removed", function(snap) {
 	gameStateRef.on('value', function(snap) {
 		var thisState = snap.val();
 		$rootScope.voted = false;
-		console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
+		$scope.currentState = thisState;
 		console.log("GAME REF JUST CHANGED TO: ", thisState)
+
 
 		// have one player initiate the dealing of the black card
 		if (thisState === 1){
@@ -326,8 +214,6 @@ playersRef.on("child_removed", function(snap) {
 					CardsService.dealBlackCard();
 				}
 		}
-		$scope.currentState = thisState;
-		//gameState(thisState);
 
 		if (thisState === 3){
 				console.log("!!!! POSTVOTE !!!!")
@@ -340,7 +226,9 @@ playersRef.on("child_removed", function(snap) {
 				GameService.drawOneCard();
 				gameStateRef.set(1);
 		}
-
+		//trigger game event
+		thisGame.child('temp').set('temp');
+		thisGame.child('temp').remove();
 	})
 
 
@@ -372,8 +260,6 @@ playersRef.on("child_removed", function(snap) {
 
 //update the scope when I submit a response card
 	myRef.child('submittedResponse').on('value', function(snap){
-		//console.log(snap.val(), "SNAP VAL IN SUBMITTD RESPONSE")
-		//console.log("$scope.haveSubmitted", $scope.haveSubmitted)
 		$scope.haveSubmitted = snap.val();
 	})
 
@@ -394,22 +280,11 @@ playersRef.on("child_removed", function(snap) {
 				})
 			}
 		}
-		// if (allResponses.hasOwnProperty(myId))
-		// 	{
-		// 		console.log("I SUBMITTED!")
-		// 		myRef.child()
-		// 		// to account for refreshing could set this as
-		// 		// a key in the player schema;
-		// 	}
-		//console.log(snap.val(), "OUTSIDE THE IF");
 		if (numResponses === numPlayers && numResponses > 0) {
 			console.log(snap.val(), "INSIDE");
-		//start timer for next round;
-			//TimerService.counter = 61;
-			//TimerService.countDown();
 			gameStateRef.set(2);
 		}
-	});
+});
 
 	/* _____________
 	|              |
@@ -418,17 +293,12 @@ playersRef.on("child_removed", function(snap) {
 
 
 	$scope.voteCard = function(card){
-		//console.log("THIS IS A NEW CONSOLE LOG ", $rootScope.voted)
 	console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
 		if ($rootScope.voted === true || $scope.currentState != 2){
 			console.log("YOU ALREADY VOTED")
 			return;
 		}
 			console.log("IN VOTECARD", card)
-		// votesRef.on("child_added", function(snap){
-			// var card = snap.val();
-			// console.log("CARD ",card);
-			// console.log("my ID", myId);
 			if (card.player === myId){
 				votesRef.child(myId).remove();
 						swal({
@@ -443,9 +313,6 @@ playersRef.on("child_removed", function(snap) {
 				console.log("I AM ROOT:", $rootScope.voted)
 				GameService.voteCard(card);
 			}
-		// })
-		//console.log("YOU voted for:", card)
-		//$rootScope.voted = true;
 	}
 
 	votesRef.on("value", function(snap) {
@@ -461,7 +328,6 @@ playersRef.on("child_removed", function(snap) {
 		console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
 		console.log("How votes", votes.length)
 		if (votesLength == numPlayers) {
-			//console.log("INSIDE VOTES")
 
 			//create a dictionary of players who received votes
 			var votesCast = {};
@@ -529,10 +395,6 @@ playersRef.on("child_removed", function(snap) {
 
 		thisGame.child('winner').on('child_added', function(snap){
 			var winner = snap.val();
-			// var winningBlackCard = thisGame.child('scenarioCard').text();
-			// var winningWhiteCard = thisGame.child()
-
-			//console.log("Announcing the winner", snap.val().winnerName);
 			console.log("Announcing the winner", snap.val());
 
 			//Play Again refreshes game page & clears out old data.

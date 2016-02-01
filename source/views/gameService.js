@@ -7,7 +7,7 @@ angular.module('cardsAgainstHumanity')
 	var cookies = $cookies.get('token');
 
 
-	this.gameInstance = new Firebase("https://mycah.firebaseio.com");
+	this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/");
 	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 
 	this.playersRef = this.gameInstance.child("players");
@@ -23,7 +23,7 @@ angular.module('cardsAgainstHumanity')
 	this.votes = $firebaseArray(voteRef);
 
 	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://mycah.firebaseio.com/gamestate");
+	this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
