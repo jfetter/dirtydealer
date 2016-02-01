@@ -41,16 +41,15 @@ angular.module('cardsAgainstHumanity')
 		var token = jwtHelper.decodeToken(cookies)
 		console.log("TOKEN MASTER ", token)
 	}
-	/* ______________
-	|              |
-	|Utility Functs|
-	|______________| */
 
 
-	/* ______________
-	|              |
-	| Firebase:    |
-	|______________| */
+	/* ___________________
+	|              				|
+	| Firebase watchers   |
+	|_______________      | */
+	
+if (GameService.overAllRef != null){
+
 	var thisGame = GameService.gameInstance
 	var playersRef = GameService.gameInstance.child("players");
 	var messageRef = GameService.gameInstance.child("messages")
@@ -73,78 +72,6 @@ angular.module('cardsAgainstHumanity')
 
 
 
-	// 	_______________
-	// |	             |
-	// |	Debug:       |
-	// |_______________|
-
-	$scope.summonDeck = function(){
-		console.log("I DID IT, RIGHT?")
-		CardsService.startDeck();
-	}
-	$scope.summonHand = function(){
-		console.log("I DID IT, RIGHT?")
-		GameService.pickCards();
-		console.log("FALSE?", playersRef.child(myId).hasOwnProperty('cards'));
-	}
-
-	$scope.selfDestruct = function(){
-		gameStateRef.remove();
-		GameService.killAll();
-		CardsService.killCards();
-	}
-
-
-	/* ______________
-	|              |
-	| Timer:       |
-	|______________| */
-
-	//$scope.timerRef.on("value", function(snap){
-		//$scope.counter = snap.val();
-	//})
-
-	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
-	$scope.$on('timer-stopped', function(event, remaining) {
-		//TIMER IF STATMENT DISCONNECTED
-		if(remaining === 0) {
-			if ($scope.haveSubmitted != true && $scope.currentState === 1){
-				//console.log("you should have submitted by now")
-				//console.log("My hand", $scope.myHand )
-				var rando = Math.floor((Math.random() * $scope.myHand.length ) + 0);
-				var spliced = $scope.myHand.splice(rando, 1)
-				spliced = spliced[0];
-				//console.log("spliced", spliced, "rando", rando);
-				GameService.addToResponseCards(spliced, rando)
-				myRef.child('cards').set($scope.myHand);
-				myRef.child('submittedResponse').set(true)
-			}
-
-				var otherPlayers = [];
-			if ($rootScope.voted != true && $scope.currentState === 2){
-				console.log($scope.playerss)
-				$scope.playerss.forEach(function(player){
-					if(player != myId){
-						otherPlayers.push(player)
-					}
-				})
-					var rando = Math.floor((Math.random() * otherPlayers.length ) + 0);
-					var spliced = otherPlayers.splice(rando, 1)
-					spliced = spliced[0].playerId;
-					winVotes.$add(spliced)
-					console.log("YOU VOTE FOR", spliced)
-			}
-			// $scope.counter = 60;
-			swal({
-				type: "error",
-				title: "Uh-Oh!",
-				text: "Next Phase is underway!",
-				showConfirmButton: true,
-				confirmButtonText: "GET GOIN' ",
-			});
-		}
-	});
-
 	/* ______________
 	|              |
 	| Players:     |
@@ -153,152 +80,125 @@ angular.module('cardsAgainstHumanity')
 
 
 
-// anytime something changes... check in with the scope
-	thisGame.once('value', function(snap){
-// start the game if it hasnt started
-// then add you to waiting state
-		if(snap.val() == null){
-			CardsService.startDeck();
-			$timeout(function(){
-				GameService.addPlayer()
-				//DEAL BLACK CARD HERE?
-			},100)
-		} else {
-			// so the game exists...
-			// let the scope know what gamestate it is
-			// this should show all cards
-			if( snap.val().gamestate != null){
-				$scope.currentState = snap.val().gamestate;
+	// anytime something changes... check in with the scope
+		thisGame.once('value', function(snap){
+	// start the game if it hasnt started
+	// then add you to waiting state
+			if(snap.val() == null){
+				CardsService.startDeck();
+				$timeout(function(){
+					GameService.addPlayer()
+					//DEAL BLACK CARD HERE?
+				},100)
+			} else {
+				// so the game exists...
+				// let the scope know what gamestate it is
+				// this should show all cards
+				if( snap.val().gamestate != null){
+					$scope.currentState = snap.val().gamestate;
+				}
+				// // if there is no black card deal one
+				// if(!snap.val().cards.scenarioCard){
+				// 	CardsService.dealBlackCard();
+				// }
+				if (!snap.val().players){
+					GameService.addPlayer();
+				}
+				var players = snap.val().players;
+				console.log("PLAYERS", players);
+				// if you are not in the game, add you.
+				if (players.hasOwnProperty(myId) === false){
+					GameService.addPlayer();
+					console.log("I JUST GOT ADDED");
+				}
 			}
-			// // if there is no black card deal one
-			// if(!snap.val().cards.scenarioCard){
-			// 	CardsService.dealBlackCard();
-			// }
-			if (!snap.val().players){
-				GameService.addPlayer();
-			}
-			var players = snap.val().players;
-			console.log("PLAYERS", players);
-			// if you are not in the game, add you.
-			if (players.hasOwnProperty(myId) === false){
-				GameService.addPlayer();
-				console.log("I JUST GOT ADDED");
-			}
+		})
+
+	// each time timer ticks firebase will check on game
+	thisGame.on('value', function(snap){
+
+		console.log(snap.val())
+		var snap = snap.val();
+		$scope.currentState = snap.gamestate;
+
+		if (snap === null){
+			return;
 		}
+		if (snap.players != null){
+			console.log("$scope.playerss", $scope.playerss)
+
+				$scope.playerss = snap.players;
+				$scope.numPlayers = Object.keys($scope.playerss).length
+		}
+		//make sure you can see	response cards
+		if (snap.response != null){
+			$scope.responses = snap.response
+		}
+		// make sure yuo can see your hand
+			$scope.myHand = snap.players[myId].cards;
+			//console.log("MY HAND", $scope.myHand);
+		//make sure you can see the black card
+			$scope.blackCard = snap.cards.scenarioCard;
+
+			$scope.gameSize = snap.val().gameSize
 	})
 
-// each time timer ticks firebase will check on game
-thisGame.on('value', function(snap){
 
-	console.log(snap.val())
-	var snap = snap.val();
-	$scope.currentState = snap.gamestate;
+		//Any time someone leaves or joins the game check in with F.B.
+		playersRef.on("value", function(snap) {
 
-	if (snap === null){
-		return;
-	}
-	if (snap.players != null){
-		console.log("$scope.playerss", $scope.playerss)
+			  $scope.playerss = snap.val();
+				console.log("playas gonna play play play play play", $scope.playerss)
+				var numPlayers = snap.numChildren();
+				// when the first player joins the game generate a black card
+				//if (numPlayers === 1 && !$scope.currentState){
+					//CardsService.dealBlackCard();
+				//}
+				//when there are 3 players move the game into the first game state
+				if (numPlayers === $scope.gameSize && !$scope.currentState) {
+					// $scope.counter = 60;
+					//TimerService.countDown();
+					gameStateRef.set(1);
+					console.log("STARTING GAME", $scope.playerss)
+				} else if ($scope.playerss.length < $scope.gameSize){
+					console.log("THE current Playas:", $scope.playerss)
+				} else {
+					return;
+				}
+		});
 
-			$scope.playerss = snap.players;
-			$scope.numPlayers = Object.keys($scope.playerss).length
-	}
-	//make sure you can see	response cards
-	if (snap.response != null){
-		$scope.responses = snap.response
-	}
-	// make sure yuo can see your hand
-		$scope.myHand = snap.players[myId].cards;
-		//console.log("MY HAND", $scope.myHand);
-	//make sure you can see the black card
-		$scope.blackCard = snap.cards.scenarioCard;
-})
+	// if someone leaves alert everyone
+	playersRef.on("child_removed", function(snap) {
 
+			var assHole = snap.val();
+			var assHoleMessage = assHole.username + " just left the game";
+			console.log(assHole);
+			var numPlayers = Object.keys($scope.playerss).length;
 
-	// playersRef.child(myId).once('child_added', function(snap) {
-	// 	if(!snap.val().cards){
-	// 		console.log("You have cards now");
-	// 	} else {
-	// 		console.log("You already have cards");
-	// 	}
-	// })
-//Will not reset your player info by logging you in if you are already in
-// thisGame.once('value', function(snap){
-// 		console.log("snap.VAL() IN THIS GAME ONCE)", snap.val())
-// 	// if (snap.val() === null){
-// 	// 	GameService.addPlayer();
-// 	// 	return;
-// 	// }
-// 		var players = snap.val().players;
-// 		console.log("PLAYERS", players);
-// 	if (players.hasOwnProperty(myId) === false){
-// 		GameService.addPlayer();
-// 		console.log("LOGGING IN ONCE")
-// 		return;
-// 	} else{
-// 		console.log("NOT LOGGING IN TWICE")
-// 		return;
-// 	}
-
-// })
-
-	//Any time someone leaves or joins the game check in with F.B.
-	playersRef.on("value", function(snap) {
-		  $scope.playerss = snap.val();
-			console.log("playas gonna play play play play play", $scope.playerss)
-			var numPlayers = snap.numChildren();
-			// when the first player joins the game generate a black card
-			//if (numPlayers === 1 && !$scope.currentState){
-				//CardsService.dealBlackCard();
-			//}
-			//when there are 3 players move the game into the first game state
-			if (numPlayers === $scope.gameSize && !$scope.currentState) {
-				// $scope.counter = 60;
-				//TimerService.countDown();
-				gameStateRef.set(1);
-				console.log("STARTING GAME", $scope.playerss)
-			} else if ($scope.playerss.length < $scope.gameSize){
-				console.log("THE current Playas:", $scope.playerss)
+		// if the game is over, reset the game
+			if (numPlayers < $scope.gameSize ){
+				assHoleMessage += "and there are no longer enough players!"
+							swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: assHoleMessage,
+					showConfirmButton: true,
+					confirmButtonText: "BACK TO PROFILE",
+				});
+				GameService.gameInstance.set(null);
+				$setTimeout(function() {$state.go('userPage')}, 1000);
 			} else {
-				return;
+				swal({
+					type: "error",
+					title: "we have a quitter",
+					text: assHoleMessage,
+					showConfirmButton: true,
+					confirmButtonText: "BACK TO PROFILE",
+				});
 			}
-	});
+		});
 
-// if someone leaves alert everyone
-playersRef.on("child_removed", function(snap) {
 
-		var assHole = snap.val();
-		var assHoleMessage = assHole.username + " just left the game";
-		console.log(assHole);
-		var numPlayers = Object.keys($scope.playerss).length;
-
-	// if the game is over, reset the game
-		if (numPlayers < $scope.gameSize ){
-			assHoleMessage += "and there are no longer enough players!"
-						swal({
-				type: "error",
-				title: "Uh-Oh!",
-				text: assHoleMessage,
-				showConfirmButton: true,
-				confirmButtonText: "BACK TO PROFILE",
-			});
-			GameService.gameInstance.set(null);
-			$setTimeout(function() {$state.go('userPage')}, 1000);
-		} else {
-			swal({
-				type: "error",
-				title: "we have a quitter",
-				text: assHoleMessage,
-				showConfirmButton: true,
-				confirmButtonText: "BACK TO PROFILE",
-			});
-		}
-	});
-
-	$scope.removePlayer = function(){
-		GameService.removePlayer();
-		$state.go("userPage");
-	}
 
 	/* _____________
 	|              |
@@ -343,7 +243,6 @@ playersRef.on("child_removed", function(snap) {
 
 	})
 
-
 	/* _____________
 	|              |
 	| cards        |
@@ -364,11 +263,6 @@ playersRef.on("child_removed", function(snap) {
 	| Responses:   |
 	|______________| */
 
-// notify firebase that I submitted a response card
-	$scope.addToResponseCards = function(cardClicked, index) {
-		console.log("cardClicked", cardClicked)
-		GameService.addToResponseCards(cardClicked, index);
-	}
 
 //update the scope when I submit a response card
 	myRef.child('submittedResponse').on('value', function(snap){
@@ -411,42 +305,13 @@ playersRef.on("child_removed", function(snap) {
 		}
 	});
 
+
+
 	/* _____________
 	|              |
 	| Votes:   		 |
 	|______________| */
 
-
-	$scope.voteCard = function(card){
-		//console.log("THIS IS A NEW CONSOLE LOG ", $rootScope.voted)
-	console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
-		if ($rootScope.voted === true || $scope.currentState != 2){
-			console.log("YOU ALREADY VOTED")
-			return;
-		}
-			console.log("IN VOTECARD", card)
-		// votesRef.on("child_added", function(snap){
-			// var card = snap.val();
-			// console.log("CARD ",card);
-			// console.log("my ID", myId);
-			if (card.player === myId){
-				votesRef.child(myId).remove();
-						swal({
-					type: "error",
-					title: "Wow, someone thinks they're special",
-					text: "Choose someone else's response",
-					showConfirmButton: true,
-					confirmButtonText: "Choose Again",
-				 });
-			} else {
-				$rootScope.voted = true;
-				console.log("I AM ROOT:", $rootScope.voted)
-				GameService.voteCard(card);
-			}
-		// })
-		//console.log("YOU voted for:", card)
-		//$rootScope.voted = true;
-	}
 
 	votesRef.on("value", function(snap) {
 		if ($scope.currentState != 2){
@@ -572,6 +437,134 @@ playersRef.on("child_removed", function(snap) {
 | Messages:    |
 |______________| */
 $scope.messages = GameService.messages;
+
+} // end firebase watchers
+
+
+	// // 	_______________
+	// // |	             |
+	// // |	Debug:       |
+	// // |_______________|
+
+	// $scope.summonDeck = function(){
+	// 	console.log("I DID IT, RIGHT?")
+	// 	CardsService.startDeck();
+	// }
+	// $scope.summonHand = function(){
+	// 	console.log("I DID IT, RIGHT?")
+	// 	GameService.pickCards();
+	// 	console.log("FALSE?", playersRef.child(myId).hasOwnProperty('cards'));
+	// }
+
+	// $scope.selfDestruct = function(){
+	// 	gameStateRef.remove();
+	// 	GameService.killAll();
+	// 	CardsService.killCards();
+	// }
+
+
+	/* ______________
+	|              |
+	| Timer:       |
+	|______________| */
+
+	//$scope.timerRef.on("value", function(snap){
+		//$scope.counter = snap.val();
+	//})
+
+	// Triggered, when the timer stops, can do something here, maybe show a visual alert.
+	$scope.$on('timer-stopped', function(event, remaining) {
+		//TIMER IF STATMENT DISCONNECTED
+		if(remaining === 0) {
+			if ($scope.haveSubmitted != true && $scope.currentState === 1){
+				//console.log("you should have submitted by now")
+				//console.log("My hand", $scope.myHand )
+				var rando = Math.floor((Math.random() * $scope.myHand.length ) + 0);
+				var spliced = $scope.myHand.splice(rando, 1)
+				spliced = spliced[0];
+				//console.log("spliced", spliced, "rando", rando);
+				GameService.addToResponseCards(spliced, rando)
+				myRef.child('cards').set($scope.myHand);
+				myRef.child('submittedResponse').set(true)
+			}
+
+				var otherPlayers = [];
+			if ($rootScope.voted != true && $scope.currentState === 2){
+				console.log($scope.playerss)
+				$scope.playerss.forEach(function(player){
+					if(player != myId){
+						otherPlayers.push(player)
+					}
+				})
+					var rando = Math.floor((Math.random() * otherPlayers.length ) + 0);
+					var spliced = otherPlayers.splice(rando, 1)
+					spliced = spliced[0].playerId;
+					winVotes.$add(spliced)
+					console.log("YOU VOTE FOR", spliced)
+			}
+			// $scope.counter = 60;
+			swal({
+				type: "error",
+				title: "Uh-Oh!",
+				text: "Next Phase is underway!",
+				showConfirmButton: true,
+				confirmButtonText: "GET GOIN' ",
+			});
+		}
+	});
+
+	/* ______________
+	|              |
+	|Utility Functs|
+	|______________| */
+
+
+
+	$scope.removePlayer = function(){
+		GameService.removePlayer();
+		$state.go("userPage");
+	}
+
+
+// notify firebase that I submitted a response card
+	$scope.addToResponseCards = function(cardClicked, index) {
+		console.log("cardClicked", cardClicked)
+		GameService.addToResponseCards(cardClicked, index);
+	}
+
+	$scope.voteCard = function(card){
+		//console.log("THIS IS A NEW CONSOLE LOG ", $rootScope.voted)
+	console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
+		if ($rootScope.voted === true || $scope.currentState != 2){
+			console.log("YOU ALREADY VOTED")
+			return;
+		}
+			console.log("IN VOTECARD", card)
+		// votesRef.on("child_added", function(snap){
+			// var card = snap.val();
+			// console.log("CARD ",card);
+			// console.log("my ID", myId);
+			if (card.player === myId){
+				votesRef.child(myId).remove();
+						swal({
+					type: "error",
+					title: "Wow, someone thinks they're special",
+					text: "Choose someone else's response",
+					showConfirmButton: true,
+					confirmButtonText: "Choose Again",
+				 });
+			} else {
+				$rootScope.voted = true;
+				console.log("I AM ROOT:", $rootScope.voted)
+				GameService.voteCard(card);
+			}
+		// })
+		//console.log("YOU voted for:", card)
+		//$rootScope.voted = true;
+	}
+
+	
+
 $scope.addMessage = function(message) {
 	GameService.addMessage(message);
 	// $scope.newMessageText = "";

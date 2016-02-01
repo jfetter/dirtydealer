@@ -5,6 +5,12 @@ angular.module('cardsAgainstHumanity')
 .service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper, $state){
 
 		var cookies = $cookies.get('token');
+		this.overAllRef = new Firebase("https://mycah.firebaseio.com");
+		this.gamesList = this.overAllRef.child('games');
+		$rootScope.gamesList = this.gamesList;
+		this.seedDeck = this.overAllRef.child('cards');
+		var thisGame = $rootScope.thisGame;
+		$rootScope.playing;
 
 		var identifyPlayer = function(){
 		var cookies = $cookies.get('token');
@@ -12,14 +18,14 @@ angular.module('cardsAgainstHumanity')
 		return myInfo;
 	}
 
-	this.overAllRef = new Firebase("https://mycah.firebaseio.com");	
-	var gamesList = this.overAllRef.child('games');
-	this.seedDeck = this.overAllRef.child('cards');
+		
 	// this.overAllRef.on("child_added", function(snap){
 		
 	// })
 // create an array that shows all the games
 	var gamesArray = $rootScope.gamesArray || null;
+if ($rootScope.playing){	
+
 	gamesList.on('value', function(snap){
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id
@@ -36,46 +42,52 @@ angular.module('cardsAgainstHumanity')
 
 		console.log("games Array", $rootScope.gamesArray);
 	})
-
+}
 // this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-	var thisGame = $rootScope.thisGame || "waiting";
-	this.gameInstance = gamesList.child(thisGame);
-	var gameInstance = this.gameInstance;
-	this.playersRef = this.gameInstance.child("players");
-	var playersRef = this.playersRef
-	this.messageRef = this.gameInstance.child("messages");
-	var messageRef = this.messageRef
-	this.playerss = $firebaseArray(playersRef);
-	this.messages = $firebaseArray(messageRef);
-	this.responseRef = this.gameInstance.child("response");
-	var responseRef = this.responseRef
-	this.voteRef = this.gameInstance.child("votes");
-	var voteRef = this.voteRef
-	this.votes = $firebaseArray(voteRef);
+	
+	if ($rootScope.playing){		
+		this.gameInstance = gamesList.child(thisGame);
+		var gameInstance = this.gameInstance;
+		this.playersRef = this.gameInstance.child("players");
+		var playersRef = this.playersRef
+		this.messageRef = this.gameInstance.child("messages");
+		var messageRef = this.messageRef
+		this.playerss = $firebaseArray(playersRef);
+		this.messages = $firebaseArray(messageRef);
+		this.responseRef = this.gameInstance.child("response");
+		var responseRef = this.responseRef
+		this.voteRef = this.gameInstance.child("votes");
+		var voteRef = this.voteRef
+		this.votes = $firebaseArray(voteRef);
 
-	///Add game state to firebase
-	this.gameStateRef = new Firebase("https://mycah.firebaseio.com/gamestate");
-	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
-	var gameStateRef = this.gameStateRef;
+		///Add game state to firebase
+		this.gameStateRef = new Firebase("https://mycah.firebaseio.com/gamestate");
+		// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+		var gameStateRef = this.gameStateRef;
+	}
 
 
 $rootScope.newGame = function(gameSize){
+	$rootScope.playing = true;
+
+
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id
-		//$rootScope.thisGame = myId;
+		$rootScope.thisGame = myId;
+		var players = [myId];
 		if (!gamesArray || gamesArray.indexOf(myId) === -1) {
 			gamesList.child(myId).set({
 					gameSize: gameSize,
-					title: myId,
-					players: "WORKING ON THIS FIELD"
+					title: myId
 			})
 
 		console.log(`creating a new game with ${gameSize} players`);
 		console.log("$rootScope.myNewGame2", $rootScope.thisGame)
-		$state.go('game')
+		$state.go('game');
 	}
 }
 	$rootScope.joinGame = function(gameId){
+		$rootScope.playing = true;
 		$rootScope.thisGame = gameId;
 		$state.go('game');
 	}
@@ -88,8 +100,10 @@ $rootScope.newGame = function(gameSize){
 	this.removePlayer = function(){
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
+		if (playersRef){		
 		playersRef.child(myId).remove();
 		console.log("PLAYER QUIT", myId)	
+		}
 	}
 
 	this.pickCards = function(){
