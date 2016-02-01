@@ -321,7 +321,7 @@ playersRef.on("child_removed", function(snap) {
 			var playas = $scope.playerss
 				var player1 = playas[0];
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1.playerId && !$scope.blackCard){
+				if (myId === player1.playerId){
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
 					console.log($scope.blackCard, "NEW BLACK CARD WOW!")
