@@ -18,21 +18,34 @@ angular.module('cardsAgainstHumanity')
 	// this.overAllRef.on("child_added", function(snap){
 		
 	// })
+// create an array that shows all the games
+	var gamesArray = $rootScope.gamesArray || null;
+	gamesList.on('value', function(snap){
+		var gamesList = snap.val();
+		console.log("GAMES LIST", gamesList);
+		var tempGamesArray = [];
+		for (var game in gamesList){
+			tempGamesArray.push(game);
+		}
+		$rootScope.gamesArray = tempGamesArray;
+		console.log("games Array", gamesArray);
+	})
 
-	$rootScope.newGame = function(gameSize){
+$rootScope.newGame = function(gameSize){
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id
-		gamesList.push(myId);
 		$rootScope.thisGame = myId;
+		if (!gamesArray || gamesArray.indexOf(myId) === -1) {gamesList.child(myId).set(myId)};
 		console.log(`creating a new game with ${gameSize} players`);
 		$state.go('game')
 	}
 
 	$rootScope.joinGame = function(gameId){
 		$rootScope.thisGame = gameId;
+		this.startGame();
 	}
 
-	// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
+// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
 	var thisGame = $rootScope.thisGame || "waiting";
 	this.gameInstance = gamesList.child(thisGame);
 	this.playersRef = this.gameInstance.child("players");
@@ -55,6 +68,8 @@ angular.module('cardsAgainstHumanity')
 
 
 
+	
+
 
 	this.killAll = function(){
 		playersRef.remove();
@@ -64,9 +79,8 @@ angular.module('cardsAgainstHumanity')
 	this.removePlayer = function(){
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
-
 		playersRef.child(myId).remove();
-		console.log("PLAYER QUIT", myId)
+		console.log("PLAYER QUIT", myId)	
 	}
 
 	this.pickCards = function(){

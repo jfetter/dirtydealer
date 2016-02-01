@@ -254,12 +254,12 @@ thisGame.on('value', function(snap){
 				//CardsService.dealBlackCard();
 			//}
 			//when there are 3 players move the game into the first game state
-			if (numPlayers === 3 && !$scope.currentState) {
+			if (numPlayers === $scope.gameSize && !$scope.currentState) {
 				// $scope.counter = 60;
 				//TimerService.countDown();
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
-			} else if ($scope.playerss.length < 3){
+			} else if ($scope.playerss.length < $scope.gameSize){
 				console.log("THE current Playas:", $scope.playerss)
 			} else {
 				return;
@@ -268,22 +268,33 @@ thisGame.on('value', function(snap){
 
 // if someone leaves alert everyone
 playersRef.on("child_removed", function(snap) {
-		var assHole = snap.val();
 
+		var assHole = snap.val();
+		var assHoleMessage = assHole.username + " just left the game";
+		console.log(assHole);
 		var numPlayers = Object.keys($scope.playerss).length;
 
 	// if the game is over, reset the game
-		if (numPlayers < 3 ){
+		if (numPlayers < $scope.gameSize ){
+			assHoleMessage += "and there are no longer enough players!"
 						swal({
 				type: "error",
 				title: "Uh-Oh!",
-				text: "some asshole quit and there are no longer enough players!",
+				text: assHoleMessage,
 				showConfirmButton: true,
-				confirmButtonText: "CANNOT CONTINUE' ",
+				confirmButtonText: "BACK TO PROFILE",
 			});
 			GameService.gameInstance.set(null);
 			$setTimeout(function() {$state.go('userPage')}, 1000);
-		} 
+		} else {
+			swal({
+				type: "error",
+				title: "we have a quitter",
+				text: assHoleMessage,
+				showConfirmButton: true,
+				confirmButtonText: "BACK TO PROFILE",
+			});
+		}
 	});
 
 	$scope.removePlayer = function(){
