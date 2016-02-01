@@ -21,10 +21,8 @@ angular.module('cardsAgainstHumanity')
 // create an array that shows all the games
 	var gamesArray = $rootScope.gamesArray || null;
 	gamesList.on('value', function(snap){
-		var gamesList = snap.val();
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id
-		console.log("GAMES LIST", gamesList);
 		var tempGamesArray = [];
 		snap.forEach(function(game){
 			tempGamesArray.push(game.val());
@@ -79,6 +77,7 @@ $rootScope.newGame = function(gameSize){
 }
 	$rootScope.joinGame = function(gameId){
 		$rootScope.thisGame = gameId;
+		$state.go('game');
 	}
 
 	this.killAll = function(){

@@ -41,7 +41,7 @@
 						<div  ng-repeat="game in gamesArray"	>
 							<div ng-hide="{{game.gameSize - players.length === 0}}">
 								<h3>{{game.title}} needs {{game.gameSize - players.length}} players</h3>
-								<button  id="joinGameButton" ui-sref="game">Join Game!</button>
+								<button  id="joinGameButton" ng-click="joinGame(game.title)">Join Game!</button>
 							</div>
 						</div>
 					</div>
