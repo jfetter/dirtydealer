@@ -27,10 +27,6 @@ angular.module('cardsAgainstHumanity')
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 	var gameStateRef = this.gameStateRef;
 
-	this.killAll = function(){
-		playersRef.remove();
-	}
-
 	//remove players
 	this.removePlayer = function(){
 		var myInfo = this.identifyPlayer()

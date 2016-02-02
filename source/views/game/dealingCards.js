@@ -9,9 +9,7 @@ angular.module('cardsAgainstHumanity')
 	this.gameInstance = new Firebase("https://dirtydealer.firebaseio.com/cards");
 	this.whiteCardRef = this.gameInstance.child("whiteCards")
 	this.blackCardRef = this.gameInstance.child("blackCards")
-	this.scenarioCard = this.gameInstance.child("scenarioCard")
-
-	// this.exampleHand = this.gameInstance.child("exampleHand")
+	//this.scenarioCard = this.gameInstance.child("scenarioCard")
 	this.tempWhiteRef = this.gameInstance.child("tempWhite")
 
 	//******DEALING BOTH DECKS:
@@ -20,11 +18,7 @@ angular.module('cardsAgainstHumanity')
 		this.gameInstance.child('whiteCards').set(whiteCards);
 		this.gameInstance.child('blackCards').set(blackCards);
 	}
-	this.killCards = function(){
-		this.blackCardRef.remove();
-		this.scenarioCard.remove();
-		this.whiteCardRef.remove();
-	}
+
 	var tempBlackCard = [];
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
@@ -32,11 +26,12 @@ angular.module('cardsAgainstHumanity')
 	});
 
 	this.dealBlackCard = function(){
-
-		this.gameInstance.child("scenarioCard").set(null);
-		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
+		//force black card value change on firebase
+		this.blackCardRef.update(dummyCard: 'dummyCard');
+		this.blackCardRef.child('dummyCard').remove();
+		//this.gameInstance.child("scenarioCard").set(null);
+		var rando = Math.floor(Math.random() * tempBlackCard.length );
 		var takenCard = tempBlackCard[rando];
-		//console.log("TAKEN", takenCard);
 		tempBlackCard.splice(rando, 1);
 		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCard)
 		this.gameInstance.child('blackCards').set(tempBlackCard);
@@ -47,50 +42,31 @@ angular.module('cardsAgainstHumanity')
 
 var tempWhiteCard;
 	this.whiteCardRef.on('value', function(snap) {
-
 		tempWhiteCard = snap.val()
-		//console.log("Temp white card updated", tempWhiteCard)
-		//console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
 
 
 	this.startingHand = function(){
+		//force white hand value change in firebase
 		this.whiteCardRef.update({test: "test"});
 		this.whiteCardRef.child('test').remove();
 		var fullHand = [];
 		for(var i = 0; i<10; i++){
-			//console.log("TEMP WHITE CARD IN STARTING HAND", tempWhiteCard);
-			var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
+			var rando = Math.floor(Math.random() * tempWhiteCard.length );
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
 			this.gameInstance.child('whiteCards').set(tempWhiteCard)
-			//console.log("card exchange")
 		}
-		console.log('MY FULL HAND IS', fullHand)
 		return fullHand;
 	}
 
 	this.draw = function(){
+		//force value change on white card ref
 		this.whiteCardRef.update({test: "test"});
 		this.whiteCardRef.child('test').remove();
 		this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val();
-
-		//console.log("Temp white card updated", tempWhiteCard)
-		//console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
-
-
-		// for(var i=0; i<n; i++){
-		//console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
-		var rando = Math.floor((Math.random() * tempWhiteCard.length ) + 0);
-		var takenCard = tempWhiteCard[rando];
-		//console.log("TAKEN", takenCard);
-		tempWhiteCard.splice(rando, 1);
-		this.gameInstance.child('whiteCards').set(tempWhiteCard);
-		// }
-		return takenCard
-	}
 
 });
