@@ -5,7 +5,7 @@ var app = angular.module('cardsAgainstHumanity', ['ui.router', 'angular-jwt', 'n
 app.constant('ENV', {
 
   //API_URL: 'http://localhost:3000'
-  API_URL: "https://mysterious-temple-85764.herokuapp.com/"
+  API_URL: "https://mysterious-temple-85764.herokuapp.com"
 
 });
 
