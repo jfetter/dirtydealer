@@ -41,10 +41,6 @@ angular.module('cardsAgainstHumanity')
 			var token = jwtHelper.decodeToken(cookies)
 			console.log("TOKEN MASTER ", token)
 		}
-		/* ______________
-		|              |
-		|Utility Functs|
-		|______________| */
 
 
 		/* ______________
@@ -52,7 +48,10 @@ angular.module('cardsAgainstHumanity')
 		| Firebase:    |
 		|______________| */
 
-		var thisGame = GameService.gameInstance
+
+	var thisGame = GameService.gameInstance
+
+	if(thisGame != null){
 		var playersRef = GameService.gameInstance.child("players");
 		var messageRef = GameService.gameInstance.child("messages")
 		var responseRef = GameService.gameInstance.child("response");
@@ -66,6 +65,7 @@ angular.module('cardsAgainstHumanity')
 		var cardsRef = GameService.gameInstance.child("cards");
 		var winVotes = GameService.votes;
 		$scope.playerss = GameService.playerss
+		$scope.messages = GameService.messages;
 
 		/* ______________
 		|              |
@@ -73,17 +73,7 @@ angular.module('cardsAgainstHumanity')
 		|______________|
 		*/
 
-		if ($scope.playerss === null || $scope.playerss === undefined ){
-			$scope.playerss = [];
-		} else{
-			var players = [];
-			for (var player in $scope.playerss){
-				players.push(player);
-			}
-			$scope.playerss = players;
-		}
-
-		// anytime something changes... check in with the scope
+				// anytime something changes... check in with the scope
 		thisGame.once('value', function(snap){
 			// start the game if it hasnt started
 			// then add you to waiting state
@@ -112,6 +102,7 @@ angular.module('cardsAgainstHumanity')
 			}
 		})
 
+
 		// each time timer ticks firebase will check on game
 		thisGame.on('value', function(snap){
 			var snap = snap.val();
@@ -137,6 +128,7 @@ angular.module('cardsAgainstHumanity')
 			//make sure you can see the black card
 			$scope.blackCard = snap.cards.scenarioCard;
 		})
+
 
 		//Any time someone leaves or joins the game check in with F.B.
 		playersRef.on("value", function(snap) {
@@ -173,10 +165,44 @@ angular.module('cardsAgainstHumanity')
 			}
 		});
 
-		$scope.removePlayer = function(){
-			GameService.removePlayer();
-			$state.go("userPage");
-		}
+
+		/* ______________
+		|              |
+		| Winner!			 |
+		|______________| */
+
+		thisGame.child('winner').on('child_added', function(snap){
+			var winner = snap.val();
+			console.log("Announcing the winner", snap.val());
+			swal({
+				title: "<b> And the winner is... </b>",
+				text: winner,
+				html: true,
+
+				type: "success",
+				animation: "slide-from-top",
+				showCancelButton: true,
+				cancelButtonText: "Play Again",
+				closeOnConfirm: true,
+				showLoaderOnConfirm: true,
+				showConfirmButton: true,
+				confirmButtonText: "Cool. I'm done."
+			}, function(isConfirm) {
+				if (isConfirm) {
+					$scope.removePlayer();
+				} else {
+					cardsRef.remove();
+					thisGame.child("winner").remove();
+					votesRef.remove();
+					responseRef.remove();
+					myRef.remove();
+					$timeout(function() {
+						location.reload(true);
+					}, 500)
+				};
+			});
+			return;
+		});
 
 		/* _____________
 		|              |
@@ -234,21 +260,16 @@ angular.module('cardsAgainstHumanity')
 			console.log("BLACK CARD IS", $scope.blackCard)
 		});
 
-		/* _____________
-		|              |
-		| Responses:   |
-		|______________| */
-
-		// notify firebase that I submitted a response card
-		$scope.addToResponseCards = function(cardClicked, index) {
-			console.log("cardClicked", cardClicked)
-			GameService.addToResponseCards(cardClicked, index);
-		}
-
 		//update the scope when I submit a response card
 		myRef.child('submittedResponse').on('value', function(snap){
 			$scope.haveSubmitted = snap.val();
 		})
+
+
+		/* _____________
+		|              |
+		| Responses:   |
+		|______________| */
 
 		responseRef.on("value", function(snap) {
 			var allResponses = snap.val();
@@ -271,34 +292,12 @@ angular.module('cardsAgainstHumanity')
 			}
 		});
 
+
+
 		/* _____________
 		|              |
 		| Votes:   		 |
 		|______________| */
-
-
-		$scope.voteCard = function(card){
-			console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
-			if ($rootScope.voted === true || $scope.currentState != 2){
-				console.log("YOU ALREADY VOTED")
-				return;
-			}
-			console.log("IN VOTECARD", card)
-			if (card.player === myId){
-				votesRef.child(myId).remove();
-				swal({
-					type: "error",
-					title: "Wow, someone thinks they're special",
-					text: "Choose someone else's response",
-					showConfirmButton: true,
-					confirmButtonText: "Choose Again",
-				});
-			} else {
-				$rootScope.voted = true;
-				console.log("I AM ROOT:", $rootScope.voted)
-				GameService.voteCard(card);
-			}
-		}
 
 		votesRef.on("value", function(snap) {
 			if ($scope.currentState != 2){
@@ -372,56 +371,62 @@ angular.module('cardsAgainstHumanity')
 
 			} // end votes === playerss length
 		});
-
-
+ }
 		/* ______________
 		|              |
-		| Winner!			 |
+		|Utility Functs|
 		|______________| */
 
-		thisGame.child('winner').on('child_added', function(snap){
-			var winner = snap.val();
-			console.log("Announcing the winner", snap.val());
-			swal({
-				title: "<b> And the winner is... </b>",
-				text: winner,
-				html: true,
-
-				type: "success",
-				animation: "slide-from-top",
-				showCancelButton: true,
-				cancelButtonText: "Play Again",
-				closeOnConfirm: true,
-				showLoaderOnConfirm: true,
-				showConfirmButton: true,
-				confirmButtonText: "Cool. I'm done."
-			}, function(isConfirm) {
-				if (isConfirm) {
-					$scope.removePlayer();
-				} else {
-					cardsRef.remove();
-					thisGame.child("winner").remove();
-					votesRef.remove();
-					responseRef.remove();
-					myRef.remove();
-					$timeout(function() {
-						location.reload(true);
-					}, 500)
-				};
-			});
-			return;
-		});
+	if ($scope.playerss === null || $scope.playerss === undefined ){
+			$scope.playerss = [];
+		} else{
+			var players = [];
+			for (var player in $scope.playerss){
+				players.push(player);
+			}
+			$scope.playerss = players;
+		}
 
 
-		/* _____________
-		|              |
-		| Messages:    |
-		|______________| */
-		$scope.messages = GameService.messages;
+		$scope.removePlayer = function(){
+			GameService.removePlayer();
+			$state.go("userPage");
+		}
+
+
+		// notify firebase that I submitted a response card
+		$scope.addToResponseCards = function(cardClicked, index) {
+			console.log("cardClicked", cardClicked)
+			GameService.addToResponseCards(cardClicked, index);
+		}
+
+
+		$scope.voteCard = function(card){
+			console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
+			if ($rootScope.voted === true || $scope.currentState != 2){
+				console.log("YOU ALREADY VOTED")
+				return;
+			}
+			console.log("IN VOTECARD", card)
+			if (card.player === myId){
+				votesRef.child(myId).remove();
+				swal({
+					type: "error",
+					title: "Wow, someone thinks they're special",
+					text: "Choose someone else's response",
+					showConfirmButton: true,
+					confirmButtonText: "Choose Again",
+				});
+			} else {
+				$rootScope.voted = true;
+				console.log("I AM ROOT:", $rootScope.voted)
+				GameService.voteCard(card);
+			}
+		}
+
 		$scope.addMessage = function(message) {
 			GameService.addMessage(message);
 		}
-
 
 
 	});
