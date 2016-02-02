@@ -48,8 +48,44 @@ angular.module('cardsAgainstHumanity')
 		| Firebase:    |
 		|______________| */
 
+console.log("GAME SIZEEEEEEE", $rootScope.gameSize)
+	var thisGame = GameService.gameInstance;
 
-	var thisGame = GameService.gameInstance
+		var rootRef = GameService.rootRef;
+	  var gamesList = GameService.gamesList;
+		var allPlayers = GameService.allPlayers;
+
+				// anytime something changes... check in with the scope
+		rootRef.once('value', function(snap){
+			console.log("time to rethink the refresh check in");
+			$rootScope.gamesArray = snap.val().games;
+			// // start the game if it hasnt started
+			// // then add you to waiting state
+			// if(snap.val() == null){
+			// 	CardsService.startDeck();
+			// 	$timeout(function(){
+			// 		GameService.addPlayer()
+			// 		//DEAL BLACK CARD HERE?
+			// 	},100)
+			// } else {
+			// 	// so the game exists...
+			// 	// let the scope know what gamestate it is
+			// 	// this should show all cards
+			// 	if( snap.val().gamestate != null){
+			// 		$scope.currentState = snap.val().gamestate;
+			// 	}
+			// 	if (!snap.val().players){
+			// 		GameService.addPlayer();
+			// 	}
+			// 	var players = snap.val().players;
+			// 	// if you are not in the game, add you.
+			// 	if (players.hasOwnProperty(myId) === false){
+			// 		GameService.addPlayer();
+			// 		console.log("I JUST GOT ADDED");
+			// 	}
+			// }
+		})
+
 
 	if(thisGame != null){
 		var playersRef = GameService.gameInstance.child("players");
@@ -66,42 +102,13 @@ angular.module('cardsAgainstHumanity')
 		var winVotes = GameService.votes;
 		$scope.playerss = GameService.playerss
 		$scope.messages = GameService.messages;
+		$scope.gameSize = $rootScope.gameSize;
 
 		/* ______________
 		|              |
 		| Players:     |
 		|______________|
 		*/
-
-				// anytime something changes... check in with the scope
-		thisGame.once('value', function(snap){
-			// start the game if it hasnt started
-			// then add you to waiting state
-			if(snap.val() == null){
-				CardsService.startDeck();
-				$timeout(function(){
-					GameService.addPlayer()
-					//DEAL BLACK CARD HERE?
-				},100)
-			} else {
-				// so the game exists...
-				// let the scope know what gamestate it is
-				// this should show all cards
-				if( snap.val().gamestate != null){
-					$scope.currentState = snap.val().gamestate;
-				}
-				if (!snap.val().players){
-					GameService.addPlayer();
-				}
-				var players = snap.val().players;
-				// if you are not in the game, add you.
-				if (players.hasOwnProperty(myId) === false){
-					GameService.addPlayer();
-					console.log("I JUST GOT ADDED");
-				}
-			}
-		})
-
 
 		// each time timer ticks firebase will check on game
 		thisGame.on('value', function(snap){
@@ -141,7 +148,7 @@ angular.module('cardsAgainstHumanity')
 			$scope.playerss = players;
 			var numPlayers = snap.numChildren();
 			//when there are 3 players move the game into the first game state
-			if (numPlayers === 3 && !$scope.currentState) {
+			if (numPlayers === $scope.gameSize && !$scope.currentState) {
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
 			}
@@ -173,7 +180,14 @@ angular.module('cardsAgainstHumanity')
 
 		thisGame.child('winner').on('child_added', function(snap){
 			var winner = snap.val();
+			// var winningBlackCard = thisGame.child('scenarioCard').text();
+			// var winningWhiteCard = thisGame.child()
+
+			//console.log("Announcing the winner", snap.val().winnerName);
 			console.log("Announcing the winner", snap.val());
+
+			//Play Again refreshes game page & clears out old data.
+			//Quit Game redirects to userpages & removes player from game.
 			swal({
 				title: "<b> And the winner is... </b>",
 				text: winner,
@@ -189,7 +203,7 @@ angular.module('cardsAgainstHumanity')
 				confirmButtonText: "Cool. I'm done."
 			}, function(isConfirm) {
 				if (isConfirm) {
-					$scope.removePlayer();
+						GameService.removePlayer();
 				} else {
 					cardsRef.remove();
 					thisGame.child("winner").remove();
@@ -197,8 +211,8 @@ angular.module('cardsAgainstHumanity')
 					responseRef.remove();
 					myRef.remove();
 					$timeout(function() {
-						location.reload(true);
-					}, 500)
+					location.reload(true);
+					}, 2000)
 				};
 			});
 			return;
@@ -387,12 +401,10 @@ angular.module('cardsAgainstHumanity')
 			$scope.playerss = players;
 		}
 
-
 		$scope.removePlayer = function(){
 			GameService.removePlayer();
 			$state.go("userPage");
 		}
-
 
 		// notify firebase that I submitted a response card
 		$scope.addToResponseCards = function(cardClicked, index) {

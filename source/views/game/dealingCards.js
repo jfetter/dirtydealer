@@ -35,8 +35,6 @@ angular.module('cardsAgainstHumanity')
 		return takenCard;
 	}
 
-
-
 var tempWhiteCard;
 var whiteCardLength; 
 	this.whiteCardRef.on('value', function(snap) {

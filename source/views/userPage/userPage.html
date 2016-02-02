@@ -38,13 +38,20 @@
 				<div ng-show="isOwnPage" >
 
 					<div class="row" id="joinExistingGame">
-						<button id="joinGameButton">Join An Existing Game!</button>
+						<div  ng-repeat="game in gamesArray"	>
+							<!-- ng-hide="{{game.gameSize - players.length === 0}}" -->
+							<div >
+								<h3>{{game.host}} needs {{game.gameSize - players.length}} players</h3>
+								<button  id="joinGameButton" ng-click="joinGame(game.id)">Join Game!</button>
+							</div>
+						</div>
 					</div>
 
 					<div class="row" id="hostNewGame">
-						<button id="hostGameButton">Host A New Game</button>
+						<input type="number" id="numberPlayerInput" ng-model="gameSize" min="3" max="8" placeholder="Number of players"/>
 						<br>
-						<input type="number" id="numberPlayerInput" min="3" max="8" placeholder="Number of players"/>
+						<p ng-show="!gameSize" >must be 3-8 players</p>
+						<button id="hostGameButton" ng-disabled="!gameSize" ng-click="newGame(gameSize)">Host A New Game</button>
 					</div>
 
 				</div>

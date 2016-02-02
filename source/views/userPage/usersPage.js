@@ -3,7 +3,17 @@
 angular.module('cardsAgainstHumanity')
 
 
-.controller('userPageCtrl', function($scope, $state, UserService, $cookies, jwtHelper, $location , $base64){
+.controller('userPageCtrl', function($scope, $rootScope, $state, GameService, UserService, $cookies, jwtHelper, $location , $base64){
+	
+	//force game value to change on refresh page
+	var rootRef = GameService.rootRef
+	rootRef.child("force").update({force: "force"});
+	rootRef.child('force').remove();
+	$rootScope.gameSize = $scope.gameSize; 
+
+
+
+
 	$scope.user = {};
 	$scope.editPayload = {};
 	var cookies = $cookies.get('token');
