@@ -7,7 +7,7 @@ app.constant('ENV', {
   // API_URL: 'http://localhost:3000'
   API_URL: 'https://dry-dawn-94066.herokuapp.com'
   // API_URL: "https://secure-coast-55324.herokuapp.com"
-
+  //FUCK
 });
 
 
