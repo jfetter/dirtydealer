@@ -28,12 +28,17 @@ angular.module('cardsAgainstHumanity')
 	var tempBlackCard = [];
 	this.blackCardRef.on('value', function(snap) {
 		tempBlackCard = snap.val();
-		//console.log("Black", tempBlackCard)
+		console.log("Black", tempBlackCard)
+		if(!tempBlackCard){
+			console.log("OH FUCK NO WHY IS THIS HAPPENING!?!?!?!?!?");
+		}
 	});
 
 	this.dealBlackCard = function(){
-
-		this.gameInstance.child("scenarioCard").set(null);
+		if(!tempBlackCard){
+			console.log("OH FUCK NO WHY IS THIS HAPPENING!?!?!?!?!?");
+		}
+		// this.gameInstance.child("scenarioCard").set(null);
 		var rando = Math.floor((Math.random() * tempBlackCard.length ) + 0);
 		var takenCard = tempBlackCard[rando];
 		//console.log("TAKEN", takenCard);

@@ -266,7 +266,7 @@ angular.module('cardsAgainstHumanity')
 			var numResponses = snap.numChildren();
 			$scope.responses = allResponses;
 			var numPlayers = $scope.playerss.length
-			console.log("NUM PLAYAS", numPlayers)
+			// console.log("NUM PLAYAS", numPlayers)
 			console.log("RESPONSE REF IS NOW",allResponses)
 			if (allResponses != null){
 				if(allResponses.hasOwnProperty(myId)){
@@ -289,7 +289,7 @@ angular.module('cardsAgainstHumanity')
 
 
 		$scope.voteCard = function(card){
-			console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
+			// console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
 			if ($rootScope.voted === true || $scope.currentState != 2){
 				console.log("YOU ALREADY VOTED")
 				return;
@@ -306,7 +306,7 @@ angular.module('cardsAgainstHumanity')
 				});
 			} else {
 				$rootScope.voted = true;
-				console.log("I AM ROOT:", $rootScope.voted)
+				// console.log("I AM ROOT:", $rootScope.voted)
 				GameService.voteCard(card);
 			}
 		}
@@ -322,7 +322,6 @@ angular.module('cardsAgainstHumanity')
 			var votes = snap.val();
 			var votesLength = snap.numChildren();
 			console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-			console.log("How votes", votes.length)
 			if (votesLength == numPlayers) {
 				//console.log("INSIDE VOTES")
 
