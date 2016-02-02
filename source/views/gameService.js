@@ -2,17 +2,20 @@
 angular.module('cardsAgainstHumanity')
 
 
-.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper){
+.service('GameService', function($http, $firebaseObject, CardsService, $firebaseArray, ENV, $location, $rootScope, $cookies, jwtHelper, $state){
 
 	var myId	= ''
-	var userInfo;
 	var cookies = $cookies.get('token');
 	if(cookies){
-		userInfo = (jwtHelper.decodeToken(cookies))
-		myId = userInfo._id;
+		$rootScope.userInfo = (jwtHelper.decodeToken(cookies))
+		myId = $rootScope.userInfo._id;
 	}
 
-
+var identifyPlayer = function(){
+var cookies = $cookies.get('token');
+var myInfo = jwtHelper.decodeToken(cookies)
+return myInfo;
+}
 
 	this.rootRef = new Firebase("https://dirtydealer.firebaseio.com/");
 	var rootRef = this.rootRef;
@@ -21,28 +24,28 @@ angular.module('cardsAgainstHumanity')
 	this.allPlayers = rootRef.child('allPlayers');
 	var allPlayers = this.allPlayers;
 		// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-	this.gameInstance;
+	this.gameInstance = $rootScope.gameInstance || rootRef.child('waiting');
 	this.playersRef;
 
 	var gamesArray = $rootScope.gamesArray || null;
 	var myGame = $rootScope.gameId;
 
 	this.addPlayer = function(){
-	var myInfo = jwtHelper.decodeToken(cookies)
-	// var myInfo = this.identifyPlayer()
-	// var myId = myInfo._id;
+	var myInfo = identifyPlayer();
+	var myId = myInfo._id;
+
 	console.log("made it to addedPlayer function now test the rest of code")
-	// allPlayers.child(myId).set({
-	// 	playerId: myInfo._id,
-	// 	username: myInfo.username,
-	// 	cards: CardsService.startingHand(),
-	// 	gameId: myGame,
-	// 	gamePoints: 0
-	// })
+	allPlayers.child(myId).set({
+		playerId: myInfo._id,
+		username: myInfo.username,
+		cards: CardsService.startingHand(),
+		gameId: myGame,
+		gamePoints: 0
+	})
 
 		playersRef.child(myId).set({
 			playerId: myId,
-			username: userInfo.username,
+			username: myInfo.username,
 			cards: CardsService.startingHand(),
 			gamePoints: 0
 		});
@@ -51,28 +54,44 @@ angular.module('cardsAgainstHumanity')
 
 
 	$rootScope.newGame = function(gameSize){
+	var myInfo = identifyPlayer();
+	var myId = myInfo._id;
  	console.log("GAME SIZE FUNCTION", gameSize);
- 	$rootScope.gameId = myId;
- 	this.gameInstance = rootRef.child(myId);
+ 	console.log("WHATS UP MY ID IS", myId)
  	var gameName = myId + Date.now();
-	 	gamesList.child(gameName).update({
+ 	$rootScope.gameId = gameName;
+ 	localStorage.setItem("myGame", gameName);
+	gamesList.child(gameName).update({
 	 		id: gameName,
 	 		host: myId,
-	 		gameSize: gameSize
+	 		gameSize: gameSize,
+	 		cards: CardsService.startDeck()
  		})
- 	this.addPlayer();
+	 	$rootScope.gameInstance 
+ 		console.log("$rootScope.gameInstance", $rootScope.gameInstance)
+ 	//addPlayer();
+ 	$state.go('game');
  }
+
+ $rootScope.$watch('gameInstance', function(newVal){
+ 		$rootScope.gameInstance = newVal;
+ 		console.log("newVal", newVal)
+ })
 
 $rootScope.joinGame = function(gameId){
  	console.log("GAME SIZE FUNCTION", gameId);
  	$rootScope.gameId = gameId;
  	this.gameInstance = rootRef.child(gameId);
- 	//this.addPlayer();
+ 	localStorage.setItem("myGame", gameId);
+ //	addPlayer();
+ 	$state.go('game')
  }
 
+if (localStorage.myGame){
+	var myGame = localStorage.myGame || null;
+	console.log("MY GAME JUST BEFORE GAME INSTANCE", myGame)
+	console.log("MY ROOTSCOPE GAME JUST BEFORE GAME INSTANCE", $rootScope.gameId)
 
-
-if (this.gameInstance){
 	this.gameInstance = gamesList.child(myGame);
 	this.playersRef = this.gameInstance.child("players");
 	var playersRef = this.playersRef
@@ -101,7 +120,7 @@ gamesList.on('value', function(snap){
 		})
 		$rootScope.gamesArray = tempGamesArray;
 
-		console.log("games Array", $rootScope.gamesArray )
+		//console.log("games Array", $rootScope.gamesArray )
 		// add to appropriate game 
 		//if (gamesList.waiting.players[myId]){
 			// waitingPlayers.child(myId).remove();
@@ -110,7 +129,6 @@ gamesList.on('value', function(snap){
 			// this.playersRef = gameInstance.child('players')
 			// this.addPlayer(myId);
 		//}
-		console.log("games Array", $rootScope.gamesArray);
 	})
 
 
@@ -124,9 +142,9 @@ gamesList.on('value', function(snap){
 		}
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
-
-		allPlayers.child(myId).remove();
-		playersRef.child(myId).remove();
+		localStorage.removeItem('myGame')
+		//allPlayers.child(myId).remove();
+		//playersRef.child(myId).remove();
 		console.log("PLAYER QUIT", myId)
 	}
 

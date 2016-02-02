@@ -4,45 +4,59 @@ angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
-	this.gameInstance = new Firebase("https://dirtydealer.firebaseio.com/cards");
-	this.whiteCardRef = this.gameInstance.child("whiteCards")
-	this.blackCardRef = this.gameInstance.child("blackCards")
-	this.tempWhiteRef = this.gameInstance.child("tempWhite")
-
-	//******DEALING BOTH DECKS:
-	this.startDeck = function(){
-		console.log("IN START DECK")
-		this.gameInstance.child('whiteCards').set(whiteCards);
-		this.gameInstance.child('blackCards').set(blackCards);
-	}
 
 	var tempBlackCard = [];
-	this.blackCardRef.on('value', function(snap) {
-		tempBlackCard = snap.val();
-		//console.log("Black", tempBlackCard)
-	});
+	var tempWhiteCard;
+	var whiteCardLength; 
+
+
+	
+		//this.whiteCardRef = $rootScope.cardRef.child("whiteCards");
+		//this.blackCardRef = $rootScope.cardRef.child("blackCards");
+		//this.tempWhiteRef = $rootScope.cardRef.child("tempWhite");
+
+	//$rootScope.cardRef; = new Firebase(`https://dirtydealer.firebaseio.com/games/${myGame}/cards`);
+	
+	var myGame = localStorage.myGame;
+// 	$rootScope.$watch('gameId', function(){
+// 	if (localStorage.myGame){
+// 			//$rootScope.cardRef = new Firebase(`https://dirtydealer.firebaseio.com/games/${myGame}/cards`);
+// 	}
+// })
+
+	this.startDeck = function(){	
+		var cards = {};
+		cards.white = whiteCards
+		cards.black = blackCards
+	// this.cardRef.child('whiteCards').set(whiteCards);
+	// this.cardRef.child('blackCards').set(blackCards);
+		return cards;
+	}
 
 	this.dealBlackCard = function(){
+		blackCardRef = $rootScope.gameInstance.child('cards');
+
+		blackCardRef.on('value', function(snap) {
+			tempBlackCard = snap.val();
+			//console.log("Black", tempBlackCard)
+			console.log("temp black card",tempBlackCard);
+		});
 		//force black card value change on firebase
-		this.blackCardRef.update({dummyCard: 'dummyCard'});
-		this.blackCardRef.child('dummyCard').remove();
-		//this.gameInstance.child("scenarioCard").set(null);
+		blackCardRef.update({dummyCard: 'dummyCard'});
+		blackCardRef.child('dummyCard').remove();
+		//this.cardRef.child("scenarioCard").set(null);
 		var rando = Math.floor(Math.random() * tempBlackCard.length );
 		var takenCard = tempBlackCard[rando];
 		tempBlackCard.splice(rando, 1);
-		this.scenarioCard = this.gameInstance.child("scenarioCard").set(takenCard)
-		this.gameInstance.child('blackCards').set(tempBlackCard);
+		this.scenarioCard = this.cardRef.child("scenarioCard").set(takenCard)
+		this.cardRef.child('blackCards').set(tempBlackCard);
 		return takenCard;
 	}
 
-var tempWhiteCard;
-var whiteCardLength; 
-	this.whiteCardRef.on('value', function(snap) {
+	this.startingHand = function(){
+		this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val()
 	});
-
-
-	this.startingHand = function(){
 		//force white hand value change in firebase
 		this.whiteCardRef.update({test: "test"});
 		this.whiteCardRef.child('test').remove();
@@ -52,12 +66,19 @@ var whiteCardLength;
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.gameInstance.child('whiteCards').set(tempWhiteCard)
+			this.cardRef.child('whiteCards').set(tempWhiteCard)
 		}
 		return fullHand;
 	}
 
 	this.draw = function(){
+		this.whiteCardRef.on('value', function(snap) {
+		tempWhiteCard = snap.val()
+	});
+		//force white hand value change in firebase
+		this.whiteCardRef.update({test: "test"});
+		this.whiteCardRef.child('test').remove();
+
 		this.whiteCardRef.update({test: "test"});
 		this.whiteCardRef.child('test').remove();
 		this.whiteCardRef.on('value', function(snap) {
@@ -67,14 +88,13 @@ var whiteCardLength;
 		//console.log("There are ", tempWhiteCard.length, " Temporary white cardss");
 	});
 
-
 		// for(var i=0; i<n; i++){
 		//console.log("TEMP WHITE CARD IN DRAW FUNCTIOM HAND", tempWhiteCard);
 		var rando = Math.floor(Math.random() * whiteCardLength ) ;
 		var takenCard = tempWhiteCard[rando];
 		//console.log("TAKEN", takenCard);
 		tempWhiteCard.splice(rando, 1);
-		this.gameInstance.child('whiteCards').set(tempWhiteCard);
+		this.cardRef.child('whiteCards').set(tempWhiteCard);
 		// }
 		return takenCard
 	}
