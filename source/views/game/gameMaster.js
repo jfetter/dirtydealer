@@ -120,7 +120,9 @@ angular.module('cardsAgainstHumanity')
 			}
 			$scope.currentState = snap.gamestate;
 
-			snap.val().player1 = $scope.player1;
+			if(snap.player1){
+				$scope.player1 = snap.player1;
+			}
 
 			if ($scope.playerss === null || $scope.playerss === undefined ){
 				$scope.playerss = [];
@@ -167,7 +169,7 @@ angular.module('cardsAgainstHumanity')
 					confirmButtonText: "CANNOT CONTINUE' ",
 				});
 				GameService.gameInstance.set(null);
-				$setTimeout(function() {$state.go('userPage')}, 1000);
+				$timeout(function() {$state.go('userPage')}, 1000);
 			}
 		});
 
