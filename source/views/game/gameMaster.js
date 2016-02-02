@@ -57,9 +57,9 @@ angular.module('cardsAgainstHumanity')
 		var messageRef = GameService.gameInstance.child("messages")
 		var responseRef = GameService.gameInstance.child("response");
 		$scope.whiteCardRef = CardsService.whiteCardRef;
-		$scope.blackCardRef = CardsService.blackCardRef;
+		//$scope.blackCardRef = CardsService.blackCardRef;
 		var myRef = playersRef.child(myId);
-		$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
+		//$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 		var scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 		var gameStateRef = GameService.gameStateRef;
 		var votesRef = GameService.gameInstance.child("votes");
@@ -100,15 +100,10 @@ angular.module('cardsAgainstHumanity')
 				if( snap.val().gamestate != null){
 					$scope.currentState = snap.val().gamestate;
 				}
-				// // if there is no black card deal one
-				if(!snap.val().cards.scenarioCard){
-					CardsService.dealBlackCard();
-				}
 				if (!snap.val().players){
 					GameService.addPlayer();
 				}
 				var players = snap.val().players;
-				console.log("PLAYERS", players);
 				// if you are not in the game, add you.
 				if (players.hasOwnProperty(myId) === false){
 					GameService.addPlayer();
@@ -119,24 +114,23 @@ angular.module('cardsAgainstHumanity')
 
 		// each time timer ticks firebase will check on game
 		thisGame.on('value', function(snap){
-			console.log(snap.val())
 			var snap = snap.val();
-			$scope.currentState = snap.gamestate;
 			if (snap === null){
 				return;
 			}
+			$scope.currentState = snap.gamestate;
+
+			snap.val().player1 = $scope.player1;
+
 			if ($scope.playerss === null || $scope.playerss === undefined ){
 				$scope.playerss = [];
-			} else{
-				//$scope.playerss = players;
-			}
-			console.log("PLAYERSSSSSSSSSS",  $scope.playerss)
+			} 			
 			//make sure you can see	response cards
 			if (snap.response != null){
 				$scope.responses = snap.response
 			}
 			// make sure you can see your hand
-			$scope.myHand = snap.players[myId].cards;
+			//$scope.myHand = snap.players[myId].cards;
 			//console.log("MY HAND", $scope.myHand);
 			//make sure you can see the black card
 			$scope.blackCard = snap.cards.scenarioCard;
@@ -144,18 +138,14 @@ angular.module('cardsAgainstHumanity')
 
 		//Any time someone leaves or joins the game check in with F.B.
 		playersRef.on("value", function(snap) {
+
 			var players = [];
 			snap.forEach (function(player){
 				players.push(player.val());
-				console.log("pushing", player.val(), "into the game")
 			});
+			thisGame.child("player1").set(players[0]);
 			$scope.playerss = players;
-			console.log("playas gonna play play play play play", $scope.playerss)
 			var numPlayers = snap.numChildren();
-			// when the first player joins the game generate a black card
-			if (numPlayers === 1 && !$scope.currentState){
-				CardsService.dealBlackCard();
-			}
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
 				gameStateRef.set(1);
@@ -200,8 +190,7 @@ angular.module('cardsAgainstHumanity')
 			console.log("GAME REF JUST CHANGED TO: ", thisState)
 			// have one player initiate the dealing of the black card
 			if (thisState === 1){
-				var playas = $scope.playerss
-				var player1 = playas[0];
+				var player1 = $scope.player1;
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
 				if (myId === player1.playerId){
 					// scenarioCardRef.remove();
@@ -240,6 +229,7 @@ angular.module('cardsAgainstHumanity')
 		// if the black card changes update what you see as the black card
 		scenarioCardRef.on("value", function(snap) {
 			$scope.blackCard = snap.val();
+			console.log("BLACK CARD IS", $scope.blackCard)
 		});
 
 		/* _____________
