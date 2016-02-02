@@ -19,7 +19,7 @@ angular.module('cardsAgainstHumanity')
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
 		if (res.data === "authRequired"){
-			console.log("AUTH REQUIRED")
+			// console.log("AUTH REQUIRED")
 			$location.path('/login')
 		}else{
 			$scope.isLoggedIn = true;}
@@ -39,7 +39,7 @@ angular.module('cardsAgainstHumanity')
 
 		$scope.sayName = function(){
 			var token = jwtHelper.decodeToken(cookies)
-			console.log("TOKEN MASTER ", token)
+			// console.log("TOKEN MASTER ", token)
 		}
 		/* ______________
 		|              |
@@ -109,11 +109,11 @@ angular.module('cardsAgainstHumanity')
 					GameService.addPlayer();
 				}
 				var players = snap.val().players;
-				console.log("PLAYERS", players);
+				// console.log("PLAYERS", players);
 				// if you are not in the game, add you.
 				if (players.hasOwnProperty(myId) === false){
 					GameService.addPlayer();
-					console.log("I JUST GOT ADDED");
+					// console.log("I JUST GOT ADDED");
 				}
 			}
 		})
@@ -131,7 +131,6 @@ angular.module('cardsAgainstHumanity')
 			} else{
 				//$scope.playerss = players;
 			}
-			console.log("PLAYERSSSSSSSSSS",  $scope.playerss)
 			//make sure you can see	response cards
 			if (snap.response != null){
 				$scope.responses = snap.response
@@ -148,7 +147,7 @@ angular.module('cardsAgainstHumanity')
 			var players = [];
 			snap.forEach (function(player){
 				players.push(player.val());
-				console.log("pushing", player.val(), "into the game")
+				// console.log("pushing", player.val(), "into the game")
 			});
 			$scope.playerss = players;
 			console.log("playas gonna play play play play play", $scope.playerss)
@@ -289,7 +288,6 @@ angular.module('cardsAgainstHumanity')
 
 
 		$scope.voteCard = function(card){
-			// console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
 			if ($rootScope.voted === true || $scope.currentState != 2){
 				console.log("YOU ALREADY VOTED")
 				return;
@@ -306,7 +304,6 @@ angular.module('cardsAgainstHumanity')
 				});
 			} else {
 				$rootScope.voted = true;
-				// console.log("I AM ROOT:", $rootScope.voted)
 				GameService.voteCard(card);
 			}
 		}
