@@ -103,6 +103,7 @@ angular.module('cardsAgainstHumanity')
 				// // if there is no black card deal one
 				if(!snap.val().cards.scenarioCard){
 					CardsService.dealBlackCard();
+					console.log("CARD GENERATION METHOD 3 COMPLETE!")
 				}
 				if (!snap.val().players){
 					GameService.addPlayer();
@@ -155,6 +156,7 @@ angular.module('cardsAgainstHumanity')
 			// when the first player joins the game generate a black card
 			if (numPlayers === 1 && !$scope.currentState){
 				CardsService.dealBlackCard();
+				console.log("CARD GENERATION METHOD 1 COMPLETE!")
 			}
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === 3 && !$scope.currentState) {
@@ -207,6 +209,7 @@ angular.module('cardsAgainstHumanity')
 					// scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
+					console.log("CARD GENERATION METHOD 2 COMPLETE!")
 					console.log($scope.blackCard, "NEW BLACK CARD WOW!")
 				}
 			}
