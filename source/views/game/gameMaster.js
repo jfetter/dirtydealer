@@ -127,7 +127,7 @@ angular.module('cardsAgainstHumanity')
 		$scope.whiteCardRef = CardsService.whiteCardRef;
 		var myRef = playersRef.child(myId);
 		var scenarioCardRef = thisGame.child('scenarioCard'); 
-		var gameStateRef = thisGame.child("gamestate");
+		var gamestateRef = thisGame.child("gamestate");
 		var votesRef = thisGame.child("votes");
 		var cardsRef = thisGame.child("cards");
 		var winVotes = thisGame.child("votes");
@@ -143,16 +143,16 @@ angular.module('cardsAgainstHumanity')
 
 		// each time timer ticks firebase will check on game
 		thisGame.on('value', function(snap){
-			var snap = snap.val();
-			if (snap === null){
+			var snappy = snap.val();
+			if (snappy === null){
 				return;
 			}
-			$rootScope.myGameSize = snap.gameSize; 
+			$rootScope.myGameSize = snappy.gameSize; 
 
-			$scope.currentState = snap.gamestate;
+			$scope.currentState = snappy.gamestate;
 
-			if(snap.player1){
-				$scope.player1 = snap.player1.playerId;
+			if(snappy.player1){
+				$scope.player1 = snappy.player1.playerId;
 				console.log("PLAYER 1", $scope.player1)
 			};
 
@@ -160,14 +160,23 @@ angular.module('cardsAgainstHumanity')
 				$scope.playerss = [];
 			} 			
 			//make sure you can see	response cards
-			if (snap.response != null){
-				$scope.responses = snap.response
+			if (snappy.response != null){
+				$scope.responses = snappy.response
 			}
 			// make sure you can see your hand
 			//$scope.myHand = snap.players[myId].cards;
 			//console.log("MY HAND", $scope.myHand);
 			//make sure you can see the black card
-			$scope.blackCard = snap.scenarioCard;
+			var cards;
+			snap.forEach(function(item){
+				if (item.cards){
+					cards = item.val();
+					console.log("CARDS???", item.val());
+				}
+			})
+			if (cards){
+				$scope.blackCard = cards.scenarioCard;
+			}
 		})
 
 
@@ -185,7 +194,7 @@ angular.module('cardsAgainstHumanity')
 			var numPlayers = snap.numChildren();
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === $rootScope.myGameSize && !$scope.currentState) {
-				gameStateRef.set(1);
+				gamestateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
 			}
 		});
@@ -273,7 +282,7 @@ angular.module('cardsAgainstHumanity')
 
 
 		//connect with firebase game states
-		gameStateRef.on('value', function(snap) {
+		gamestateRef.on('value', function(snap) {
 			var thisState = snap.val();
 			$rootScope.voted = false;
 			console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
@@ -290,7 +299,7 @@ angular.module('cardsAgainstHumanity')
 				}
 			}
 			$scope.currentState = thisState;
-			//gameState(thisState);
+			//gamestate(thisState);
 			if (thisState === 3){
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
@@ -300,7 +309,7 @@ angular.module('cardsAgainstHumanity')
 				myRef.child('submittedResponse').remove();
 				//myRef.child('tempHand').remove();
 				GameService.drawOneCard();
-				gameStateRef.set(1);
+				gamestateRef.set(1);
 			}
 			thisGame.child('temp').set('temp');
 			thisGame.child('temp').remove();
@@ -350,7 +359,7 @@ angular.module('cardsAgainstHumanity')
 			}
 			if (numResponses === numPlayers && numResponses > 0) {
 				console.log(snap.val(), "INSIDE");
-				gameStateRef.set(2);
+				gamestateRef.set(2);
 			}
 		});
 

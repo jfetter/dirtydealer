@@ -119,8 +119,8 @@ if (localStorage.myGame){
 	this.voteRef = gameInstance.child("votes");
 	var voteRef = this.voteRef;
 	this.votes = $firebaseArray(voteRef);
-	this.gameStateRef = gameInstance.child("gameState");
-	var gameStateRef = this.gameStateRef;
+	this.gamestateRef = gameInstance.child("gamestate");
+	var gamestateRef = this.gamestateRef;
 }
 
 gameList.on('value', function(snap){
@@ -152,12 +152,12 @@ gameList.on('value', function(snap){
 	//remove players
 	this.removePlayer = function(){
 		if (localStorage.myGame){
-			localStorage.removeItem('myGame')
+			localStorage.removeItem('myGame');
 		}
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
-		//allPlayers.child(myId).remove();
-		//playersRef.child(myId).remove();
+		allPlayers.child(myId).remove();
+		playersRef.child(myId).remove();
 		console.log("PLAYER QUIT", myId)
 	}
 
@@ -276,7 +276,7 @@ gameList.on('value', function(snap){
 			playersRef.child(player).update({gamePoints: myNewPoints})
 			console.log(player, 'got a win point');
 			// this code is not tested and not finished !!!!!
-			gameStateRef.set(3)
+			gamestateRef.set(3)
 		} //end if me
 		return;
 	} // end add win point

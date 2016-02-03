@@ -26,8 +26,12 @@ angular.module('cardsAgainstHumanity')
 
 	this.dealBlackCard = function(){
 		var cardRef = $rootScope.gameInstance.child('cards');
+		console.log("CARD REF", cardRef);
 		var blackCardRef = cardRef.child('black');
+		console.log("BLACK CARD REF", cardRef);
+
 		$rootScope.blackCardRef = blackCardRef; 
+		console.log("ROOT BLACK CARD REF", cardRef);
 		$rootScope.scenarioCard; 
 
 		blackCardRef.on('value', function(snap) {
@@ -41,8 +45,9 @@ angular.module('cardsAgainstHumanity')
 		var rando = Math.floor(Math.random() * tempBlackCard.length );
 		var takenCard = tempBlackCard[rando];
 		tempBlackCard.splice(rando, 1);
-		$rootScope.scenarioCard = this.cardRef.child("scenarioCard").set(takenCard)
+		cardRef.child("scenarioCard").set(takenCard)
 		blackCardRef.set(tempBlackCard);
+		console.log("ROOT BLACK SCENARIO", cardRef);
 		return takenCard;
 	}
 
