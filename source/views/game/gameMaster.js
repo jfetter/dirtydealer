@@ -9,6 +9,7 @@ angular.module('cardsAgainstHumanity')
 	|              |
 	|  User Auth:  |
 	|______________| */
+	var myGame = localStorage.myGame || null; 
 	var myId	= ''
 	var cookies = $cookies.get('token');
 	if(cookies){
@@ -52,7 +53,6 @@ angular.module('cardsAgainstHumanity')
 			if (!localStorage.myGame){
 				//localStorage.setItem("myGame", myGame);
 			}
-			console.log("game ID at", Date.now(), $rootScope.gameId);
 		})
 
 		$rootScope.$watch('cardRef', function(){
@@ -60,7 +60,7 @@ angular.module('cardsAgainstHumanity')
 		})
 
 		var rootRef = GameService.rootRef;
-	  var gameList = GameService.gamesList;
+	  var gameList = GameService.gameList;
 		var allPlayers = GameService.allPlayers;
 
 				// anytime something changes... check in with the scope
@@ -119,15 +119,13 @@ angular.module('cardsAgainstHumanity')
 
 
 	if(localStorage.myGame){
-		var myGame = localStorage.myGame;
+		myGame = localStorage.myGame;
 		var thisGame = gameList.child(myGame);
 		var playersRef = thisGame.child("players");
 		var messageRef = thisGame.child("messages")
 		var responseRef = thisGame.child("response");
 		$scope.whiteCardRef = CardsService.whiteCardRef;
-		//$scope.blackCardRef = CardsService.blackCardRef;
 		var myRef = playersRef.child(myId);
-		//$scope.scenarioCardRef = CardsService.gameInstance.child("scenarioCard")
 		var scenarioCardRef = thisGame.child('scenarioCard'); 
 		var gameStateRef = thisGame.child("gamestate");
 		var votesRef = thisGame.child("votes");
@@ -135,7 +133,7 @@ angular.module('cardsAgainstHumanity')
 		var winVotes = thisGame.child("votes");
 		$scope.playerss = GameService.playerss
 		$scope.messages = GameService.messages;
-		$scope.gameSize = $rootScope.gameSize;
+
 
 		/* ______________
 		|              |
@@ -149,13 +147,14 @@ angular.module('cardsAgainstHumanity')
 			if (snap === null){
 				return;
 			}
-			$rootScope.gameId = localStorage.myGame;
+			$rootScope.myGameSize = snap.gameSize; 
 
 			$scope.currentState = snap.gamestate;
 
 			if(snap.player1){
-				$scope.player1 = snap.player1;
-			}
+				$scope.player1 = snap.player1.playerId;
+				console.log("PLAYER 1", $scope.player1)
+			};
 
 			if ($scope.playerss === null || $scope.playerss === undefined ){
 				$scope.playerss = [];
@@ -168,7 +167,7 @@ angular.module('cardsAgainstHumanity')
 			//$scope.myHand = snap.players[myId].cards;
 			//console.log("MY HAND", $scope.myHand);
 			//make sure you can see the black card
-			$scope.blackCard = snap.cards.scenarioCard;
+			$scope.blackCard = snap.scenarioCard;
 		})
 
 
@@ -179,20 +178,34 @@ angular.module('cardsAgainstHumanity')
 			snap.forEach (function(player){
 				players.push(player.val());
 			});
-			thisGame.child("player1").set(players[0]);
+			if (!snap.val().player1){
+				thisGame.child("player1").set(players[0]);
+			}
 			$scope.playerss = players;
 			var numPlayers = snap.numChildren();
 			//when there are 3 players move the game into the first game state
-			if (numPlayers === $scope.gameSize && !$scope.currentState) {
+			if (numPlayers === $rootScope.myGameSize && !$scope.currentState) {
 				gameStateRef.set(1);
 				console.log("STARTING GAME", $scope.playerss)
 			}
 		});
 
+			if ($scope.playerss === null || $scope.playerss === undefined ){
+			$scope.playerss = [];
+		} else{
+			var players = [];
+			for (var player in $scope.playerss){
+				players.push(player);
+			}
+			$scope.playerss = players;
+		}
+
 		// if someone leaves alert everyone
 		playersRef.on("child_removed", function(snap) {
 			var assHole = snap.val();
 			var numPlayers = $scope.playerss.length;
+			thisGame.child('player1').remove();
+			console.log("CURRENT NUM PLAYERS", numPlayers)
 			// if the game is over, reset the game
 			if (numPlayers < 3 ){
 				swal({
@@ -269,7 +282,7 @@ angular.module('cardsAgainstHumanity')
 			if (thisState === 1){
 				var player1 = $scope.player1;
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1.playerId){
+				if (myId === player1){
 					// scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
@@ -426,15 +439,6 @@ angular.module('cardsAgainstHumanity')
 		|Utility Functs|
 		|______________| */
 
-	if ($scope.playerss === null || $scope.playerss === undefined ){
-			$scope.playerss = [];
-		} else{
-			var players = [];
-			for (var player in $scope.playerss){
-				players.push(player);
-			}
-			$scope.playerss = players;
-		}
 
 		$scope.removePlayer = function(){
 			GameService.removePlayer();

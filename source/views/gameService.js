@@ -19,8 +19,8 @@ return myInfo;
 
 	this.rootRef = new Firebase("https://dirtydealer.firebaseio.com/");
 	var rootRef = this.rootRef;
-	this.gamesList = rootRef.child('games');
-	var gamesList = this.gamesList;
+	this.gameList = rootRef.child('games');
+	var gameList = this.gameList;
 	this.allPlayers = rootRef.child('allPlayers');
 	var allPlayers = this.allPlayers;
 		// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
@@ -37,8 +37,8 @@ return myInfo;
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id;
 		var userName = myInfo.username;
-		$rootScope.gameInstance = gamesList.child(gameId);
-		var gameInstance = gamesList.child(gameId)
+		$rootScope.gameInstance = gameList.child(gameId);
+		var gameInstance = gameList.child(gameId)
 	console.log("made it to addedPlayer function now test the rest of code")
 	allPlayers.child(myId).set({
 		playerId: myId,
@@ -65,12 +65,12 @@ $rootScope.newGame = function(gameSize){
  	console.log("WHATS UP MY ID IS", myId)
  	var gameName = myId + Date.now();
  	$rootScope.gameId = gameName;
- 	$rootScope.gameInstance = gamesList.child(gameName);
+ 	$rootScope.gameInstance = gameList.child(gameName);
 	$rootScope.playersRef = $rootScope.gameInstance.child('players');
 	$rootScope.cardsRef = $rootScope.gameInstance.child('cards');
 	$rootScope.messageRef = $rootScope.gameInstance.child('messages');
 
-	gamesList.child(gameName).update({
+	gameList.child(gameName).update({
 	 		id: gameName,
 	 		host: myId,
 	 		gameSize: gameSize,
@@ -87,8 +87,8 @@ $rootScope.newGame = function(gameSize){
  })
 
 $rootScope.joinGame = function(gameId){
-	$rootScope.gameId = gameName;
- 	$rootScope.gameInstance = gamesList.child(gameName);
+	$rootScope.gameId = gameId;
+ 	$rootScope.gameInstance = gameList.child(gameId);
 	$rootScope.playersRef = $rootScope.gameInstance.child('players');
 	$rootScope.cardsRef = $rootScope.gameInstance.child('cards');
 	$rootScope.messageRef = $rootScope.gameInstance.child('messages');
@@ -106,25 +106,24 @@ if (localStorage.myGame){
 	console.log("MY GAME JUST BEFORE GAME INSTANCE", myGame)
 	console.log("MY ROOTSCOPE GAME JUST BEFORE GAME INSTANCE", $rootScope.gameId)
 
-	this.gameInstance = $rootScope.gameInstance
-	var gameInstance = $rootScope.gameInstance
-	this.playersRef = $rootScope.playersRef; 
-	var playersRef = this.playersRef
-	//this.messageRef = $rootScope.gameInstance.child("messages");
-	//var messageRef = this.messageRef
-	//this.messages = $firebaseArray(messageRef);
-	//this.playerss = $firebaseArray(playersRef);
-	//this.responseRef = $rootScope.gameInstance.child("response");
-	//var responseRef = this.responseRef
-	//this.voteRef = $rootScope.gameInstance.child("votes");
-	//var voteRef = this.voteRef
-	//this.votes = $firebaseArray(voteRef);
-	//this.gameStateRef = $rootScope.gameInstance.child("gameState");
-	//var gameStateRef = this.gameStateRef;
-	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
+	this.gameInstance = gameList.child(myGame);
+	var gameInstance = this.gameInstance;
+	this.playersRef = gameInstance.child('players'); 
+	var playersRef = this.playersRef;
+	this.messageRef = gameInstance.child('messages');
+	var messageRef = this.messageRef;
+	this.messages = $firebaseArray(messageRef);
+	this.playerss = $firebaseArray(playersRef);
+	this.responseRef = gameInstance.child("response");
+	var responseRef = this.responseRef;
+	this.voteRef = gameInstance.child("votes");
+	var voteRef = this.voteRef;
+	this.votes = $firebaseArray(voteRef);
+	this.gameStateRef = gameInstance.child("gameState");
+	var gameStateRef = this.gameStateRef;
 }
 
-gamesList.on('value', function(snap){
+gameList.on('value', function(snap){
 		if (snap.val() === null){
 			return;
 		}
@@ -137,9 +136,9 @@ gamesList.on('value', function(snap){
 
 		//console.log("games Array", $rootScope.gamesArray )
 		// add to appropriate game 
-		//if (gamesList.waiting.players[myId]){
+		//if (gameList.waiting.players[myId]){
 			// waitingPlayers.child(myId).remove();
-			// this.gameInstance = gamesList.child(myGame);
+			// this.gameInstance = gameList.child(myGame);
 			// var gameInstance = this.gameInstance
 			// this.playersRef = gameInstance.child('players')
 			// this.addPlayer(myId);

@@ -28,10 +28,10 @@ angular.module('cardsAgainstHumanity')
 		var cardRef = $rootScope.gameInstance.child('cards');
 		var blackCardRef = cardRef.child('black');
 		$rootScope.blackCardRef = blackCardRef; 
-		$rootScope.ScenarioCard; 
+		$rootScope.scenarioCard; 
+
 		blackCardRef.on('value', function(snap) {
 			tempBlackCard = snap.val();
-			//console.log("Black", tempBlackCard)
 			console.log("temp black card",tempBlackCard);
 		});
 		//force black card value change on firebase
@@ -41,8 +41,8 @@ angular.module('cardsAgainstHumanity')
 		var rando = Math.floor(Math.random() * tempBlackCard.length );
 		var takenCard = tempBlackCard[rando];
 		tempBlackCard.splice(rando, 1);
-		this.scenarioCard = this.cardRef.child("scenarioCard").set(takenCard)
-		this.cardRef.child('blackCards').set(tempBlackCard);
+		$rootScope.scenarioCard = this.cardRef.child("scenarioCard").set(takenCard)
+		blackCardRef.set(tempBlackCard);
 		return takenCard;
 	}
 
