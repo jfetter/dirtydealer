@@ -65,10 +65,11 @@ $rootScope.newGame = function(gameSize){
  	console.log("WHATS UP MY ID IS", myId)
  	var gameName = myId + Date.now();
  	$rootScope.gameId = gameName;
- 	localStorage.setItem("myGame", gameName);
  	$rootScope.gameInstance = gamesList.child(gameName);
 	$rootScope.playersRef = $rootScope.gameInstance.child('players');
 	$rootScope.cardsRef = $rootScope.gameInstance.child('cards');
+	$rootScope.messageRef = $rootScope.gameInstance.child('messages');
+
 	gamesList.child(gameName).update({
 	 		id: gameName,
 	 		host: myId,
@@ -76,6 +77,7 @@ $rootScope.newGame = function(gameSize){
 	 		cards: CardsService.startDeck()
  		})
 	addPlayer(gameName);
+ 	localStorage.setItem("myGame", gameName);
  	$state.go('game');
  }
 
@@ -85,11 +87,17 @@ $rootScope.newGame = function(gameSize){
  })
 
 $rootScope.joinGame = function(gameId){
+	$rootScope.gameId = gameName;
+ 	$rootScope.gameInstance = gamesList.child(gameName);
+	$rootScope.playersRef = $rootScope.gameInstance.child('players');
+	$rootScope.cardsRef = $rootScope.gameInstance.child('cards');
+	$rootScope.messageRef = $rootScope.gameInstance.child('messages');
+
  	console.log("GAME SIZE FUNCTION", gameId);
  	$rootScope.gameId = gameId;
  	this.gameInstance = rootRef.child(gameId);
+ 	addPlayer(gameId);
  	localStorage.setItem("myGame", gameId);
- //	addPlayer();
  	$state.go('game')
  }
 
@@ -102,17 +110,17 @@ if (localStorage.myGame){
 	var gameInstance = $rootScope.gameInstance
 	this.playersRef = $rootScope.playersRef; 
 	var playersRef = this.playersRef
-	//this.messageRef = gameInstance.child("messages");
+	//this.messageRef = $rootScope.gameInstance.child("messages");
 	//var messageRef = this.messageRef
-	//this.playerss = $firebaseArray(playersRef);
 	//this.messages = $firebaseArray(messageRef);
-	//this.responseRef = this.gameInstance.child("response");
-	// var responseRef = this.responseRef
-	// this.voteRef = this.gameInstance.child("votes");
-	// var voteRef = this.voteRef
-	// this.votes = $firebaseArray(voteRef);
-	// this.gameStateRef = this.gameInstance.child("gameState");
-	// var gameStateRef = this.gameStateRef;
+	//this.playerss = $firebaseArray(playersRef);
+	//this.responseRef = $rootScope.gameInstance.child("response");
+	//var responseRef = this.responseRef
+	//this.voteRef = $rootScope.gameInstance.child("votes");
+	//var voteRef = this.voteRef
+	//this.votes = $firebaseArray(voteRef);
+	//this.gameStateRef = $rootScope.gameInstance.child("gameState");
+	//var gameStateRef = this.gameStateRef;
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 }
 

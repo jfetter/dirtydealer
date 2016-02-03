@@ -4,20 +4,18 @@ angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
-
 	var tempBlackCard = [];
+	 // this.scenarioRef = $rootScope.cardsRef.child('scenario') || null;
 		//this.whiteCardRef = $rootScope.cardRef.child("whiteCards");
 		//this.blackCardRef = $rootScope.cardRef.child("blackCards");
 		//this.tempWhiteRef = $rootScope.cardRef.child("tempWhite");
+		//$rootScope.cardRef; = new Firebase(`https://dirtydealer.firebaseio.com/games/${myGame}/cards`);
+		
+		//this.scenarioRef = $rootScope.cardsRef.child('scenario');
 
-	//$rootScope.cardRef; = new Firebase(`https://dirtydealer.firebaseio.com/games/${myGame}/cards`);
 	
 	var myGame = localStorage.myGame;
-// 	$rootScope.$watch('gameId', function(){
-// 	if (localStorage.myGame){
-// 			//$rootScope.cardRef = new Firebase(`https://dirtydealer.firebaseio.com/games/${myGame}/cards`);
-// 	}
-// })
+
 
 	this.startDeck = function(){	
 		var cards = {};
@@ -27,9 +25,10 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.dealBlackCard = function(){
-		blackCardRef = $rootScope.gameInstance.child('cards');
-		var blackCardRef = $rootScope.cardsRef.child('black');
+		var cardRef = $rootScope.gameInstance.child('cards');
+		var blackCardRef = cardRef.child('black');
 		$rootScope.blackCardRef = blackCardRef; 
+		$rootScope.ScenarioCard; 
 		blackCardRef.on('value', function(snap) {
 			tempBlackCard = snap.val();
 			//console.log("Black", tempBlackCard)
@@ -51,9 +50,8 @@ angular.module('cardsAgainstHumanity')
 		var tempWhiteCard;
 	  var whiteCardLength; 
 		var whiteCardRef = $rootScope.cardsRef.child('white');
-		console.log("white Ref", whiteCardRef);
 		whiteCardRef.on('value', function(snap) {
-			console.log("the ellusive white snapper", snap.val())
+			//console.log("the ellusive white snapper", snap.val())
 			tempWhiteCard = snap.val();
 			whiteCardLength = snap.numChildren();
 	});
