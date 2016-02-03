@@ -86,14 +86,13 @@ var stockDeck = gamesList.on('value', function(snap) {
 				if(!myGameInfo.players){
 					console.log("myGameInfo", myGameInfo)
 					$rootScope.cardsRef = thisGame.child('cards');
-					$timeout(function(){
-						//CardsService.startDeck();
-					//GameService.addPlayer()
-					//DEAL BLACK CARD HERE?
-				},100);
+				// 	$timeout(function(){
+
+				// },100);
 				if (myGameInfo.cards){
 					console.log("THERE SHOULD BE CARDS NOW?")
-				gamesList.off('value', stockDeck);
+					//GameService.addPlayer();
+					gamesList.off('value', stockDeck);
 				}
 				return;
 			}

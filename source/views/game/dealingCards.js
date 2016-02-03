@@ -6,11 +6,6 @@ angular.module('cardsAgainstHumanity')
 
 
 	var tempBlackCard = [];
-	var tempWhiteCard;
-	var whiteCardLength; 
-
-
-	
 		//this.whiteCardRef = $rootScope.cardRef.child("whiteCards");
 		//this.blackCardRef = $rootScope.cardRef.child("blackCards");
 		//this.tempWhiteRef = $rootScope.cardRef.child("tempWhite");
@@ -28,14 +23,13 @@ angular.module('cardsAgainstHumanity')
 		var cards = {};
 		cards.white = whiteCards
 		cards.black = blackCards
-	// this.cardRef.child('whiteCards').set(whiteCards);
-	// this.cardRef.child('blackCards').set(blackCards);
 		return cards;
 	}
 
 	this.dealBlackCard = function(){
 		blackCardRef = $rootScope.gameInstance.child('cards');
-
+		var blackCardRef = $rootScope.cardsRef.child('black');
+		$rootScope.blackCardRef = blackCardRef; 
 		blackCardRef.on('value', function(snap) {
 			tempBlackCard = snap.val();
 			//console.log("Black", tempBlackCard)
@@ -54,19 +48,25 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.startingHand = function(){
-		this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val()
+		var tempWhiteCard;
+	  var whiteCardLength; 
+		var whiteCardRef = $rootScope.cardsRef.child('white');
+		console.log("white Ref", whiteCardRef);
+		whiteCardRef.on('value', function(snap) {
+			console.log("the ellusive white snapper", snap.val())
+			tempWhiteCard = snap.val();
+			whiteCardLength = snap.numChildren();
 	});
 		//force white hand value change in firebase
-		this.whiteCardRef.update({test: "test"});
-		this.whiteCardRef.child('test').remove();
+		// whiteCardRef.update({test: "test"});
+		 whiteCardRef.child('test').remove();
 		var fullHand = [];
 		for(var i = 0; i<10; i++){
-			var rando = Math.floor(Math.random() * tempWhiteCard.length );
+			var rando = Math.floor(Math.random() * whiteCardLength );
 			var takenCards = tempWhiteCard[rando];
 			tempWhiteCard.splice(rando, 1);
 			fullHand.push(takenCards);
-			this.cardRef.child('whiteCards').set(tempWhiteCard)
+			whiteCardRef.set(tempWhiteCard);
 		}
 		return fullHand;
 	}

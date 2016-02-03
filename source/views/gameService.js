@@ -24,26 +24,31 @@ return myInfo;
 	this.allPlayers = rootRef.child('allPlayers');
 	var allPlayers = this.allPlayers;
 		// this.gameInstance = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com");
-	this.gameInstance = $rootScope.gameInstance || rootRef.child('waiting');
 	this.playersRef;
 
 	var gamesArray = $rootScope.gamesArray || null;
 	var myGame = $rootScope.gameId;
 
-	this.addPlayer = function(){
-	var myInfo = identifyPlayer();
-	var myId = myInfo._id;
 
+
+	function addPlayer(gameId){
+
+
+		var myInfo = identifyPlayer();
+		var myId = myInfo._id;
+		var userName = myInfo.username;
+		$rootScope.gameInstance = gamesList.child(gameId);
+		var gameInstance = gamesList.child(gameId)
 	console.log("made it to addedPlayer function now test the rest of code")
 	allPlayers.child(myId).set({
-		playerId: myInfo._id,
-		username: myInfo.username,
+		playerId: myId,
+		username: userName,
 		cards: CardsService.startingHand(),
-		gameId: myGame,
+		gameId: gameId,
 		gamePoints: 0
 	})
 
-		playersRef.child(myId).set({
+		$rootScope.playersRef.child(myId).set({
 			playerId: myId,
 			username: myInfo.username,
 			cards: CardsService.startingHand(),
@@ -53,7 +58,7 @@ return myInfo;
 
 
 
-	$rootScope.newGame = function(gameSize){
+$rootScope.newGame = function(gameSize){
 	var myInfo = identifyPlayer();
 	var myId = myInfo._id;
  	console.log("GAME SIZE FUNCTION", gameSize);
@@ -61,15 +66,16 @@ return myInfo;
  	var gameName = myId + Date.now();
  	$rootScope.gameId = gameName;
  	localStorage.setItem("myGame", gameName);
+ 	$rootScope.gameInstance = gamesList.child(gameName);
+	$rootScope.playersRef = $rootScope.gameInstance.child('players');
+	$rootScope.cardsRef = $rootScope.gameInstance.child('cards');
 	gamesList.child(gameName).update({
 	 		id: gameName,
 	 		host: myId,
 	 		gameSize: gameSize,
 	 		cards: CardsService.startDeck()
  		})
-	 	$rootScope.gameInstance 
- 		console.log("$rootScope.gameInstance", $rootScope.gameInstance)
- 	//addPlayer();
+	addPlayer(gameName);
  	$state.go('game');
  }
 
@@ -92,20 +98,21 @@ if (localStorage.myGame){
 	console.log("MY GAME JUST BEFORE GAME INSTANCE", myGame)
 	console.log("MY ROOTSCOPE GAME JUST BEFORE GAME INSTANCE", $rootScope.gameId)
 
-	this.gameInstance = gamesList.child(myGame);
-	this.playersRef = this.gameInstance.child("players");
+	this.gameInstance = $rootScope.gameInstance
+	var gameInstance = $rootScope.gameInstance
+	this.playersRef = $rootScope.playersRef; 
 	var playersRef = this.playersRef
-	this.messageRef = this.gameInstance.child("messages");
-	var messageRef = this.messageRef
-	this.playerss = $firebaseArray(playersRef);
-	this.messages = $firebaseArray(messageRef);
-	this.responseRef = this.gameInstance.child("response");
-	var responseRef = this.responseRef
-	this.voteRef = this.gameInstance.child("votes");
-	var voteRef = this.voteRef
-	this.votes = $firebaseArray(voteRef);
-	this.gameStateRef = this.gameInstance.child("gameState");
-	var gameStateRef = this.gameStateRef;
+	//this.messageRef = gameInstance.child("messages");
+	//var messageRef = this.messageRef
+	//this.playerss = $firebaseArray(playersRef);
+	//this.messages = $firebaseArray(messageRef);
+	//this.responseRef = this.gameInstance.child("response");
+	// var responseRef = this.responseRef
+	// this.voteRef = this.gameInstance.child("votes");
+	// var voteRef = this.voteRef
+	// this.votes = $firebaseArray(voteRef);
+	// this.gameStateRef = this.gameInstance.child("gameState");
+	// var gameStateRef = this.gameStateRef;
 	// this.gameStateRef = new Firebase("https://cardsagainsthumanity-ch.firebaseio.com/gamestate");
 }
 
@@ -137,12 +144,11 @@ gamesList.on('value', function(snap){
 
 	//remove players
 	this.removePlayer = function(){
-		if (!this.gameInstance){
-			return
+		if (localStorage.myGame){
+			localStorage.removeItem('myGame')
 		}
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
-		localStorage.removeItem('myGame')
 		//allPlayers.child(myId).remove();
 		//playersRef.child(myId).remove();
 		console.log("PLAYER QUIT", myId)
