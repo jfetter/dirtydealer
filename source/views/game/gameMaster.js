@@ -70,70 +70,70 @@ angular.module('cardsAgainstHumanity')
 		})
 
 
-// var stockDeck = gamesList.on('value', function(snap) { 
-// 			console.log("MY GAME IN TOP OF GAME MASTER", myGame)
-// 			if (!localStorage.myGame){
-// 				return;
-// 			}
-// 			var myGameInfo; 
-// 			snap.forEach(function(game){
-// 				if (game.val().id === myGame)
-// 				myGameInfo = game.val();
-// 			})
-// 			console.log("SNAP VAL", snap.val()[myGame]);
+var stockDeck = gameList.on('value', function(snap) { 
+			console.log("MY GAME IN TOP OF GAME MASTER", myGame)
+			if (!localStorage.myGame){
+				return;
+			}
+			var myGameInfo; 
+			snap.forEach(function(game){
+				if (game.val().id === myGame)
+				myGameInfo = game.val();
+			})
+			console.log("SNAP VAL", snap.val()[myGame]);
 
-// 			//start the game if it hasnt started
-// 			//then add you to waiting state
-// 			if(myGameInfo){
-// 				if(!myGameInfo.players){
-// 					console.log("myGameInfo", myGameInfo)
-// 					$rootScope.cardsRef = thisGame.child('cards');
-// 				// 	$timeout(function(){
-
-// 				// },100);
-// 				if (myGameInfo.cards){
-// 					console.log("THERE SHOULD BE CARDS NOW?")
-// 					gamesList.off('value', stockDeck);
-// 				}
-// 				return;
-// 			}
-// 		}
-
-// 			 else {
-// 				// so the game exists...
-// 				// let the scope know what gamestate it is
-// 				// this should show all cards
-// 				if( snap.val().gamestate != null){
-// 					$scope.currentState = snap.val().gamestate;
-// 				}
-// 				if (!snap.val().players){
-// 					GameService.addPlayer();
-// 				}
-// 				var players = snap.val().players;
-// 				// if you are not in the game, add you.
-// 				if (players.hasOwnProperty(myId) === false){
-// 					GameService.addPlayer();
-// 					console.log("I JUST GOT ADDED");
-// 				}
-// 			}
-// 		})
+			//start the game if it hasnt started
+			//then add you to waiting state
+			if(myGameInfo){
+				if(!myGameInfo.players){
+					console.log("myGameInfo", myGameInfo)
+					$rootScope.cardsRef = thisGame.child('cards');
+				if (myGameInfo.cards){
+					console.log("THERE SHOULD BE CARDS NOW?")
+					gamesList.off('value', stockDeck);
+				}
+				return;
+			}
+		}
+				// so the game exists...
+				// let the scope know what gamestate it is
+				// this should show all cards
+				if( snap.val().gamestate != null){
+					$scope.currentState = snap.val().gamestate;
+				}
+				// if (!snap.val().players){
+				// 	GameService.addPlayer();
+				// }
+				// var players = snap.val().players;
+				// if you are not in the game, add you.
+				// if (players.hasOwnProperty(myId) === false){
+				// 	GameService.addPlayer();
+				// 	console.log("I JUST GOT ADDED");
+				// }
+			//}
+		})
 
 
 	if(localStorage.myGame){
 		myGame = localStorage.myGame;
 		var thisGame = gameList.child(myGame);
 		var playersRef = thisGame.child("players");
-		var messageRef = thisGame.child("messages")
-		var responseRef = thisGame.child("response");
-		$scope.whiteCardRef = CardsService.whiteCardRef;
 		var myRef = playersRef.child(myId);
-		var scenarioCardRef = thisGame.child('scenarioCard'); 
+		var responseRef = thisGame.child("response");
+
+		var cardsRef = thisGame.child('cards');
+		var whiteCardRef = cardsRef.child('white');
+		var whiteCardRef = cardsRef.child('black');
+		var scenarioCardRef = cardsRef.child('scenarioCard');
+		 
 		var gamestateRef = thisGame.child("gamestate");
 		var votesRef = thisGame.child("votes");
 		var cardsRef = thisGame.child("cards");
 		var winVotes = thisGame.child("votes");
-		$scope.playerss = GameService.playerss
-		$scope.messages = GameService.messages;
+		
+		var messageRef = thisGame.child("messages")
+		//$scope.playerss = GameService.playerss
+		//$scope.messages = GameService.messages;
 
 
 		/* ______________
@@ -177,6 +177,7 @@ angular.module('cardsAgainstHumanity')
 			})
 			if (cards){
 				$rootScope.blackCard = cards.scenarioCard;
+				console.log("rootBlackCard in game watcher", $rootScope.blackCard)
 			}
 		})
 
