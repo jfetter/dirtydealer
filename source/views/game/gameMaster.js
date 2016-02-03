@@ -49,58 +49,79 @@ angular.module('cardsAgainstHumanity')
 		|______________| */
 
 // track game number in localStorage. 
-		$rootScope.$watch('gameId', function(){
-			if (!localStorage.myGame){
-				//localStorage.setItem("myGame", myGame);
-			}
-		})
+		// $rootScope.$watch('gameId', function(){
+		// 	if (!localStorage.myGame){
+		// 		//localStorage.setItem("myGame", myGame);
+		// 	}
+		// })
 
-		$rootScope.$watch('cardRef', function(){
-			console.log("cardsRef at", Date.now(), $rootScope.cardRef);
-		})
+		// $rootScope.$watch('cardRef', function(){
+		// 	console.log("cardRef at", Date.now(), $rootScope.cardRef);
+		// })
 
 		var rootRef = GameService.rootRef;
 	  var gameList = GameService.gameList;
 		var allPlayers = GameService.allPlayers;
 
 				// anytime something changes... check in with the scope
+		//var watchCards = 
 		rootRef.once('value', function(snap){
 			console.log("time to rethink the refresh check in");
-			$rootScope.gamesArray = snap.val().games;
+			// $timeout(function(){
+				
+
+			// 		//rootRef.off('value', watchCards);
+			// }, 200)
 		})
 
 
-var stockDeck = gameList.on('value', function(snap) { 
-			console.log("MY GAME IN TOP OF GAME MASTER", myGame)
+		//var stockDeck = 
+	gameList.on('value', function(snap) { 
+			//console.log("MY GAME IN TOP OF GAME MASTER", myGame)
 			if (!localStorage.myGame){
 				return;
 			}
 			var myGameInfo; 
+			$scope.playerss = [];
 			snap.forEach(function(game){
-				if (game.val().id === myGame)
-				myGameInfo = game.val();
+				if (game.val().id == myGame){
+					myGameInfo = game.val();
+					myGameInfo.players.forEach(function(player){
+						$scope.playerss.push(player.val())
+						console.log("$scope.playerss", $scope.playerss)
+					})
+				}
+				
+				//console.log("game VAL",game.val())
+				//console.log("players", game.val().players)
 			})
-			console.log("SNAP VAL", snap.val()[myGame]);
+			//console.log("SNAP VAL", snap.val()[myGame]);
+
+			// if( snap.val()[myGame].players){$scope.playerss = snap.val()[myGame].players}
+			// if( snap[myGame].players.numChildren()){$scope.numPlayers = snap[myGame].players.numChildren()}
+			// if( snap[myGame].gameSize){$scope.myGameSize = snap[myGame].gameSize}
+			// if( snap[myGame].cards.scenarioCard) {$scope.blackCard = snap[myGame].cards.scenarioCard}
+			// if( snap[myGame].gamestate) {$scope.gameState = snap[myGame].gamestate}
+			
+			//console.log("LOTS OF DATA", $scope.numPlayers, $scope.myGameSize, $scope.playerss )
 
 			//start the game if it hasnt started
 			//then add you to waiting state
-			if(myGameInfo){
-				if(!myGameInfo.players){
-					console.log("myGameInfo", myGameInfo)
-					$rootScope.cardsRef = thisGame.child('cards');
-				if (myGameInfo.cards){
-					console.log("THERE SHOULD BE CARDS NOW?")
-					gamesList.off('value', stockDeck);
-				}
-				return;
-			}
-		}
+		// 	if(myGameInfo){
+		// 			console.log("myGameInfo", myGameInfo)
+		// 			$rootScope.cardsRef = thisGame.child('cards');
+		// 		if (myGameInfo.cards){
+		// 			console.log("THERE SHOULD BE CARDS NOW?")
+		// 			gamesList.off('value', stockDeck);
+		// 		}
+		// 		return;
+		// }
 				// so the game exists...
 				// let the scope know what gamestate it is
 				// this should show all cards
-				if( snap.val().gamestate != null){
-					$scope.currentState = snap.val().gamestate;
-				}
+				// if( snap.val().gamestate != null){
+				// 	$scope.currentState = snap.val().gamestate;
+				// }
 				// if (!snap.val().players){
 				// 	GameService.addPlayer();
 				// }
@@ -176,8 +197,8 @@ var stockDeck = gameList.on('value', function(snap) {
 				}
 			})
 			if (cards){
-				$rootScope.blackCard = cards.scenarioCard;
-				console.log("rootBlackCard in game watcher", $rootScope.blackCard)
+				$scope.blackCard = cards.scenarioCard;
+				console.log("rootBlackCard in game watcher", $scope.blackCard)
 			}
 		})
 
@@ -227,7 +248,7 @@ var stockDeck = gameList.on('value', function(snap) {
 					confirmButtonText: "CANNOT CONTINUE' ",
 				});
 				GameService.gameInstance.set(null);
-				$timeout(function() {$state.go('userPage')}, 1000);
+				$timeout(function() {$state.go('userPage')}, 3000);
 			}
 		});
 
@@ -271,7 +292,7 @@ var stockDeck = gameList.on('value', function(snap) {
 					myRef.remove();
 					$timeout(function() {
 					location.reload(true);
-					}, 2000)
+					}, 4000)
 				};
 			});
 			return;
@@ -294,10 +315,9 @@ var stockDeck = gameList.on('value', function(snap) {
 				var player1 = $scope.player1;
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
 				if (myId === player1){
-					// scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
-					console.log($rootScope.blackCard, "NEW BLACK CARD WOW!")
+					console.log($scope.blackCard, "NEW BLACK CARD WOW!")
 				}
 			}
 			$scope.currentState = thisState;
@@ -329,8 +349,8 @@ var stockDeck = gameList.on('value', function(snap) {
 		});
 		// if the black card changes update what you see as the black card
 		scenarioCardRef.on("value", function(snap) {
-			$rootScope.blackCard = snap.val();
-			console.log("BLACK CARD IS", $rootScope.blackCard)
+			$scope.blackCard = snap.val();
+			console.log("BLACK CARD IS", $scope.blackCard)
 		});
 
 		//update the scope when I submit a response card
@@ -453,7 +473,6 @@ var stockDeck = gameList.on('value', function(snap) {
 
 		$scope.removePlayer = function(){
 			GameService.removePlayer();
-			localStorage.removeItem('myGame')
 			$state.go("userPage");
 		}
 

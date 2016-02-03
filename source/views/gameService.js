@@ -157,6 +157,7 @@ gameList.on('value', function(snap){
 		var myId = myInfo._id
 		allPlayers.child(myId).remove();
 		playersRef.child(myId).remove();
+		localStorage.removeItem('myGame')
 		console.log("PLAYER QUIT", myId)
 	}
 

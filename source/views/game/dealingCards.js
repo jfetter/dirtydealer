@@ -4,18 +4,10 @@ angular.module('cardsAgainstHumanity')
 
 .service('CardsService', function($timeout, $location, $rootScope, $state, $cookies, UserService, jwtHelper, $firebaseObject, $firebaseArray, $http){
 
-	var tempBlackCard = [];
-	 // this.scenarioRef = $rootScope.cardsRef.child('scenario') || null;
-		//this.whiteCardRef = $rootScope.cardRef.child("whiteCards");
-		//this.blackCardRef = $rootScope.cardRef.child("blackCards");
-		//this.tempWhiteRef = $rootScope.cardRef.child("tempWhite");
-		//$rootScope.cardRef; = new Firebase(`https://dirtydealer.firebaseio.com/games/${myGame}/cards`);
-		
-		//this.scenarioRef = $rootScope.cardsRef.child('scenario');
-
 	
+	var rootRef = new Firebase("https://dirtydealer.firebaseio.com/");
+	var gameList = rootRef.child('games');
 	var myGame = localStorage.myGame;
-
 
 	this.startDeck = function(){	
 		var cards = {};
@@ -25,32 +17,23 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.dealBlackCard = function(){
+		var blackCardRef = $rootScope.cardsRef.child('black');
+		console.log("IN DRAW FUNCTION CARD REF", blackCardRef);
 		var tempBlackCard;
-		var cardRef = $rootScope.gameInstance.child('cards');
-		console.log("CARD REF", cardRef);
-		var blackCardRef = cardRef.child('black');
-		console.log("BLACK CARD REF", cardRef);
-
-		$rootScope.blackCardRef = blackCardRef; 
-		console.log("ROOT BLACK CARD REF", cardRef);
-		blackCardRef.on('value', function(snap) {
-			tempBlackCard = snap.val();
+		var blackCardLength;
+		cardRef.on('value', function(snap) {
+			tempBlackCard = snap.val().black;
+			//var tempBlackCard2 = snap.val().black;
 			console.log("temp black card",tempBlackCard);
 		});
 		//force black card value change on firebase
-		blackCardRef.update({dummyCard: 'dummyCard'});
-		blackCardRef.child('dummyCard').remove();
-			// if (!tempBlackCard){
-			// 	this.dealBlackCard();
-			// }
-		//this.cardRef.child("scenarioCard").set(null);
-		var rando = Math.floor(Math.random() * tempBlackCard.length );
+		cardRef.child("scenarioCard").remove();
+		var rando = Math.floor(Math.random() * blackCardLength );
 		var takenCard = tempBlackCard[rando];
 		tempBlackCard.splice(rando, 1);
-		cardRef.child("scenarioCard").set(takenCard)
+		console.log("SETTING TAKEN CARD", takenCard)
+		cardRef.child("scenarioCard").set(takenCard);
 		blackCardRef.set(tempBlackCard);
-		$rootScope.blackCard = takenCard;
-		console.log("ROOT BLACK SCENARIO", cardRef);
 		return takenCard;
 	}
 
@@ -78,20 +61,23 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.draw = function(){
-		var cardRef = $rootScope.gameInstance.child('cards');
+		var thisGameRef = gameList.child(myGame);
+		var cardRef = thisGameRef.child('cards')
 		console.log("IN DRAW FUNCTION CARD REF", cardRef);
 		var whiteCardRef = cardRef.child('white');
+		var tempWhiteCard;
+		var whiteCardLength;
 		console.log("WHITE CARD REF", whiteCardRef);
-		this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val()
+		whiteCardRef.on('value', function(snap) {
+		tempWhiteCard = snap.val();
 	});
 		//force white hand value change in firebase
-		this.whiteCardRef.update({test: "test"});
-		this.whiteCardRef.child('test').remove();
+		whiteCardRef.update({test: "test"});
+		whiteCardRef.child('test').remove();
 
-		this.whiteCardRef.update({test: "test"});
-		this.whiteCardRef.child('test').remove();
-		this.whiteCardRef.on('value', function(snap) {
+		whiteCardRef.update({test: "test"});
+		whiteCardRef.child('test').remove();
+		whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val();
 		whiteCardLength = snap.numChildren();
 		//console.log("Temp white card updated", tempWhiteCard)
@@ -104,7 +90,7 @@ angular.module('cardsAgainstHumanity')
 		var takenCard = tempWhiteCard[rando];
 		//console.log("TAKEN", takenCard);
 		tempWhiteCard.splice(rando, 1);
-		this.cardRef.child('whiteCards').set(tempWhiteCard);
+		cardRef.child('white').set(tempWhiteCard);
 		// }
 		return takenCard
 	}
