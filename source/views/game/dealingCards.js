@@ -32,7 +32,6 @@ angular.module('cardsAgainstHumanity')
 
 		$rootScope.blackCardRef = blackCardRef; 
 		console.log("ROOT BLACK CARD REF", cardRef);
-		$rootScope.scenarioCard; 
 
 		blackCardRef.on('value', function(snap) {
 			tempBlackCard = snap.val();
@@ -47,6 +46,7 @@ angular.module('cardsAgainstHumanity')
 		tempBlackCard.splice(rando, 1);
 		cardRef.child("scenarioCard").set(takenCard)
 		blackCardRef.set(tempBlackCard);
+		$rootScope.blackCard = takenCard;
 		console.log("ROOT BLACK SCENARIO", cardRef);
 		return takenCard;
 	}
@@ -75,6 +75,10 @@ angular.module('cardsAgainstHumanity')
 	}
 
 	this.draw = function(){
+		var cardRef = $rootScope.gameInstance.child('cards');
+		console.log("IN DRAW FUNCTION CARD REF", cardRef);
+		var whiteCardRef = cardRef.child('white');
+		console.log("WHITE CARD REF", whiteCardRef);
 		this.whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val()
 	});

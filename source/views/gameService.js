@@ -33,7 +33,6 @@ return myInfo;
 
 	function addPlayer(gameId){
 
-
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id;
 		var userName = myInfo.username;
@@ -81,10 +80,10 @@ $rootScope.newGame = function(gameSize){
  	$state.go('game');
  }
 
- $rootScope.$watch('gameInstance', function(newVal){
- 		$rootScope.gameInstance = newVal;
- 		console.log("newVal", newVal)
- })
+ // $rootScope.$watch('gameInstance', function(newVal){
+ // 		$rootScope.gameInstance = newVal;
+ // 		console.log("newVal", newVal)
+ // })
 
 $rootScope.joinGame = function(gameId){
 	$rootScope.gameId = gameId;
@@ -204,6 +203,7 @@ gameList.on('value', function(snap){
 		responseRef.child(myId).set({text: cardClicked, player: myId})
 		return tempHand
 	}
+
 	this.drawOneCard = function() {
 		var tempHand;
 		var newCard = CardsService.draw();
@@ -305,14 +305,14 @@ gameList.on('value', function(snap){
 
 	this.addMessage = function(message, player) {
 		if(!message) return;
-
-		var cookies = $cookies.get('token');
-		var token = jwtHelper.decodeToken(cookies);
+		var myInfo = identifyPlayer();
+		var myId = myInfo._id;
+		var myName = myInfo.username;
 		console.log(message, "MESSAGE I TYPE WHOO");
 
 		this.messages.$add({
 			text: message,
-			username: token.username,
+			username: username,
 			timestamp: Date.now()
 		});
 	}

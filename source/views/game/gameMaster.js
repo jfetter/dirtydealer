@@ -69,6 +69,7 @@ angular.module('cardsAgainstHumanity')
 			$rootScope.gamesArray = snap.val().games;
 		})
 
+
 // var stockDeck = gamesList.on('value', function(snap) { 
 // 			console.log("MY GAME IN TOP OF GAME MASTER", myGame)
 // 			if (!localStorage.myGame){
@@ -175,7 +176,7 @@ angular.module('cardsAgainstHumanity')
 				}
 			})
 			if (cards){
-				$scope.blackCard = cards.scenarioCard;
+				$rootScope.blackCard = cards.scenarioCard;
 			}
 		})
 
@@ -295,7 +296,7 @@ angular.module('cardsAgainstHumanity')
 					// scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
-					console.log($scope.blackCard, "NEW BLACK CARD WOW!")
+					console.log($rootScope.blackCard, "NEW BLACK CARD WOW!")
 				}
 			}
 			$scope.currentState = thisState;
@@ -327,8 +328,8 @@ angular.module('cardsAgainstHumanity')
 		});
 		// if the black card changes update what you see as the black card
 		scenarioCardRef.on("value", function(snap) {
-			$scope.blackCard = snap.val();
-			console.log("BLACK CARD IS", $scope.blackCard)
+			$rootScope.blackCard = snap.val();
+			console.log("BLACK CARD IS", $rootScope.blackCard)
 		});
 
 		//update the scope when I submit a response card
