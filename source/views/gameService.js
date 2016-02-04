@@ -194,7 +194,7 @@ gameList.on('value', function(snap){
 	| update MONGO |
 	|______________| */
 
-	function updateMongoWins(winner){
+	this.updateMongoWins = function(winner){
 		console.log("OFF TO MOGO DB TO LOOK FOR", winner)
 		//var winner = winner.userId;
 		$http.post("user/dirtyWin", {userId: winner})

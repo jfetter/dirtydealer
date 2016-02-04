@@ -545,11 +545,11 @@ gameList.once('value', function(snap) {
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 3){
+			if (myNewPoints >= 2){
 				winnerName = winnerName + "!";
 				console.log('we have a winner', player)
-				updateMongoWins(player);
-				this.gameInstance.child('winner').set({
+				GameService.updateMongoWins(player);
+				thisGame.child('winner').set({
 					userId: player,
 					winnerName: winnerName
 				});
