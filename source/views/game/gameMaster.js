@@ -545,7 +545,7 @@ gameList.once('value', function(snap) {
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 2){
+			if (myNewPoints >= 3){
 				winnerName = winnerName + "!";
 				console.log('we have a winner', player)
 				GameService.updateMongoWins(player);
