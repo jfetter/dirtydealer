@@ -17,6 +17,7 @@ angular.module('cardsAgainstHumanity')
 		myId = $scope.userInfo._id;
 	}
 
+
 	UserService.isAuthed(cookies)
 	.then(function(res , err){
 		if (res.data === "authRequired"){
@@ -62,18 +63,22 @@ angular.module('cardsAgainstHumanity')
 			console.log("NEW VAL OF CARDSREF",  newVal, "root is", $rootScope.cardsRef)
 		})
 
+		$rootScope.$watch('playersRef', function(newVal, oldVal){
+			console.log("NEW VAL OF CARDSREF",  newVal, "root is", $rootScope.playersRef)
+		})
+
 		var rootRef = GameService.rootRef;
 	  var gameList = GameService.gameList;
 		var allPlayers = GameService.allPlayers;
 
 				// anytime something changes... check in with the scope
-		rootRef.once('value', function(snap){
+		rootRef.on('value', function(snap){
 			console.log("time to rethink the refresh check in");
 			$rootScope.gamesArray = snap.val().games;
 		})
 
 
-gameList.on('value', function(snap) { 
+gameList.once('value', function(snap) { 
 	console.log("MY GAME IN TOP OF GAME MASTER", myGame)
 	if (!localStorage.myGame){
 		return;
@@ -108,7 +113,7 @@ gameList.on('value', function(snap) {
 		
 		var messageRef = thisGame.child("messages")
 		//$scope.playerss = GameService.playerss
-		//$scope.messages = GameService.messages;
+
 
 
 		/* ______________
@@ -269,8 +274,8 @@ gameList.on('value', function(snap) {
 			if (thisState === 1){
 				var player1 = $scope.player1;
 				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId === player1){
-					// scenarioCardRef.remove();
+				if (myId == player1){
+					scenarioCardRef.remove();
 					console.log("I AM PLAYER ONE!!!!", player1)
 					CardsService.dealBlackCard();
 					console.log($rootScope.blackCard, "NEW BLACK CARD WOW!")
@@ -359,7 +364,7 @@ gameList.on('value', function(snap) {
 			var votes = snap.val();
 			var votesLength = snap.numChildren();
 			console.log(votesLength, "VOTES OUTSIDE THE IF IN VOTES");
-			console.log("How votes", votes.length)
+			console.log("How many votes", votesLength)
 			if (votesLength == numPlayers) {
 				//console.log("INSIDE VOTES")
 
@@ -433,12 +438,41 @@ gameList.on('value', function(snap) {
 			$state.go("userPage");
 		}
 
-		// notify firebase that I submitted a response card
-		$scope.addToResponseCards = function(cardClicked, index) {
-			console.log("cardClicked", cardClicked)
-			GameService.addToResponseCards(cardClicked, index);
-		}
+	/* ______________
+	|              |
+	| cards        |
+	|______________| */
 
+	//submit response card (game state 1)
+	$scope.addToResponseCards = function(cardClicked, index) {
+		var tempHand;
+		console.log(cardClicked, "BEGINNNING");
+		playersRef.child(myId).on('value', function(snap) {
+			//console.log(snap.val().cards, "IN SNAP.VAL");
+			tempHand = (snap.val().cards);
+			//console.log("Temporary hand", tempHand);
+		})
+		if(tempHand.length < 10){
+			return tempHand;
+		}
+		playersRef.child(myId).update({tempHand: tempHand})
+		tempHand.splice(index, 1);
+		playersRef.child(myId).update({cards: tempHand})
+		responseRef.child(myId).set({text: cardClicked, player: myId})
+		return tempHand
+	}
+
+		// notify firebase that I submitted a response card
+		// $scope.addToResponseCards = function(cardClicked, index){
+		// 	console.log("cardClicked", cardClicked)
+		// 	GameService.addToResponseCards(cardClicked, index);
+		// }
+
+	 function updateVoteRef(card){
+		var votes = $firebaseArray(votesRef);
+		var player = card.player;
+		votes.$add(player);
+	}
 
 		$scope.voteCard = function(card){
 			console.log("ROOTSCOPE voted", $rootScope.voted, "BANG ROOTSCOPE", !$rootScope.voted)
@@ -459,13 +493,29 @@ gameList.on('value', function(snap) {
 			} else {
 				$rootScope.voted = true;
 				console.log("I AM ROOT:", $rootScope.voted)
-				GameService.voteCard(card);
+				updateVoteRef(card);
 			}
 		}
 
-		$scope.addMessage = function(message) {
-			GameService.addMessage(message);
-		}
 
+
+	$scope.addMessage = function(message) {
+		var messages = $firebaseArray('messageRef');
+		$scope.messages = messages;
+		if(!message) return;
+		var myName = $scope.userInfo.username;
+		console.log(message, "MESSAGE I TYPE WHOO");
+
+		messages.$add({
+			text: message,
+			username: myName,
+			timestamp: Date.now()
+		});
+	}
+
+
+		// $scope.addMessage = function(message) {
+		// 	addMessage(message);
+		// }
 
 	});

@@ -29,10 +29,7 @@ return myInfo;
 	var gamesArray = $rootScope.gamesArray || null;
 	var myGame = $rootScope.gameId;
 
-
-
 	function addPlayer(gameId){
-
 		var myInfo = identifyPlayer();
 		var myId = myInfo._id;
 		var userName = myInfo.username;
@@ -90,7 +87,6 @@ $rootScope.joinGame = function(gameId){
  	$rootScope.gameInstance = gameList.child(gameId);
 	$rootScope.playersRef = $rootScope.gameInstance.child('players');
 	$rootScope.cardsRef = $rootScope.gameInstance.child('cards');
-	$rootScope.messageRef = $rootScope.gameInstance.child('messages');
 
  	console.log("GAME SIZE FUNCTION", gameId);
  	$rootScope.gameId = gameId;
@@ -108,16 +104,14 @@ if (localStorage.myGame){
 	this.gameInstance = gameList.child(myGame);
 	var gameInstance = this.gameInstance;
 	this.playersRef = gameInstance.child('players'); 
-	var playersRef = this.playersRef;
-	this.messageRef = gameInstance.child('messages');
-	var messageRef = this.messageRef;
-	this.messages = $firebaseArray(messageRef);
-	this.playerss = $firebaseArray(playersRef);
-	this.responseRef = gameInstance.child("response");
-	var responseRef = this.responseRef;
-	this.voteRef = gameInstance.child("votes");
-	var voteRef = this.voteRef;
-	this.votes = $firebaseArray(voteRef);
+	var playersRef = $rootScope.thisPlayersRef
+	//needed for logout after game ended
+	$rootScope.playersRef = gameInstance.child(myGame)
+	//this.playerss = $firebaseArray(playersRef);
+	//this.responseRef = gameInstance.child("response");
+	//var responseRef = this.responseRef;
+	//this.voteRef = gameInstance.child("votes");
+
 	this.gamestateRef = gameInstance.child("gamestate");
 	var gamestateRef = this.gamestateRef;
 }
@@ -156,7 +150,7 @@ gameList.on('value', function(snap){
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
 		allPlayers.child(myId).remove();
-		playersRef.child(myId).remove();
+		$rootScope.playersRef.child(myId).remove();
 		localStorage.removeItem('myGame');
 		console.log("PLAYER QUIT", myId)
 	}
@@ -164,7 +158,7 @@ gameList.on('value', function(snap){
 	this.pickCards = function(){
 		console.log(myId, "IS IN THE HIZOUSE");
 		var myHand = CardsService.startingHand();
-		this.playersRef.child(myId).update({
+		$rootScope.playersRef.child(myId).update({
 			cards: myHand
 		});
 		return myHand;
@@ -180,31 +174,6 @@ gameList.on('value', function(snap){
 	// }
 
 
-
-	/* ______________
-	|              |
-	| cards        |
-	|______________| */
-
-	//submit response card (game state 1)
-	this.addToResponseCards = function(cardClicked, index) {
-		var tempHand;
-		console.log(cardClicked, "BEGINNNING");
-		this.playersRef.child(myId).on('value', function(snap) {
-			//console.log(snap.val().cards, "IN SNAP.VAL");
-			tempHand = (snap.val().cards);
-			//console.log("Temporary hand", tempHand);
-		})
-		if(tempHand.length < 10){
-			return tempHand;
-		}
-		playersRef.child(myId).update({tempHand: tempHand})
-		tempHand.splice(index, 1);
-		playersRef.child(myId).update({cards: tempHand})
-		responseRef.child(myId).set({text: cardClicked, player: myId})
-		return tempHand
-	}
-
 	this.drawOneCard = function() {
 		var tempHand;
 		var newCard = CardsService.draw();
@@ -219,12 +188,6 @@ gameList.on('value', function(snap){
 		return tempHand
 	}
 
-	//vote for a card (game state 2)
-	this.voteCard = function(card){
-		//console.log("!!!!!You're trying to vote for!!!!", card.text, card.player)
-		var player = card.player;
-		this.votes.$add(player);
-	}
 
 	//deal a new white card for the player (game state 3)
 	this.updatePlayerAfterVote = function(){
@@ -244,7 +207,7 @@ gameList.on('value', function(snap){
 	// if you won the round add a point to your score (game state 2)
 	this.addWinPoint = function(player){
 
-		var myRef = playersRef.child(myId);
+		var myRef = $rootScope.playersRef.child(myId);
 
 		console.log("round winner is", player)
 
@@ -274,7 +237,7 @@ gameList.on('value', function(snap){
 					winnerName: winnerName
 				});
 			}
-			playersRef.child(player).update({gamePoints: myNewPoints})
+			$rootScope.playersRef.child(player).update({gamePoints: myNewPoints})
 			console.log(player, 'got a win point');
 			// this code is not tested and not finished !!!!!
 			gamestateRef.set(3)
@@ -304,18 +267,6 @@ gameList.on('value', function(snap){
 	| messages     |
 	|______________| */
 
-	this.addMessage = function(message, player) {
-		if(!message) return;
-		var myInfo = identifyPlayer();
-		var myId = myInfo._id;
-		var myName = myInfo.username;
-		console.log(message, "MESSAGE I TYPE WHOO");
 
-		this.messages.$add({
-			text: message,
-			username: username,
-			timestamp: Date.now()
-		});
-	}
 
 });

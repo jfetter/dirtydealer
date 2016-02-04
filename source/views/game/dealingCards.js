@@ -13,8 +13,11 @@ angular.module('cardsAgainstHumanity')
 		
 		//this.scenarioRef = $rootScope.cardsRef.child('scenario');
 
-	
+	var rootRef = new Firebase("https://dirtydealer.firebaseio.com/");
+	var gameList = rootRef.child('games');
 	var myGame = localStorage.myGame;
+	var gameInstance = $rootScope.gameInstance;
+	var cardRef = $rootScope.cardsRef;
 
 
 	this.startDeck = function(){	
@@ -26,7 +29,7 @@ angular.module('cardsAgainstHumanity')
 
 	this.dealBlackCard = function(){
 		var tempBlackCard;
-		var cardRef = $rootScope.gameInstance.child('cards');
+		var cardRef = $rootScope.cardsRef;
 		console.log("CARD REF", cardRef);
 		var blackCardRef = cardRef.child('black');
 		console.log("BLACK CARD REF", cardRef);
@@ -76,22 +79,24 @@ angular.module('cardsAgainstHumanity')
 		}
 		return fullHand;
 	}
-
 	this.draw = function(){
-		var cardRef = $rootScope.gameInstance.child('cards');
+		var thisGameRef = gameList.child(myGame);
+		var cardRef = thisGameRef.child('cards')
 		console.log("IN DRAW FUNCTION CARD REF", cardRef);
 		var whiteCardRef = cardRef.child('white');
+		var tempWhiteCard;
+		var whiteCardLength;
 		console.log("WHITE CARD REF", whiteCardRef);
-		this.whiteCardRef.on('value', function(snap) {
-		tempWhiteCard = snap.val()
+		whiteCardRef.on('value', function(snap) {
+		tempWhiteCard = snap.val();
 	});
 		//force white hand value change in firebase
-		this.whiteCardRef.update({test: "test"});
-		this.whiteCardRef.child('test').remove();
+		whiteCardRef.update({test: "test"});
+		whiteCardRef.child('test').remove();
 
-		this.whiteCardRef.update({test: "test"});
-		this.whiteCardRef.child('test').remove();
-		this.whiteCardRef.on('value', function(snap) {
+		whiteCardRef.update({test: "test"});
+		whiteCardRef.child('test').remove();
+		whiteCardRef.on('value', function(snap) {
 		tempWhiteCard = snap.val();
 		whiteCardLength = snap.numChildren();
 		//console.log("Temp white card updated", tempWhiteCard)
@@ -104,7 +109,7 @@ angular.module('cardsAgainstHumanity')
 		var takenCard = tempWhiteCard[rando];
 		//console.log("TAKEN", takenCard);
 		tempWhiteCard.splice(rando, 1);
-		this.cardRef.child('whiteCards').set(tempWhiteCard);
+		cardRef.child('white').set(tempWhiteCard);
 		// }
 		return takenCard
 	}
