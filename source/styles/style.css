@@ -455,6 +455,15 @@ tr {
 
 #messageTable {
   color: white;
+  border: none;
+}
+
+.message-tr{
+  border: none;
+}
+
+.message-td{
+  border: none;
 }
 
 #messageHeader {
@@ -464,7 +473,7 @@ tr {
 }
 
 #messageText {
-  color: black;
+  color: white;
 }
 
 #tableHeader {

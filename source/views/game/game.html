@@ -107,13 +107,13 @@
       <thead id="messageHeader">
         <tr>
           <th>Player</th>
-          <th>Message</th>
+          <th>Messages</th>
         </tr>
       </thead>
-      <tbody id="messageTable">
+      <tbody class="" id="messageTable">
         <tr ng-repeat="message in messages.slice().reverse() track by $index">
-          <td>{{message.username}}</td>
-          <td><input ng-model="message.text" id="messageText" ng-change="messages.$save(message)"/></td>
+          <td>{{message.username}} :</td>
+          <td><h4 ng-model="message.text" id="messageText">{{message.text}}<h4/></td>
         </tr>
       </tbody>
     </table>

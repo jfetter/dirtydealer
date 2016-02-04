@@ -562,19 +562,28 @@ gameList.once('value', function(snap) {
 		return;
 	} // end add win point
 
+	var tempMessages;
+	messageRef.on('value', function(snap){
+		console.log("snapper", snap.val())
+		tempMessages = []
+		snap.forEach(function(message){
+		tempMessages.push(message.val());
+		$scope.messages = tempMessages;
+		})
+	})
 
 	$scope.addMessage = function(message) {
-		var messages = $firebaseArray(messageRef);
-		$scope.messages = messages;
 		if(!message) return;
+
+		var messages = $firebaseArray(messageRef);
 		var myName = $scope.userInfo.username;
 		console.log(message, "MESSAGE I TYPE WHOO");
-
 		messages.$add({
 			text: message,
 			username: myName,
 			timestamp: Date.now()
 		});
+		//$scope.newMessageText = "";
 	}
 
 
