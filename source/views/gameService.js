@@ -83,6 +83,7 @@ $rootScope.newGame = function(gameSize){
  // })
 
 $rootScope.joinGame = function(gameId){
+	// for waiting for players page
 	$rootScope.gameId = gameId;
  	$rootScope.gameInstance = gameList.child(gameId);
 	$rootScope.playersRef = $rootScope.gameInstance.child('players');
