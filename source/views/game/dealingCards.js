@@ -79,11 +79,12 @@ angular.module('cardsAgainstHumanity')
 		}
 		return fullHand;
 	}
+	
 	this.draw = function(){
-		var thisGameRef = gameList.child(myGame);
-		var cardRef = thisGameRef.child('cards')
+		//var thisGameRef = gameList.child(myGame);
+		//var cardRef = thisGameRef.child('cards')
 		console.log("IN DRAW FUNCTION CARD REF", cardRef);
-		var whiteCardRef = cardRef.child('white');
+		var whiteCardRef = $rootScope.cardsRef.child('white');
 		var tempWhiteCard;
 		var whiteCardLength;
 		console.log("WHITE CARD REF", whiteCardRef);
@@ -109,7 +110,7 @@ angular.module('cardsAgainstHumanity')
 		var takenCard = tempWhiteCard[rando];
 		//console.log("TAKEN", takenCard);
 		tempWhiteCard.splice(rando, 1);
-		cardRef.child('white').set(tempWhiteCard);
+		whiteCardRef.set(tempWhiteCard);
 		// }
 		return takenCard
 	}

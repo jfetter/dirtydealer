@@ -174,19 +174,7 @@ gameList.on('value', function(snap){
 	// }
 
 
-	this.drawOneCard = function() {
-		var tempHand;
-		var newCard = CardsService.draw();
-		this.playersRef.child(myId).on('value', function(snap) {
-			//	console.log(snap.val().cards, "IN SNAP.VAL");
-			tempHand = (snap.val().cards);
-			//	console.log("Temporary hand", tempHand);
-		})
-		playersRef.child(myId).update({tempHand: tempHand})
-		tempHand.push(newCard);
-		playersRef.child(myId).update({cards: tempHand})
-		return tempHand
-	}
+
 
 
 	//deal a new white card for the player (game state 3)
@@ -199,51 +187,7 @@ gameList.on('value', function(snap){
 		console.log("player should have new cards and new point total now")
 	}
 
-	/* ______________
-	|              |
-	| win points   |
-	|______________| */
 
-	// if you won the round add a point to your score (game state 2)
-	this.addWinPoint = function(player){
-
-		var myRef = $rootScope.playersRef.child(myId);
-
-		console.log("round winner is", player)
-
-		//only add points once per player
-		if (player === myId){
-			var winnerName;
-
-			var myPoints;
-			myRef.on('value', function(snap) {
-				myPoints = snap.val().gamePoints;
-				winnerName = snap.val().username;
-			})
-
-			var myNewPoints = myPoints + 1;
-
-			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
-			myRef.update({temp: "temp"});
-			myRef.child('temp').remove();
-
-			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 3){
-				winnerName = winnerName + "!";
-				console.log('we have a winner', player)
-				updateMongoWins(player);
-				this.gameInstance.child('winner').set({
-					userId: player,
-					winnerName: winnerName
-				});
-			}
-			$rootScope.playersRef.child(player).update({gamePoints: myNewPoints})
-			console.log(player, 'got a win point');
-			// this code is not tested and not finished !!!!!
-			gamestateRef.set(3)
-		} //end if me
-		return;
-	} // end add win point
 
 	/* ______________
 	|              |

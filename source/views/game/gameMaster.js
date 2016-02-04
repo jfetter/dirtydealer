@@ -59,12 +59,26 @@ angular.module('cardsAgainstHumanity')
 			console.log("thisGame has these values", newVal);
 		})
 
-		$rootScope.$watch('cardsRef', function(newVal, oldVal){
-			console.log("NEW VAL OF CARDSREF",  newVal, "root is", $rootScope.cardsRef)
-		})
+		// $rootScope.$watch('cardsRef', function(newVal, oldVal){
+		// 	console.log("NEW VAL OF CARDSREF",  newVal, "root is", $rootScope.cardsRef)
+		// })
 
 		$rootScope.$watch('playersRef', function(newVal, oldVal){
-			console.log("NEW VAL OF CARDSREF",  newVal, "root is", $rootScope.playersRef)
+			console.log("players watch says players are", newVal)
+
+		})		
+
+function dealBlackCard(){
+		var player1 = $scope.player1;
+		console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
+		if (myId == player1 && !$rootScope.blackCard){
+			console.log("I AM PLAYER ONE!!!!", player1)
+			CardsService.dealBlackCard();
+			console.log($rootScope.blackCard, "NEW BLACK CARD WOW!")
+		}
+	}
+		$rootScope.$watch('gameStateRef', function(newVal, oldVal){
+			if (newVal != oldVal) dealBlackCard();
 		})
 
 		var rootRef = GameService.rootRef;
@@ -263,23 +277,29 @@ gameList.once('value', function(snap) {
 		| GAME STATE   |
 		|______________| */
 
+		function drawOneCard() {
+		var tempHand;
+		var newCard = CardsService.draw();
+		myRef.on('value', function(snap) {
+			//	console.log(snap.val().cards, "IN SNAP.VAL");
+			tempHand = (snap.val().cards);
+			//	console.log("Temporary hand", tempHand);
+		})
+		myRef.update({tempHand: tempHand})
+		tempHand.push(newCard);
+		myRef.update({cards: tempHand})
+		return tempHand
+	}
+
 
 		//connect with firebase game states
-		gamestateRef.on('value', function(snap) {
+		gamestateRef.on('value', function(snap){
 			var thisState = snap.val();
 			$rootScope.voted = false;
-			console.log("CONSOLE ME HEROKU... PLEASE", $rootScope.voted)
 			console.log("GAME REF JUST CHANGED TO: ", thisState)
 			// have one player initiate the dealing of the black card
 			if (thisState === 1){
-				var player1 = $scope.player1;
-				console.log("I MAY OR MAY NOT BE PLAYER ONE!!!!", player1)
-				if (myId == player1){
-					scenarioCardRef.remove();
-					console.log("I AM PLAYER ONE!!!!", player1)
-					CardsService.dealBlackCard();
-					console.log($rootScope.blackCard, "NEW BLACK CARD WOW!")
-				}
+				dealBlackCard();
 			}
 			$scope.currentState = thisState;
 			//gamestate(thisState);
@@ -287,11 +307,12 @@ gameList.once('value', function(snap) {
 				console.log("!!!! POSTVOTE !!!!")
 				votesRef.remove();
 				responseRef.remove();
-				// scenarioCardRef.remove();
+				scenarioCardRef.remove();
+				$rootScope.blackCard = null;
 				//myRef.child('voted').remove();
 				myRef.child('submittedResponse').remove();
 				//myRef.child('tempHand').remove();
-				GameService.drawOneCard();
+				drawOneCard();
 				gamestateRef.set(1);
 			}
 			thisGame.child('temp').set('temp');
@@ -309,8 +330,8 @@ gameList.once('value', function(snap) {
 			$scope.myHand = snap.val();
 		});
 		// if the black card changes update what you see as the black card
-		scenarioCardRef.on("value", function(snap) {
-			$rootScope.blackCard = snap.val();
+		cardsRef.on("value", function(snap) {
+			$rootScope.blackCard = snap.val().scenarioCard;
 			console.log("BLACK CARD IS", $rootScope.blackCard)
 		});
 
@@ -419,7 +440,7 @@ gameList.once('value', function(snap) {
 					winner.forEach(function(player){
 						var player = player.player;
 						console.log(player, "GETS A POINT !!!!")
-						GameService.addWinPoint(player);
+						addWinPoint(player);
 					})
 				},50)
 
@@ -497,6 +518,49 @@ gameList.once('value', function(snap) {
 			}
 		}
 
+
+	/* ______________
+	|              |
+	| win points   |
+	|______________| */
+
+	// if you won the round add a point to your score (game state 2)
+	function addWinPoint(player){
+		console.log("round winner is", player)
+
+		//only add points once per player
+		if (player === myId){
+			var winnerName;
+
+			var myPoints;
+			myRef.on('value', function(snap) {
+				myPoints = snap.val().gamePoints;
+				winnerName = snap.val().username;
+			})
+
+			var myNewPoints = myPoints + 1;
+
+			//FORCING FIREBASE TO TAKE SNAPSHOT OF PLAYER
+			myRef.update({temp: "temp"});
+			myRef.child('temp').remove();
+
+			myRef.child('gamePoints').set(myNewPoints)
+			if (myNewPoints >= 3){
+				winnerName = winnerName + "!";
+				console.log('we have a winner', player)
+				updateMongoWins(player);
+				this.gameInstance.child('winner').set({
+					userId: player,
+					winnerName: winnerName
+				});
+			}
+			$rootScope.playersRef.child(player).update({gamePoints: myNewPoints})
+			console.log(player, 'got a win point');
+			// this code is not tested and not finished !!!!!
+			gamestateRef.set(3)
+		} //end if me
+		return;
+	} // end add win point
 
 
 	$scope.addMessage = function(message) {
