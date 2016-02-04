@@ -564,7 +564,7 @@ gameList.once('value', function(snap) {
 
 
 	$scope.addMessage = function(message) {
-		var messages = $firebaseArray('messageRef');
+		var messages = $firebaseArray(messageRef);
 		$scope.messages = messages;
 		if(!message) return;
 		var myName = $scope.userInfo.username;
