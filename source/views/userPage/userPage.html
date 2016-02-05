@@ -38,7 +38,7 @@
 				<div ng-show="isOwnPage" >
 
 					<div class="row" id="joinExistingGame">
-						<div  ng-repeat="game in gamesArray"	>
+						<div  ng-repeat="game in gamesArray">
 							<div ng-hide="{{game.gameSize - game.numPlayers === 0}}">
 								<h3>{{game.id}} <br> {{game.numPlayers}} of {{game.gameSize}} players</h3>
 								<button  id="joinGameButton" ng-click="joinGame(game.id)">Join Game!</button>

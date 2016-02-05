@@ -342,6 +342,7 @@ gameList.once('value', function(snap) {
 				responseRef.remove();
 				scenarioCardRef.remove();
 				$rootScope.blackCard = null;
+				$scope.winners = [];
 				//myRef.child('voted').remove();
 				myRef.child('submittedResponse').remove();
 				//myRef.child('tempHand').remove();
@@ -375,12 +376,18 @@ gameList.once('value', function(snap) {
 
 	$scope.isMyCard = function(card){
 		if(card === myId){
-			console.log(card, "That's me!");
 			return "myCard";
 		} else {
-			console.log(card, "That ain't!");
 			return "whiteCard"
 		}
+	}
+
+	$scope.winCard = function(card){
+			if($scope.winners.indexOf(card) != -1){
+				return "winner";
+			} else {
+				return "whiteCard";
+			}	
 	}
 
 		/* _____________
@@ -479,8 +486,10 @@ gameList.once('value', function(snap) {
 
 				$timeout( function(){
 					console.log("*.*.*.* WINNER ARRAY PHASE 3*.*.*.*", winner);
+					$scope.winners = []; 
 					winner.forEach(function(player){
 						var player = player.player;
+						$scope.winners.push(player)
 						console.log(player, "GETS A POINT !!!!")
 						addWinPoint(player);
 					})
@@ -586,7 +595,7 @@ gameList.once('value', function(snap) {
 			myRef.child('temp').remove();
 
 			myRef.child('gamePoints').set(myNewPoints)
-			if (myNewPoints >= 3){
+			if (myNewPoints >= 8){
 				winnerName = winnerName + "!";
 				console.log('we have a winner', player)
 				GameService.updateMongoWins(player);
@@ -598,7 +607,8 @@ gameList.once('value', function(snap) {
 			$rootScope.playersRef.child(player).update({gamePoints: myNewPoints})
 			console.log(player, 'got a win point');
 			// this code is not tested and not finished !!!!!
-			gamestateRef.set(3)
+
+			$timeout(function(){gamestateRef.set(3)}, 3000)
 		} //end if me
 		return;
 	} // end add win point
@@ -614,8 +624,7 @@ gameList.once('value', function(snap) {
 	})
 
 	$scope.addMessage = function(message) {
-		//if(!message) return;
-		console.log("i see you clicked")
+		if(!message) return;
 		var messages = $firebaseArray(messageRef);
 		var myName = $scope.userInfo.username;
 		console.log(message, "MESSAGE I TYPE WHOO");
@@ -624,7 +633,7 @@ gameList.once('value', function(snap) {
 			username: myName,
 			timestamp: Date.now()
 		});
-		$scope.newMessageText = "";
+		//$scope.messageIn.$setPristine();
 	}
 
 

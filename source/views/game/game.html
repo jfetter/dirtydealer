@@ -43,8 +43,9 @@
       <h1>Responses</h1>
       <div ng-show="currentState === 1" class="row">Click to vote for a card once all responses are submitted!</div>
       <div ng-repeat="response in responses track by $index" id="responseCards" class="row">
-          <div ng-if="isMyCard(response.player)==='myCard'"><p>my card</p> </div>
-        <p ng-class="isMyCard(response.player)" ng-click="voteCard(response)"> <span ng-show="currentState === 2">{{response.text}} </span></p>
+          <div ><h3 ng-if="winCard(response.player)==='winner'">WINNER!</h3><ng-if="isMyCard(response.player)==='myCard' && !winners"p>my card</p> </div>
+        <p ng-if="winners.length === 0" ng-class="isMyCard(response.player)" ng-click="voteCard(response)"> <span ng-show="currentState === 2">{{response.text}} </span></p>
+        <p ng-if="winCard(response.player) === 'winner'" ng-class="winCard(response.player)"> <span ng-show="currentState === 2">{{response.text}} </span></p>
          
         
       </div>
@@ -99,9 +100,9 @@
   <div class="container col-sm-12" id="messageDiv">
     <div id="addMessageInput">
       <h1 id="messageHeader">Chat Zone</h1>
-      <form ng-submit="addMessage(newMessageText)">
-        <input class="messageInput col-sm-6" ng-model="newMessageText" type="text" />
-        <button type="submit" id="commentButton">Send Message</button>
+      <form name="messageIn" ng-click="addMessage(newMessageText)" >
+        <input  class="messageInput col-sm-6" ng-model="newMessageText" type="text" />
+        <button  type="submit" id="commentButton">Send Message</button>
       </form>
     </div>
     <table class="table table-responsive" id="messageContainer">
