@@ -383,7 +383,9 @@ gameList.once('value', function(snap) {
 	}
 
 	$scope.winCard = function(card){
-			if($scope.winners.indexOf(card) != -1){
+		if (!$scope.winners){return}
+		var winners = $scope.winners
+			if(winners.indexOf(card) != -1){
 				return "winner";
 			} else {
 				return "whiteCard";
