@@ -6,10 +6,10 @@ a) npm i
 
 b) bower i
 
-c) export JWT_SECRET="sometext"
+c) if you do not have a JWT as an env variable, export JWT_SECRET="sometext"
 
 d) gulp
 
-on heroku: https://dry-dawn-94066.herokuapp.com/
+OR play it live on heroku: https://mysterious-temple-85764.herokuapp.com
 
 
