@@ -61,12 +61,7 @@ angular.module('cardsAgainstHumanity')
 
 		// $rootScope.$watch('cardsRef', function(newVal, oldVal){
 		// 	console.log("NEW VAL OF CARDSREF",  newVal, "root is", $rootScope.cardsRef)
-		// })
-
-		$rootScope.$watch('playersRef', function(newVal, oldVal){
-			console.log("players watch says players are", newVal)
-
-		})		
+		// })		
 
 function dealBlackCard(){
 		var player1 = $scope.player1;
@@ -106,7 +101,7 @@ gameList.once('value', function(snap) {
 })
 
 
-	//if(localStorage.myGame){
+	
 		myGame = localStorage.myGame;
 		var thisGame = gameList.child(myGame);
 		var playersRef = thisGame.child("players");
@@ -124,7 +119,6 @@ gameList.once('value', function(snap) {
 		var votesRef = thisGame.child("votes");
 		var cardsRef = thisGame.child("cards");
 		var winVotes = thisGame.child("votes");
-		
 		var messageRef = thisGame.child("messages")
 		//$scope.playerss = GameService.playerss
 
@@ -189,6 +183,7 @@ gameList.once('value', function(snap) {
 			}
 			$scope.playerss = players;
 			var numPlayers = snap.numChildren();
+			thisGame.child('numPlayers').set(numPlayers)
 			//when there are 3 players move the game into the first game state
 			if (numPlayers === $rootScope.myGameSize && !$scope.currentState) {
 				gamestateRef.set(1);
@@ -454,8 +449,8 @@ gameList.once('value', function(snap) {
 
 
 		$scope.removePlayer = function(){
+			thisGame.child(myId).remove();
 			GameService.removePlayer();
-			localStorage.removeItem('myGame')
 			$state.go("userPage");
 		}
 
@@ -573,8 +568,8 @@ gameList.once('value', function(snap) {
 	})
 
 	$scope.addMessage = function(message) {
-		if(!message) return;
-
+		//if(!message) return;
+		console.log("i see you clicked")
 		var messages = $firebaseArray(messageRef);
 		var myName = $scope.userInfo.username;
 		console.log(message, "MESSAGE I TYPE WHOO");
@@ -583,12 +578,8 @@ gameList.once('value', function(snap) {
 			username: myName,
 			timestamp: Date.now()
 		});
-		//$scope.newMessageText = "";
+		$scope.newMessageText = "";
 	}
 
-
-		// $scope.addMessage = function(message) {
-		// 	addMessage(message);
-		// }
 
 	});

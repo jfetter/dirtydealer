@@ -146,6 +146,7 @@ gameList.on('value', function(snap){
 	//remove players
 	this.removePlayer = function(){
 		if (!localStorage.myGame){
+			$state.go("userPage")
 			return;
 		}
 		var myInfo = identifyPlayer()

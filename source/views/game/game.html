@@ -99,21 +99,21 @@
     <div id="addMessageInput">
       <h1 id="messageHeader">Chat Zone</h1>
       <form ng-submit="addMessage(newMessageText)">
-        <input ng-model="newMessageText" type="text" />
         <button type="submit" id="commentButton">Send Message</button>
+        <textarea rows="2" cols="30" class="messageInput" ng-model="newMessageText" type="text"> <textarea />
       </form>
     </div>
     <table class="table table-responsive" id="messageContainer">
       <thead id="messageHeader">
-        <tr>
-          <th>Player</th>
-          <th>Messages</th>
+        <tr >
+          <th class="text-right">Player:</th>
+          <th>Message</th>
         </tr>
       </thead>
-      <tbody class="" id="messageTable">
+      <tbody  id="messageTable">
         <tr ng-repeat="message in messages.slice().reverse() track by $index">
-          <td>{{message.username}} :</td>
-          <td><h4 ng-model="message.text" id="messageText">{{message.text}}<h4/></td>
+          <td class="text-right"><h4>{{message.username}} :</h4></td>
+          <td class="text-left"><h4 ng-model="message.text" id="messageText">{{message.text}}<h4/></td>
         </tr>
       </tbody>
     </table>
