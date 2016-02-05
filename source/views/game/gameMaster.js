@@ -100,8 +100,6 @@ gameList.once('value', function(snap) {
 	console.log("SNAP VAL", snap.val()[myGame]);
 })
 
-
-	
 		myGame = localStorage.myGame;
 		var thisGame = gameList.child(myGame);
 		var playersRef = thisGame.child("players");
@@ -137,7 +135,7 @@ gameList.once('value', function(snap) {
 				return;
 			}
 			$rootScope.myGameSize = snappy.gameSize; 
-
+			$rootScope.gameId = myGame;
 			$scope.currentState = snappy.gamestate;
 
 			if(snappy.player1){
@@ -201,6 +199,14 @@ gameList.once('value', function(snap) {
 			$scope.playerss = players;
 		}
 
+				// 		swal({
+				// 	type: "error",
+				// 	title: "Wow, someone thinks they're special",
+				// 	text: "Choose someone else's response",
+				// 	showConfirmButton: true,
+				// 	confirmButtonText: "Choose Again",
+				// });
+
 		// if someone leaves alert everyone
 		playersRef.on("child_removed", function(snap) {
 			var assHole = snap.val();
@@ -221,6 +227,38 @@ gameList.once('value', function(snap) {
 			}
 		});
 
+	playersRef.on("child_removed", function(snap) {
+			var numPlayers = Object.keys(snap.val()).length;
+			thisGame.child('numPlayers') = numPlayers;
+			thisGame.child('player1').remove();
+
+			var assHole = snap.val();
+			var assHoleMessage = assHole.username + " just left the game";
+			console.log(assHole);
+			if (numPlayers === 0){
+				gameList.child(myGame).remove();
+			} else if (numPlayers < $scope.gameSize ){
+				assHoleMessage += "and there are no longer enough players!"
+							swal({
+					type: "error",
+					title: "Uh-Oh!",
+					text: assHoleMessage,
+					showConfirmButton: true,
+					confirmButtonText: "BACK TO PROFILE",
+				});
+				gameList.child(myGame).remove();
+				$state.go('userPage');
+			} else{
+				gameStateRef.set(3);
+				swal({
+					type: "error",
+					title: "we have a quitter",
+					text: assHoleMessage,
+					showConfirmButton: true,
+					confirmButtonText: "Resetting This Round",
+				});
+			}
+		});
 
 		/* ______________
 		|              |
@@ -252,7 +290,7 @@ gameList.once('value', function(snap) {
 				confirmButtonText: "Cool. I'm done."
 			}, function(isConfirm) {
 				if (isConfirm) {
-						GameService.removePlayer();
+						$scope.removePlayer();
 				} else {
 					cardsRef.remove();
 					thisGame.child("winner").remove();
@@ -335,6 +373,15 @@ gameList.once('value', function(snap) {
 			$scope.haveSubmitted = snap.val();
 		})
 
+	$scope.isMyCard = function(card){
+		if(card === myId){
+			console.log(card, "That's me!");
+			return "myCard";
+		} else {
+			console.log(card, "That ain't!");
+			return "whiteCard"
+		}
+	}
 
 		/* _____________
 		|              |
@@ -451,7 +498,6 @@ gameList.once('value', function(snap) {
 		$scope.removePlayer = function(){
 			thisGame.child(myId).remove();
 			GameService.removePlayer();
-			$state.go("userPage");
 		}
 
 	/* ______________

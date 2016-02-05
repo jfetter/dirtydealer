@@ -112,7 +112,6 @@ if (localStorage.myGame){
 	//this.responseRef = gameInstance.child("response");
 	//var responseRef = this.responseRef;
 	//this.voteRef = gameInstance.child("votes");
-
 	this.gamestateRef = gameInstance.child("gamestate");
 	var gamestateRef = this.gamestateRef;
 }
@@ -146,15 +145,14 @@ gameList.on('value', function(snap){
 	//remove players
 	this.removePlayer = function(){
 		if (!localStorage.myGame){
-			$state.go("userPage")
 			return;
 		}
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
 		allPlayers.child(myId).remove();
-		$rootScope.playersRef.child(myId).remove();
-		localStorage.removeItem('myGame');
-		console.log("PLAYER QUIT", myId)
+		localStorage.clear();
+		console.log("PLAYER QUIT", myId);
+		$state.go("userPage")
 	}
 
 	this.pickCards = function(){

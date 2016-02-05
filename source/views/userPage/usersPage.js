@@ -5,13 +5,12 @@ angular.module('cardsAgainstHumanity')
 
 .controller('userPageCtrl', function($scope, $rootScope, $state, GameService, UserService, $cookies, jwtHelper, $location , $base64){
 	
-	//force game value to change on refresh page
 	var rootRef = GameService.rootRef
+	var gameList = rootRef.child('games');
+	//force game value to change on refresh page
 	rootRef.child("force").update({force: "force"});
 	rootRef.child('force').remove();
 	$rootScope.gameSize = $scope.gameSize; 
-
-
 
 
 	$scope.user = {};
