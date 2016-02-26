@@ -26,9 +26,9 @@ angular.module('cardsAgainstHumanity')
 
 	UserService.page($state.params.username)
 	.then(function(res) {
-		//console.log(res.data.ddWins);
+		console.log("USER SERVICE RES.DATA", res.data);
 		$scope.user = res.data;
-		$scope.user.gamePoints = res.data.ddWins;
+		//$scope.user.gamePoints = res.data.ddWins;
 		$scope.isOwnPage = $scope.user.username === token.username || token.isAdmin === true;
 		$scope.isEditing = false;
 		$scope.editPayload.username = $scope.user.username;

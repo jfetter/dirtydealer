@@ -144,15 +144,17 @@ gameList.on('value', function(snap){
 
 	//remove players
 	this.removePlayer = function(){
+
 		if (!localStorage.myGame){
 			return;
 		}
 		var myInfo = identifyPlayer()
 		var myId = myInfo._id
+		var userName = myInfo.username;
 		allPlayers.child(myId).remove();
 		localStorage.clear();
 		console.log("PLAYER QUIT", myId);
-		$state.go("userPage")
+		$state.go('userPage', {"username": userName})
 	}
 
 	this.pickCards = function(){
